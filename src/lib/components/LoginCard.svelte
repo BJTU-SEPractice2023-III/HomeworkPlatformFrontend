@@ -36,24 +36,27 @@
         localStorage.setItem('homework-platform-id', data.user.id);
         goto("/");
     }
-    function onLogin() {
-        if (username == "") {
-            createSnackBar("failed", "用户名不能为空");
-            return;
-        }
-        login(username, password)
-            .then((res) => {
-                console.log("[login/then]: " + res);
-                res = res.data;
-                onLoggedIn(res.data);
-            })
-            .catch((err) => {
-                console.log("[login/catch]: " + err);
-                createSnackBar("failed", "登陆失败 " + err);
-            });
-        console.log(username, password);
-    }
+    // function onLogin() {
+    //     if (username == "") {
+    //         createSnackBar("failed", "用户名不能为空");
+    //         return;
+    //     }
+    //     login(username, password)
+    //         .then((res) => {
+    //             console.log("[login/then]: " + res);
+    //             res = res.data;
+    //             onLoggedIn(res.data);
+    //         })
+    //         .catch((err) => {
+    //             console.log("[login/catch]: " + err);
+    //             createSnackBar("failed", "登陆失败 " + err);
+    //         });
+    //     console.log(username, password);
+    // }
 
+    function onLogin(){
+            goto("../about");
+    }
     function onRegister() {
         if (username == "") {
             createSnackBar("failed", "用户名不能为空");
