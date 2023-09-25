@@ -55,7 +55,7 @@
     // }
 
     function onLogin(){
-            goto("../about");
+            goto("../studentMain");
     }
     function onRegister() {
         if (username == "") {

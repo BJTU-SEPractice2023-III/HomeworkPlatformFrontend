@@ -8,6 +8,9 @@ const config = {
   
   theme: {
     extend: {
+      backgroundImage: {
+        "bg1": "url('background1.jpg')",
+      },
       colors: {
         // flowbite-svelte
         primary: {
