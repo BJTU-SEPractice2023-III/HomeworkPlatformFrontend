@@ -23,10 +23,16 @@
           >主页</NavLi
         >
         <NavLi href="/"
-          >我的课程</NavLi
+          >我教的课程</NavLi
+        >
+        <NavLi href="/learningCourse"
+          >我学习的课程</NavLi
         >
         <NavLi href="/studentSelectCourse"
           >选课</NavLi
+        >
+        <NavLi href="/"
+          >创建课程</NavLi
         >
         <NavLi href="/"
           >互评作业</NavLi
