@@ -6,8 +6,8 @@
 	<title>Home</title>
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
-
+<div class="bg-bg2 bg-cover bg-center bg-no-repeat h-screen">
 <LoginCard />
-
+</div>
 <style>
 </style>

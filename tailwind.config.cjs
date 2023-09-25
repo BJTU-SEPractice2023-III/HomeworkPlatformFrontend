@@ -10,6 +10,7 @@ const config = {
     extend: {
       backgroundImage: {
         "bg1": "url('background1.jpg')",
+        "bg2": "url('background2.jpg')",
       },
       colors: {
         // flowbite-svelte

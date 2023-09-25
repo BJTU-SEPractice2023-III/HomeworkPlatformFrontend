@@ -18,7 +18,6 @@
   })
 </script>
 
-<div class="bg-bg1 bg-cover bg-center bg-no-repeat h-screen">
   <div>
 	<Table>
 	  <TableHead>
@@ -35,5 +34,3 @@
 	  </TableBody>
 	</Table>
   </div>
-
-</div>
