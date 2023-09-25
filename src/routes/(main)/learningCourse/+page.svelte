@@ -6,14 +6,14 @@
     let courses: any = [];
   
     function getCourse() {
-      get("/api/course")
-        .then((res) => {
-          console.log(res.data);
-          courses = res.data.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    //   get("/api/course")
+    //     .then((res) => {
+    //       console.log(res.data);
+    //       courses = res.data.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
     }
   
     let teacher = "";
