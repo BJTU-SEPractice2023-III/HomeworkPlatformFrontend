@@ -8,7 +8,7 @@
   } from "flowbite-svelte";
   import { goto } from "$app/navigation";
 </script>
-
+<div class="bg-bg1 bg-cover bg-center bg-no-repeat h-screen">
 <div class="h-full w-full flex flex-col">
   <Navbar class="shadow-md border">
     <NavBrand href="/">
@@ -36,6 +36,6 @@
     <slot />
   </main>
 </div>
-
+</div>
 <style>
 </style>
