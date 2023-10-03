@@ -1,14 +1,11 @@
 <script lang="ts">
-    import {
-        Button,
-        Label,
-        Input,
-        ButtonGroup,
-    } from "flowbite-svelte";
+    import { Button, Label, Input, ButtonGroup } from "flowbite-svelte";
     import { tweened } from "svelte/motion";
     import { cubicOut } from "svelte/easing";
 
-    let messages: { type: string; msg: string }[] = [];
+    let messages: { type: "success" | "failed" | "info"; msg: string }[] = [
+        { type: "success", msg: "msg" },
+    ];
     function createSnackBar(type: "success" | "failed" | "info", msg: string) {
         messages.push({ type, msg });
         messages = messages;
@@ -27,36 +24,42 @@
 
     import { login, register } from "$lib/api/user";
     import { goto } from "$app/navigation";
+    import SnackBarList from "./SnackBarList.svelte";
     // import { user } from '../../lib/store';
 
     function onLoggedIn(data: any) {
         console.log("[onLoggedIn]: ", data);
         // user.set(data.user);
-        localStorage.setItem('homework-platform-jwt', data.token);
-        localStorage.setItem('homework-platform-id', data.user.id);
+        localStorage.setItem("homework-platform-jwt", data.token);
+        localStorage.setItem("homework-platform-id", data.user.id);
         goto("/");
     }
-    // function onLogin() {
-    //     if (username == "") {
-    //         createSnackBar("failed", "用户名不能为空");
-    //         return;
-    //     }
-    //     login(username, password)
-    //         .then((res) => {
-    //             console.log("[login/then]: " + res);
-    //             res = res.data;
-    //             onLoggedIn(res.data);
-    //         })
-    //         .catch((err) => {
-    //             console.log("[login/catch]: " + err);
-    //             createSnackBar("failed", "登陆失败 " + err);
-    //         });
-    //     console.log(username, password);
-    // }
-
-    function onLogin(){
-            goto("../studentMain");
+    function onLogin() {
+        console.log("onLogin");
+        onLoggedIn({
+            token: "fake-token",
+            user: {
+                id: "fake-id",
+            },
+        })
+        return;
+        if (username == "") {
+            createSnackBar("failed", "用户名不能为空");
+            return;
+        }
+        login(username, password)
+            .then((res) => {
+                console.log("[login/then]: " + res);
+                res = res.data;
+                onLoggedIn(res.data);
+            })
+            .catch((err) => {
+                console.log("[login/catch]: " + err);
+                createSnackBar("failed", "登陆失败 " + err);
+            });
+        console.log(username, password);
     }
+
     function onRegister() {
         if (username == "") {
             createSnackBar("failed", "用户名不能为空");
@@ -108,6 +111,7 @@
     shadow-xl
   "
     >
+        <SnackBarList bind:messages />
         <!-- 登录 -->
         <span class="mb-3 text-2xl">
             {#if loginTab}登录{:else}注册账号{/if}

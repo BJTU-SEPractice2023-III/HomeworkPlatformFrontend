@@ -12,7 +12,7 @@
 
     const dispatch = createEventDispatcher();
 
-    let open: boolean
+    let open: boolean = true
     $: if (open) dispatch('dismiss');
 
     let color: "green" | "red" | "orange";

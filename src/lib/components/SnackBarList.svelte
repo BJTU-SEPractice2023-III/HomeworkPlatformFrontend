@@ -1,7 +1,7 @@
 <script lang="ts">
     import SnackBar from "./SnackBar.svelte";
 
-	export let messages: { type: "success" | "failed" | "info"; msg: string }[] = [];
+	export let messages: { type: "success" | "failed" | "info"; msg: string }[];
 </script>
 
 <div class="absolute top-4 right-4 flex flex-col gap-2">
