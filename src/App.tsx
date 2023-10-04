@@ -12,7 +12,7 @@ const App: Component = () => {
       if (!jwt) {
           return "/login";
       }
-      return true;
+      return '';
   });
 
   return (
