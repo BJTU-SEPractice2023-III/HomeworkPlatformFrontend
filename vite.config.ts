@@ -1,9 +1,9 @@
-import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vitest/config';
+import solid from "solid-start/vite";
+import staticAdapter from "solid-start-static";
+import { defineConfig } from "vite";
 
 export default defineConfig({
-	plugins: [sveltekit()],
-	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}']
-	}
+  plugins: [solid({
+    adapter: staticAdapter()
+  })],
 });
