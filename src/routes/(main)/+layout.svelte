@@ -18,7 +18,7 @@
     </NavBrand>
     <NavHamburger />
     <NavUl>
-      <NavLi href="/studentMain">主页</NavLi>
+      <NavLi href="/">主页</NavLi>
       <NavLi href="/studentSelectCourse">选课</NavLi>
       <NavLi href="/">创建课程</NavLi>
       <NavLi href="/">互评作业</NavLi>
