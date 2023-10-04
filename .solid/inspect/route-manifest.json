@@ -3,20 +3,20 @@
     "type": "route",
     "script": {
       "type": "script",
-      "href": "/assets/_...404_-422364d2.js"
+      "href": "/assets/_...404_-3688b065.js"
     },
     "assets": [
       {
         "type": "script",
-        "href": "/assets/_...404_-422364d2.js"
+        "href": "/assets/_...404_-3688b065.js"
       },
       {
         "type": "script",
-        "href": "/assets/index-4ddd5e1e.js"
+        "href": "/assets/entry-client-cc68da1b.js"
       },
       {
         "type": "style",
-        "href": "/assets/index-d870915a.css"
+        "href": "/assets/entry-client-d870915a.css"
       }
     ]
   },
@@ -24,20 +24,20 @@
     "type": "route",
     "script": {
       "type": "script",
-      "href": "/assets/index-42791192.js"
+      "href": "/assets/index-816026fe.js"
     },
     "assets": [
       {
         "type": "script",
-        "href": "/assets/index-42791192.js"
+        "href": "/assets/index-816026fe.js"
       },
       {
         "type": "script",
-        "href": "/assets/index-4ddd5e1e.js"
+        "href": "/assets/entry-client-cc68da1b.js"
       },
       {
         "type": "style",
-        "href": "/assets/index-d870915a.css"
+        "href": "/assets/entry-client-d870915a.css"
       },
       {
         "type": "style",
@@ -47,23 +47,23 @@
   },
   "entry-client": {
     "type": "entry",
-    "assets": []
-  },
-  "index.html": {
-    "type": "entry",
     "script": {
       "type": "script",
-      "href": "/assets/index-4ddd5e1e.js"
+      "href": "/assets/entry-client-cc68da1b.js"
     },
     "assets": [
       {
         "type": "script",
-        "href": "/assets/index-4ddd5e1e.js"
+        "href": "/assets/entry-client-cc68da1b.js"
       },
       {
         "type": "style",
-        "href": "/assets/index-d870915a.css"
+        "href": "/assets/entry-client-d870915a.css"
       }
     ]
+  },
+  "index.html": {
+    "type": "entry",
+    "assets": []
   }
 }
