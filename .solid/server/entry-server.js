@@ -455,7 +455,9 @@ const useHref = (to) => {
         return to_ !== undefined ? router.renderPath(to_) : to_;
     });
 };
+const useNavigate = () => useRouter().navigatorFactory();
 const useLocation = () => useRouter().location;
+const useParams = () => useRoute().params;
 function createRoutes(routeDef, base = "", fallback) {
     const { component, data, children } = routeDef;
     const isLeaf = !children || (Array.isArray(children) && !children.length);
@@ -940,6 +942,23 @@ function A$1(props) {
     }
   }), undefined, true);
 }
+function Navigate(props) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    href,
+    state
+  } = props;
+  const path = typeof href === "function" ? href({
+    navigate,
+    location
+  }) : href;
+  navigate(path, {
+    replace: true,
+    state
+  });
+  return null;
+}
 
 // @ts-expect-error
 const routeLayouts = {
@@ -947,8 +966,16 @@ const routeLayouts = {
     "id": "/*404",
     "layouts": []
   },
+  "/courses/:id": {
+    "id": "/courses/:id",
+    "layouts": []
+  },
   "/": {
     "id": "/",
+    "layouts": []
+  },
+  "/login": {
+    "id": "/login",
     "layouts": []
   }
 };
@@ -1057,7 +1084,7 @@ class FormError extends ServerError {
   }
 }
 
-const _tmpl$$4 = ["<div", " style=\"", "\"><div style=\"", "\"><p style=\"", "\" id=\"error-message\">", "</p><button id=\"reset-errors\" style=\"", "\">Clear errors and retry</button><pre style=\"", "\">", "</pre></div></div>"];
+const _tmpl$$6 = ["<div", " style=\"", "\"><div style=\"", "\"><p style=\"", "\" id=\"error-message\">", "</p><button id=\"reset-errors\" style=\"", "\">Clear errors and retry</button><pre style=\"", "\">", "</pre></div></div>"];
 function ErrorBoundary(props) {
   return createComponent(ErrorBoundary$1, {
     fallback: (e, reset) => {
@@ -1083,10 +1110,10 @@ function ErrorBoundary(props) {
 function ErrorMessage(props) {
   createEffect(() => console.error(props.error));
   console.log(props.error);
-  return ssr(_tmpl$$4, ssrHydrationKey(), "padding:" + "16px", "background-color:" + "rgba(252, 165, 165)" + (";color:" + "rgb(153, 27, 27)") + (";border-radius:" + "5px") + (";overflow:" + "scroll") + (";padding:" + "16px") + (";margin-bottom:" + "8px"), "font-weight:" + "bold", escape(props.error.message), "color:" + "rgba(252, 165, 165)" + (";background-color:" + "rgb(153, 27, 27)") + (";border-radius:" + "5px") + (";padding:" + "4px 8px"), "margin-top:" + "8px" + (";width:" + "100%"), escape(props.error.stack));
+  return ssr(_tmpl$$6, ssrHydrationKey(), "padding:" + "16px", "background-color:" + "rgba(252, 165, 165)" + (";color:" + "rgb(153, 27, 27)") + (";border-radius:" + "5px") + (";overflow:" + "scroll") + (";padding:" + "16px") + (";margin-bottom:" + "8px"), "font-weight:" + "bold", escape(props.error.message), "color:" + "rgba(252, 165, 165)" + (";background-color:" + "rgb(153, 27, 27)") + (";border-radius:" + "5px") + (";padding:" + "4px 8px"), "margin-top:" + "8px" + (";width:" + "100%"), escape(props.error.stack));
 }
 
-const _tmpl$$3 = ["<link", " rel=\"stylesheet\"", ">"],
+const _tmpl$$5 = ["<link", " rel=\"stylesheet\"", ">"],
   _tmpl$2 = ["<link", " rel=\"modulepreload\"", ">"];
 
 /**
@@ -1098,7 +1125,7 @@ function Links() {
   useAssets(() => {
     let match = getAssetsFromManifest(context, context.routerContext.matches);
     const links = match.reduce((r, src) => {
-      let el = src.type === "style" ? ssr(_tmpl$$3, ssrHydrationKey(), ssrAttribute("href", escape(src.href, true), false)) : src.type === "script" ? ssr(_tmpl$2, ssrHydrationKey(), ssrAttribute("href", escape(src.href, true), false)) : undefined;
+      let el = src.type === "style" ? ssr(_tmpl$$5, ssrHydrationKey(), ssrAttribute("href", escape(src.href, true), false)) : src.type === "script" ? ssr(_tmpl$2, ssrHydrationKey(), ssrAttribute("href", escape(src.href, true), false)) : undefined;
       if (el) r[src.href] = el;
       return r;
     }, {});
@@ -1422,28 +1449,53 @@ function HttpStatusCode(props) {
   return null;
 }
 
-const _tmpl$$2 = ["<main", "><!--#-->", "<!--/--><!--#-->", "<!--/--><h1>Page Not Found</h1><p>Visit <a href=\"https://start.solidjs.com\" target=\"_blank\">start.solidjs.com</a> to learn how to build SolidStart apps.</p></main>"];
+const _tmpl$$4 = ["<main", "><!--#-->", "<!--/--><!--#-->", "<!--/--><h1>Page Not Found</h1><p>Visit <a href=\"https://start.solidjs.com\" target=\"_blank\">start.solidjs.com</a> to learn how to build SolidStart apps.</p></main>"];
 function NotFound() {
-  return ssr(_tmpl$$2, ssrHydrationKey(), escape(createComponent(Title, {
+  return ssr(_tmpl$$4, ssrHydrationKey(), escape(createComponent(Title, {
     children: "Not Found"
   })), escape(createComponent(HttpStatusCode, {
     code: 404
   })));
 }
 
-const Counter$1 = '';
-
-const _tmpl$$1 = ["<button", " class=\"increment\">Clicks: <!--#-->", "<!--/--></button>"];
-function Counter() {
-  const [count, setCount] = createSignal(0);
-  return ssr(_tmpl$$1, ssrHydrationKey(), escape(count()));
+const _tmpl$$3 = ["<main", "><!--#-->", "<!--/--><h1>Course(id: <!--#-->", "<!--/-->)</h1></main>"];
+function Course() {
+  const params = useParams();
+  return ssr(_tmpl$$3, ssrHydrationKey(), escape(createComponent(Title, {
+    get children() {
+      return ["Course(id: ", params.id, ")"];
+    }
+  })), escape(params.id));
 }
 
-const _tmpl$ = ["<main", "><!--#-->", "<!--/--><h1>Hello world!</h1><!--#-->", "<!--/--><p>Visit <a href=\"https://start.solidjs.com\" target=\"_blank\">start.solidjs.com</a> to learn how to build SolidStart apps.</p></main>"];
+const Counter$1 = '';
+
+const _tmpl$$2 = ["<button", " class=\"increment\">Clicks: <!--#-->", "<!--/--></button>"];
+function Counter() {
+  const [count, setCount] = createSignal(0);
+  return ssr(_tmpl$$2, ssrHydrationKey(), escape(count()));
+}
+
+const _tmpl$$1 = ["<main", "><!--#-->", "<!--/--><h1>Hello world!</h1><!--#-->", "<!--/--><p>Visit <a href=\"https://start.solidjs.com\" target=\"_blank\">start.solidjs.com</a> to learn how to build SolidStart apps.</p></main>"];
+function Home$1() {
+  // 从 localStorage 获取 token，若为空则跳转到 /login
+  const token = localStorage.getItem("homework-platform-jwt");
+  console.log(token);
+  if (!token) {
+    return createComponent(Navigate, {
+      href: "/login"
+    });
+  }
+  return ssr(_tmpl$$1, ssrHydrationKey(), escape(createComponent(Title, {
+    children: "Hello World"
+  })), escape(createComponent(Counter, {})));
+}
+
+const _tmpl$ = ["<main", "><!--#-->", "<!--/--><h1>Login</h1></main>"];
 function Home() {
   return ssr(_tmpl$, ssrHydrationKey(), escape(createComponent(Title, {
     children: "Hello World"
-  })), escape(createComponent(Counter, {})));
+  })));
 }
 
 /// <reference path="../server/types.tsx" />
@@ -1452,8 +1504,14 @@ const fileRoutes = [{
   component: NotFound,
   path: "/*404"
 }, {
-  component: Home,
+  component: Course,
+  path: "/courses/:id"
+}, {
+  component: Home$1,
   path: "/"
+}, {
+  component: Home,
+  path: "/login"
 }];
 
 /**
@@ -1493,6 +1551,9 @@ function Root() {
                   }), createComponent(A, {
                     href: "/about",
                     children: "About"
+                  }), createComponent(A, {
+                    href: "/courses/2",
+                    children: "2"
                   }), createComponent(Routes, {
                     get children() {
                       return createComponent(FileRoutes, {});
@@ -1586,6 +1647,14 @@ const api = [
   {
     GET: "skip",
     path: "/"
+  },
+  {
+    GET: "skip",
+    path: "/login"
+  },
+  {
+    GET: "skip",
+    path: "/courses/:id"
   }
 ];
 function expandOptionals(pattern) {
@@ -1801,7 +1870,19 @@ function handleIslandsRouting(pageEvent, markup) {
 
 const renderAsync = (fn, options) => composeMiddleware([apiRoutes, inlineServerFunctions, renderAsync$1(fn, options)]);
 
-const entryServer = createHandler(renderAsync(event => createComponent(StartServer, {
+const protectedPaths = ["/"];
+const entryServer = createHandler(({
+  forward
+}) => {
+  return async event => {
+    const path = new URL(event.request.url).pathname;
+    console.log(path);
+    if (protectedPaths.includes(path)) {
+      return redirect("/login");
+    }
+    return forward(event);
+  };
+}, renderAsync(event => createComponent(StartServer, {
   event: event
 })));
 
