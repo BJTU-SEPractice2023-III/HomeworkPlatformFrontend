@@ -1,6 +1,6 @@
 import 'uno.css';
 import { render } from 'solid-js/web';
-import { Router } from 'the-solid-router';
+import { Router } from '@solidjs/router';
 import App from './App';
 
 const root = document.getElementById('root');

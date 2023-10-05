@@ -1,4 +1,4 @@
-import { useParams } from 'the-solid-router';
+import { useParams } from '@solidjs/router';
 export default function Courses() {
   const params = useParams();
 

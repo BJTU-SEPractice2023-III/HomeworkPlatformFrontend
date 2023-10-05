@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Routes, Route, A } from 'the-solid-router';
+import { Routes, Route, A } from '@solidjs/router';
 import Courses from './pages/Courses';
 import Login from './pages/Login';
 
@@ -12,15 +12,22 @@ const App: Component = () => {
       if (!jwt) {
           return "/login";
       }
-      return '';
+      return true;
   });
+
+  function LoginData({params, location, navigate, data}) {
+      const jwt = localStorage.getItem("homework-platform-jwt");
+      if (!jwt) {
+          navigate('/login')
+      }
+  }
 
   return (
     <>
       <h1>router</h1>
       <A href="/courses/2">courses/2</A>
       <Routes>
-        <Route path="/courses/:id" guard={isLoggedIn} component={Courses} />
+        <Route path="/courses/:id" component={Courses} data={LoginData}/>
         <Route path="/login" component={Login} />
       </Routes>
       <p class="text-4xl text-green-700 text-center py-20">

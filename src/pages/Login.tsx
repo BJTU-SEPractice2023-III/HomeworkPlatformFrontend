@@ -1,5 +1,5 @@
 
-import { A, useNavigate, useParams } from 'the-solid-router';
+import { A, useNavigate, useParams } from '@solidjs/router';
 import { Box, Button, TextField } from '@suid/material';
 
 export default function Login() {
