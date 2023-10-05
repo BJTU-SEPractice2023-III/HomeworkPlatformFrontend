@@ -1,25 +1,21 @@
 
 import { A, useNavigate, useParams } from '@solidjs/router';
 import { Box, Button, TextField } from '@suid/material';
-import { login } from '../lib/user';
+import { register } from '../lib/user';
 import { createSignal } from 'solid-js';
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
 
   const [username, setUsername] = createSignal('')
   const [password, setPassword] = createSignal('')
+  const [repeatPassword, setRepeatPassword] = createSignal('')
 
-  function onLogin() {
-    console.log("[Login]: onLogin")
-    login(username(), password()).then((res) => {
-      console.log("[Login]: login success")
-      const data = res.data
-
-      // TODO: put these state in the store
-      localStorage.setItem('homework-platform-jwt', data.token)
-      console.log(`isAdmin: ${data.user.is_admin}`)
-      navigate('/')
+  function onRegister() {
+    console.log("[Register]: onRegister")
+    register(username(), password()).then((res) => {
+      console.log("[Register]: register success")
+      navigate('/login')
     }).catch((err) => {
       console.error(err)
     })
@@ -40,7 +36,7 @@ export default function Login() {
       "
       >
         <span class="mb-3 text-2xl">
-          登录
+          注册
         </span>
         <Box
           component="form"
@@ -69,10 +65,20 @@ export default function Login() {
                 setPassword(value)
               }}
             />
+            <TextField
+              label="确认密码"
+              type="password"
+              value={repeatPassword()}
+              onChange={(_event, value) => {
+                setRepeatPassword(value)
+              }}
+              error={repeatPassword() != password()}
+              helperText={repeatPassword() != password() ? '两次输入的密码不一致': ''}
+            />
           </div>
           <div class='flex gap-2 items-center justify-center'>
-            <Button size='large' variant='contained' onClick={onLogin}>登录</Button>
-            <Button size='large' onClick={() => navigate('/register')}>没有账号？</Button>
+            <Button size='large' variant='contained' onClick={onRegister}>注册</Button>
+            <Button size='large' onClick={() => navigate('/login')}>已有账号？</Button>
           </div>
         </Box>
       </div>
