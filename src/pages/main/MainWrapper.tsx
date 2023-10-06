@@ -26,7 +26,10 @@ export default function MainWrapper() {
             课程
           </Button>
           {/* TODO: change it according to the login state */}
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" onClick={() => {
+            localStorage.removeItem('homework-platform-jwt')
+            navigate('/login')
+          }}>Logout</Button>
         </Toolbar>
       </AppBar>
       <Outlet />
