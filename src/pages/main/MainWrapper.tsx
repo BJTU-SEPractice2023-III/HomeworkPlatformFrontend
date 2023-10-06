@@ -7,8 +7,8 @@ export default function MainWrapper() {
   const navigate = useNavigate();
 
   return (
-    <div class='h-full w-full'>
-      <AppBar position='static'>
+    <div class='h-full w-full flex flex-col'>
+      <AppBar position='sticky'>
         <Toolbar>
           <IconButton
             size="large"
@@ -22,6 +22,9 @@ export default function MainWrapper() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Main Wrapper
           </Typography>
+          <Button color='inherit' onClick={() => navigate('/')}>
+            主页
+          </Button>
           <Button color='inherit' onClick={() => navigate('/courses')}>
             课程
           </Button>
