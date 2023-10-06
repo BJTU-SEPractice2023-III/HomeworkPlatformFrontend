@@ -17,7 +17,8 @@ export default function Courses() {
 
   return (
     <>
-      courses list
+    {/* TODO: add link to course detail page */}
+    {/* TODO: add join button */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
@@ -35,6 +36,7 @@ export default function Courses() {
                 <TableCell>{course.ID}</TableCell>
                 <TableCell>{course.name}</TableCell>
                 <TableCell>{course.description}</TableCell>
+                {/* TODO: parse the date */}
                 <TableCell>{course.beginDate}</TableCell>
                 <TableCell>{course.endDate}</TableCell>
               </TableRow>
