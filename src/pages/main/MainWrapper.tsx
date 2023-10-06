@@ -25,7 +25,7 @@ export default function MainWrapper() {
           <Button color='inherit' onClick={() => navigate('/courses')}>
             课程
           </Button>
-          // TODO: change it according to the login state
+          {/* TODO: change it according to the login state */}
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
