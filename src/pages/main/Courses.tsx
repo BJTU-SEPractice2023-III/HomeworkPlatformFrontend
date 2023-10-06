@@ -1,15 +1,16 @@
-import { useParams } from '@solidjs/router';
+import { useNavigate } from '@solidjs/router';
 import { For, createSignal, onMount } from 'solid-js';
-import { getCourses } from '../../lib/course';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
+import { Course, getCourses } from '../../lib/course';
+import { Button, ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
 export default function Courses() {
+  const navigate = useNavigate()
 
-  const [courses, setCourses] = createSignal([])
+  const [courses, setCourses] = createSignal<Course []>([])
 
   onMount(async () => {
     getCourses().then((res) => {
-      console.log(res.data)
-      setCourses(res.data)
+      console.log(res)
+      setCourses(res)
     })
   })
 
@@ -17,8 +18,8 @@ export default function Courses() {
 
   return (
     <>
-    {/* TODO: add link to course detail page */}
-    {/* TODO: add join button */}
+      {/* TODO: add link to course detail page */}
+      {/* TODO: add join button */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
@@ -28,6 +29,7 @@ export default function Courses() {
               <TableCell>简介</TableCell>
               <TableCell>起始时间</TableCell>
               <TableCell>结束时间</TableCell>
+              <TableCell>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -39,6 +41,9 @@ export default function Courses() {
                 {/* TODO: parse the date */}
                 <TableCell>{course.beginDate}</TableCell>
                 <TableCell>{course.endDate}</TableCell>
+                <TableCell>
+                  <Button onClick={() => { navigate(`/course/${course.ID}`) }}>详情</Button>
+                </TableCell>
               </TableRow>
             }
             </For>

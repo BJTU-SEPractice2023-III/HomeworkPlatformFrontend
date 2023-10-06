@@ -13,7 +13,7 @@ export function get(url: string): Promise<any> {
         }
       })
       .then((res) => {
-        resolve(res.data)
+        resolve(res.data.data)
       })
       .catch((err) => {
         reject(err)

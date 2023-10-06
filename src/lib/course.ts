@@ -1,13 +1,17 @@
 import { get } from "./axios"
 
-type course = {
+export type Course = {
     ID: number,
     name: string,
     description: string
-    begin_date: string,
-    end_date: string
+    beginDate: string,
+    endDate: string
 }
 
-export function getCourses() {
+export function getCourses(): Promise<Course []> {
     return get('/course')
+}
+
+export function getCourse(id: number): Promise<Course> {
+    return get(`/course/${id}`)
 }

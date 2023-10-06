@@ -39,7 +39,7 @@ render(() => (
         {/* 课程列表页面 */}
         <Route path="/courses" component={Courses} />
         {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
-        <Route path="/courses/:id" component={Course} />
+        <Route path="/course/:id" component={Course} />
       </Route>
     </Routes>
   </Router>
