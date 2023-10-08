@@ -1,27 +1,13 @@
 import { Route, Outlet } from '@solidjs/router'
 import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
-import { For, Show, createSignal } from 'solid-js'
+import { For, Show, createSignal, onMount } from 'solid-js'
 import { getTeachingCourse, getLearningCourse } from '../../lib/course';
 
 export default function Main() {
   const [teachingLessons, setTeachingLessons] = createSignal([])
   const [learningLessons, setLearningLessons] = createSignal([])
 
-  // function onLogin() {
-  //   console.log("[Login]: onLogin")
-  //   login(username(), password()).then((res) => {
-  //     console.log("[Login]: login success")
-  //     const data = res.data
-
-  //     // TODO: put these state in the store
-  //     localStorage.setItem('homework-platform-jwt', data.token)
-  //     console.log(`isAdmin: ${data.user.is_admin}`)
-  //     navigate('/')
-  //   }).catch((err) => {
-  //     console.error(err)
-  //   })
-  // }
 
   function getteachingcourse(){
     getTeachingCourse().then(
@@ -31,6 +17,25 @@ export default function Main() {
       }
     )
   }
+
+
+  function getlearningcourse(){
+    getLearningCourse().then(
+      (res) => {
+        console.log(res)
+        setLearningLessons(res)
+      }
+    )
+  }
+
+  onMount(async () => {
+    try {
+      await getteachingcourse();
+      await getlearningcourse();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  });
 
   return (
     <div class='flex-1 flex'>
