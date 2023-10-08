@@ -2,10 +2,35 @@ import { Route, Outlet } from '@solidjs/router'
 import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal } from 'solid-js'
+import { getTeachingCourse, getLearningCourse } from '../../lib/course';
 
 export default function Main() {
   const [teachingLessons, setTeachingLessons] = createSignal([])
   const [learningLessons, setLearningLessons] = createSignal([])
+
+  // function onLogin() {
+  //   console.log("[Login]: onLogin")
+  //   login(username(), password()).then((res) => {
+  //     console.log("[Login]: login success")
+  //     const data = res.data
+
+  //     // TODO: put these state in the store
+  //     localStorage.setItem('homework-platform-jwt', data.token)
+  //     console.log(`isAdmin: ${data.user.is_admin}`)
+  //     navigate('/')
+  //   }).catch((err) => {
+  //     console.error(err)
+  //   })
+  // }
+
+  function getteachingcourse(){
+    getTeachingCourse().then(
+      (res) => {
+        console.log(res)
+        setTeachingLessons(res)
+      }
+    )
+  }
 
   return (
     <div class='flex-1 flex'>

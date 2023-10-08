@@ -15,3 +15,12 @@ export function getCourses(): Promise<Course []> {
 export function getCourse(id: number): Promise<Course> {
     return get(`/course/${id}`)
 }
+
+export function getTeachingCourse(): Promise<Course []> {
+    return get('/course/teachingcourse')
+}
+
+export function getLearningCourse(): Promise<Course []> {
+    return get('/course/learningcourse')
+}
+

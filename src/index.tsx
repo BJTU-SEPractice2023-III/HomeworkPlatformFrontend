@@ -33,14 +33,14 @@ render(() => (
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       {/* 其他路径需要登录，通过 LoginData 检验 localStorage 是否存在 jwt */}
-      <Route path="/" component={MainWrapper} data={LoginData}>
+      {/* <Route path="/" component={MainWrapper} data={LoginData}> */}
         {/* 主页 */}
         <Route path="/" component={Main} />
         {/* 课程列表页面 */}
         <Route path="/courses" component={Courses} />
         {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
         <Route path="/course/:id" component={Course} />
-      </Route>
+      {/* </Route> */}
     </Routes>
   </Router>
 ), root!);
