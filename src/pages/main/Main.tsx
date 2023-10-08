@@ -49,10 +49,20 @@ export default function Main() {
           <Show when={teachingLessons().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
-          <For each={teachingLessons()}>{(lesson, i) => <span>
-            {lesson}
+          {/* <For each={teachingLessons()}>{(lesson, i) => <span>
+            {lesson.name}
           </span>}
+          </For> */}
+          <For each={teachingLessons()}>
+            {(lesson, i) => <span> (
+              <a href={`/course/${lesson.id}`}>
+                {lesson.name}
+              </a>
+            )</span>}
           </For>
+          <a href={"/course/1"}>
+                {"原神"}
+              </a>
         </div>
 
         <Divider />
@@ -67,6 +77,7 @@ export default function Main() {
           </Show>
           <For each={learningLessons()}>{(lesson, i) => <span>
             {lesson}
+            {}
           </span>}
           </For>
         </div>
