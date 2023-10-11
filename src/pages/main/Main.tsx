@@ -9,17 +9,13 @@ export default function Main() {
   const [learningLessons, setLearningLessons] = createSignal([])
 
 
-  function getteachingcourse(){
-    getTeachingCourse().then(
-      (res) => {
-        console.log(res)
-        setTeachingLessons(res)
-      }
-    )
+  async function getteachingcourse() {
+    const res = await getTeachingCourse()
+    setTeachingLessons(res)
   }
 
 
-  function getlearningcourse(){
+  async function getlearningcourse() {
     getLearningCourse().then(
       (res) => {
         console.log(res)
@@ -29,12 +25,8 @@ export default function Main() {
   }
 
   onMount(async () => {
-    try {
-      await getteachingcourse();
-      await getlearningcourse();
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    await getteachingcourse();
+    getlearningcourse();
   });
 
   return (
@@ -58,11 +50,11 @@ export default function Main() {
               <a href={`/course/${lesson.id}`}>
                 {lesson.name}
               </a>
-            )</span>}
+              )</span>}
           </For>
           <a href={"/course/1"}>
-                {"原神"}
-              </a>
+            {"原神"}
+          </a>
         </div>
 
         <Divider />
@@ -77,51 +69,51 @@ export default function Main() {
           </Show>
           <For each={learningLessons()}>{(lesson, i) => <span>
             {lesson}
-            {}
+            { }
           </span>}
           </For>
         </div>
       </aside>
       <div class='flex-1 flex flex-col p-6 gap-4'>
         <div class='flex'>
-            <Typography>Home</Typography>
+          <Typography>Home</Typography>
         </div>
         <Card>
           <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Course Name
-          </Typography>
-          <Typography variant="h5" component="div">
-            Message Title
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            message type(homework/notice)
-          </Typography>
-          <Typography variant="body2">
-            content content content
-            <br />
-            content content
-          </Typography>
-        </CardContent>
+            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              Course Name
+            </Typography>
+            <Typography variant="h5" component="div">
+              Message Title
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              message type(homework/notice)
+            </Typography>
+            <Typography variant="body2">
+              content content content
+              <br />
+              content content
+            </Typography>
+          </CardContent>
         </Card>
 
         <Card>
           <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Course Name
-          </Typography>
-          <Typography variant="h5" component="div">
-            Message Title
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            message type(homework/notice)
-          </Typography>
-          <Typography variant="body2">
-            content content content
-            <br />
-            content content
-          </Typography>
-        </CardContent>
+            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              Course Name
+            </Typography>
+            <Typography variant="h5" component="div">
+              Message Title
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              message type(homework/notice)
+            </Typography>
+            <Typography variant="body2">
+              content content content
+              <br />
+              content content
+            </Typography>
+          </CardContent>
         </Card>
       </div>
     </div>

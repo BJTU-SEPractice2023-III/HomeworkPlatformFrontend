@@ -30,6 +30,7 @@ export default function Courses() {
               <TableCell>起始时间</TableCell>
               <TableCell>结束时间</TableCell>
               <TableCell>操作</TableCell>
+              <TableCell>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -43,6 +44,9 @@ export default function Courses() {
                 <TableCell>{course.endDate}</TableCell>
                 <TableCell>
                   <Button onClick={() => { navigate(`/course/${course.ID}`) }}>详情</Button>
+                </TableCell>
+                <TableCell>
+                  <Button onClick={() => { }}>选课</Button>
                 </TableCell>
               </TableRow>
             }
