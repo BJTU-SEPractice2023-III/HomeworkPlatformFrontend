@@ -1,4 +1,4 @@
-import { Route, Outlet } from '@solidjs/router'
+import { Route, Outlet, useNavigate } from '@solidjs/router'
 import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
@@ -7,6 +7,7 @@ import { getTeachingCourse, getLearningCourse } from '../../lib/course';
 export default function Main() {
   const [teachingLessons, setTeachingLessons] = createSignal([])
   const [learningLessons, setLearningLessons] = createSignal([])
+  const navigate = useNavigate();
 
 
   async function getteachingcourse() {
@@ -35,7 +36,7 @@ export default function Main() {
         <div class='flex flex-col gap-2'>
           <div class='flex items-center justify-between'>
             <span>教的课程</span>
-            <Button variant='contained' size='small'>创建课程</Button>
+            <Button variant='contained' size='small' onClick={() => navigate('/create')}>创建课程</Button>
           </div>
           <TextField label="search" size='small' />
           <Show when={teachingLessons().length == 0}>
@@ -69,7 +70,6 @@ export default function Main() {
           </Show>
           <For each={learningLessons()}>{(lesson, i) => <span>
             {lesson}
-            { }
           </span>}
           </For>
         </div>
