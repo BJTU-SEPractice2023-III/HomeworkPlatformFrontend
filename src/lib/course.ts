@@ -25,7 +25,7 @@ export function getLearningCourse(): Promise<Course []> {
     return get('/course/learningcourse')
 }
 
-export function create(name: string, description: string, beginDate: string, endDate: string) {
+export function create(name: string, description: string, beginDate: Date, endDate: Date) {
     return post(`/course/create`, {
       name: name,
       description: description,

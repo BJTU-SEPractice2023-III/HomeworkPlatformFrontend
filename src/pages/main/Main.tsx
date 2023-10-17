@@ -36,7 +36,7 @@ export default function Main() {
         <div class='flex flex-col gap-2'>
           <div class='flex items-center justify-between'>
             <span>教的课程</span>
-            <Button variant='contained' size='small' onClick={() => navigate('/create')}>创建课程</Button>
+            <Button variant='contained' size='small' onClick={() => navigate('/course/create')}>创建课程</Button>
           </div>
           <TextField label="search" size='small' />
           <Show when={teachingLessons().length == 0}>

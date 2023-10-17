@@ -41,8 +41,8 @@ render(() => (
         <Route path="/courses" component={Courses} />
         {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
         <Route path="/course/:id" component={Course} />
-        {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
-        <Route path="/create" component={Create} />
+        {/* 创建课程页面*/}
+        <Route path="/course/create" component={Create} />
       </Route>
     </Routes>
   </Router>
