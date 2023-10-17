@@ -87,7 +87,14 @@ export default function Create() {
 
 
         <div class='flex flex-col gap-1' style="align-self: flex-end;">
-          <Button variant='contained' size='small' onClick={() => createCourse()}>
+          <Button
+            variant='contained'
+            size='small'
+            onClick={() => {
+              if (description() && endDate() && beginDate() && courseName()) {
+                createCourse()
+              }
+            }}>
             创建课程
           </Button>
         </div>
