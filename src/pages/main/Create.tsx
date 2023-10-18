@@ -8,13 +8,24 @@ export default function Create() {
 
   const [courseName, setCourseName] = createSignal('')
   const [description, setDescription] = createSignal('')
-  const [beginDate, setBeginDate] = createSignal('')
-  const [endDate, setEndDate] = createSignal('')
+
+  const [beginYear, setBeginYear] = createSignal('')
+  const [beginMonth, setBeginMonth] = createSignal('')
+  const [beginDay, setBeginDay] = createSignal('')
+
+  const [endYear,  setEndYear] = createSignal('')
+  const [endMonth, setEndMonth] = createSignal('')
+  const [endDay,   setEndDay] = createSignal('')
 
   function createCourse() {
-    
-    create(courseName(), description(), beginDate(), endDate()).then((res) => {
-      console.log("creat success")
+    let beginDate = new Date();
+    beginDate.setFullYear(parseInt(beginYear()), parseInt(beginMonth()), parseInt(beginDay()))
+
+    let endDate = new Date();
+    endDate.setFullYear(parseInt(endYear()), parseInt(endMonth()), parseInt(endDay()))
+
+    create(courseName(), description(), beginDate, endDate).then((res) => {
+      console.log(res)
       const data = res.data
 
     }).catch((err) => {
@@ -44,32 +55,18 @@ export default function Create() {
             onChange={(_event, value) => {
               setCourseName(value)
             }} />
-          <span>开始日期</span>
-          <TextField
-            label="开始日期"
-            size='small'
-            value={beginDate()}
-            onChange={(_event, value) => {
-              setBeginDate(value)
-            }}
-          />
-          {/* <DatePicker
-            label="开始日期"
-            value={selectedDate}
-            onChange={(newDate) => setSelectedDate(newDate)}
-            renderInput={(params) => (
-              <TextField {...params} size="small" />
-            )}
-          /> */}
-          <span>结束日期</span>
-          <TextField
-            label="结束日期"
-            size='small'
-            value={endDate()}
-            onChange={(_event, value) => {
-              setEndDate(value)
-            }}
-          />
+          <div class='flex gap-2 items-center'>
+            <span>开始日期</span>
+            <TextField sx={{ width: 100 }} size='small' label='年' type='number' value={beginYear()} onChange={(_event, value) => { if (parseInt(value) > 0) setBeginYear(value) }} />
+            <TextField sx={{ width: 70 }} size='small' label='月' type='number' value={beginMonth()} onChange={(_event, value) => { if (parseInt(value) > 0) setBeginMonth(value) }} />
+            <TextField sx={{ width: 70 }} size='small' label='日' type='number' value={beginDay()} onChange={(_event, value) => { if (parseInt(value) > 0) setBeginDay(value) }} />
+          </div>
+          <div class='flex gap-2 items-center'>
+            <span>结束日期</span>
+            <TextField sx={{ width: 100 }} size='small' label='年' type='number' value={endYear()} onChange={(_event, value) => { if (parseInt(value) > 0) setEndYear(value) }} />
+            <TextField sx={{ width: 70 }} size='small' label='月' type='number' value={endMonth()} onChange={(_event, value) => { if (parseInt(value) > 0) setEndMonth(value) }} />
+            <TextField sx={{ width: 70 }} size='small' label='日' type='number' value={endDay()} onChange={(_event, value) => { if (parseInt(value) > 0) setEndDay(value) }} />
+          </div>
           <span>课程简介</span>
           <TextField
             label="课程简介"
@@ -90,7 +87,7 @@ export default function Create() {
             variant='contained'
             size='small'
             onClick={() => {
-              if (description() && endDate() && beginDate() && courseName()) {
+              if (courseName() && description() && beginYear() && beginMonth() && beginDay() && endYear() && endMonth() && endDay()) {
                 createCourse()
               }
             }}>
