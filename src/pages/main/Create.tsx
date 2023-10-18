@@ -2,18 +2,17 @@ import { Route, Outlet } from '@solidjs/router'
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
 import { create } from '../../lib/course'
-import { useState } from 'react';
-import { DatePicker } from '@mui/lab';
 
 
 export default function Create() {
 
   const [courseName, setCourseName] = createSignal('')
-  const [beginDate, setBeginDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
   const [description, setDescription] = createSignal('')
+  const [beginDate, setBeginDate] = createSignal('')
+  const [endDate, setEndDate] = createSignal('')
 
   function createCourse() {
+    
     create(courseName(), description(), beginDate(), endDate()).then((res) => {
       console.log("creat success")
       const data = res.data
