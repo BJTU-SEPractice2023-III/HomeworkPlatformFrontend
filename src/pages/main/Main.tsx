@@ -1,4 +1,4 @@
-import { Route, Outlet } from '@solidjs/router'
+import { Route, Outlet, useNavigate, A } from '@solidjs/router'
 import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
@@ -7,19 +7,17 @@ import { getTeachingCourse, getLearningCourse } from '../../lib/course';
 export default function Main() {
   const [teachingLessons, setTeachingLessons] = createSignal([])
   const [learningLessons, setLearningLessons] = createSignal([])
+  const navigate = useNavigate();
 
 
-  function getteachingcourse(){
-    getTeachingCourse().then(
-      (res) => {
-        console.log(res)
-        setTeachingLessons(res)
-      }
-    )
+  async function getteachingcourse() {
+    const res = await getTeachingCourse()
+    console.log(res)
+    setTeachingLessons(res)
   }
 
 
-  function getlearningcourse(){
+  async function getlearningcourse() {
     getLearningCourse().then(
       (res) => {
         console.log(res)
@@ -29,12 +27,8 @@ export default function Main() {
   }
 
   onMount(async () => {
-    try {
-      await getteachingcourse();
-      await getlearningcourse();
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    await getteachingcourse();
+    getlearningcourse();
   });
 
   return (
@@ -43,26 +37,19 @@ export default function Main() {
         <div class='flex flex-col gap-2'>
           <div class='flex items-center justify-between'>
             <span>教的课程</span>
-            <Button variant='contained' size='small'>创建课程</Button>
+            <Button variant='contained' size='small' onClick={() => navigate('/course/create')}>创建课程</Button>
           </div>
           <TextField label="search" size='small' />
           <Show when={teachingLessons().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
-          {/* <For each={teachingLessons()}>{(lesson, i) => <span>
-            {lesson.name}
-          </span>}
-          </For> */}
           <For each={teachingLessons()}>
-            {(lesson, i) => <span> (
-              <a href={`/course/${lesson.id}`}>
+            {(lesson, i) => <div>
+              <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                 {lesson.name}
-              </a>
-            )</span>}
+              </A>
+            </div>}
           </For>
-          <a href={"/course/1"}>
-                {"原神"}
-              </a>
         </div>
 
         <Divider />
@@ -77,51 +64,50 @@ export default function Main() {
           </Show>
           <For each={learningLessons()}>{(lesson, i) => <span>
             {lesson}
-            {}
           </span>}
           </For>
         </div>
       </aside>
       <div class='flex-1 flex flex-col p-6 gap-4'>
         <div class='flex'>
-            <Typography>Home</Typography>
+          <Typography>Home</Typography>
         </div>
         <Card>
           <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Course Name
-          </Typography>
-          <Typography variant="h5" component="div">
-            Message Title
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            message type(homework/notice)
-          </Typography>
-          <Typography variant="body2">
-            content content content
-            <br />
-            content content
-          </Typography>
-        </CardContent>
+            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              Course Name
+            </Typography>
+            <Typography variant="h5" component="div">
+              Message Title
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              message type(homework/notice)
+            </Typography>
+            <Typography variant="body2">
+              content content content
+              <br />
+              content content
+            </Typography>
+          </CardContent>
         </Card>
 
         <Card>
           <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Course Name
-          </Typography>
-          <Typography variant="h5" component="div">
-            Message Title
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            message type(homework/notice)
-          </Typography>
-          <Typography variant="body2">
-            content content content
-            <br />
-            content content
-          </Typography>
-        </CardContent>
+            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              Course Name
+            </Typography>
+            <Typography variant="h5" component="div">
+              Message Title
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              message type(homework/notice)
+            </Typography>
+            <Typography variant="body2">
+              content content content
+              <br />
+              content content
+            </Typography>
+          </CardContent>
         </Card>
       </div>
     </div>

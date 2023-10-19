@@ -8,6 +8,7 @@ import Course from './pages/main/Course';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import MainWrapper from './pages/main/MainWrapper';
+import Create from './pages/main/Create';
 
 const root = document.getElementById('root');
 
@@ -33,14 +34,16 @@ render(() => (
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       {/* 其他路径需要登录，通过 LoginData 检验 localStorage 是否存在 jwt */}
-      {/* <Route path="/" component={MainWrapper} data={LoginData}> */}
+      <Route path="/" component={MainWrapper} data={LoginData}>
         {/* 主页 */}
         <Route path="/" component={Main} />
         {/* 课程列表页面 */}
         <Route path="/courses" component={Courses} />
         {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
         <Route path="/course/:id" component={Course} />
-      {/* </Route> */}
+        {/* 创建课程页面*/}
+        <Route path="/course/create" component={Create} />
+      </Route>
     </Routes>
   </Router>
 ), root!);
