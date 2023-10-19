@@ -1,81 +1,103 @@
-import { Route, Outlet } from '@solidjs/router'
-import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
-import { For, Show, createSignal, onMount } from 'solid-js'
+import { Avatar, Button, Divider, TextField } from '@suid/material'
+import { createSignal, onMount } from 'solid-js'
 import { create } from '../../lib/course'
+import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
+import { useNavigate } from '@solidjs/router';
 
 
 export default function Create() {
+  const [dateRange, setDateRange] = createSignal<PickerValue>({
+    value: {},
+    label: "",
+  });
 
   const [courseName, setCourseName] = createSignal('')
   const [description, setDescription] = createSignal('')
+  const [username, setUsername] = createSignal('')
 
-  const [beginYear, setBeginYear] = createSignal('')
-  const [beginMonth, setBeginMonth] = createSignal('')
-  const [beginDay, setBeginDay] = createSignal('')
+  onMount(() => {
+    setUsername(localStorage.getItem('homework-platform-username'))
+  })
 
-  const [endYear,  setEndYear] = createSignal('')
-  const [endMonth, setEndMonth] = createSignal('')
-  const [endDay,   setEndDay] = createSignal('')
+  const navigate = useNavigate()
 
   function createCourse() {
-    let beginDate = new Date();
-    beginDate.setFullYear(parseInt(beginYear()), parseInt(beginMonth()), parseInt(beginDay()))
-
-    let endDate = new Date();
-    endDate.setFullYear(parseInt(endYear()), parseInt(endMonth()), parseInt(endDay()))
+    let beginDate = new Date(dateRange().value.start)
+    let endDate = new Date(dateRange().value.end)
+    console.log("createCourse", beginDate, endDate)
 
     create(courseName(), description(), beginDate, endDate).then((res) => {
-      console.log(res)
-      const data = res.data
-
+      const id = res.data
+      navigate(`/course/${id}`)
     }).catch((err) => {
       console.error(err)
     })
   }
 
   return (
-    <div class='flex-1 flex justify-center'>
+    <div class='flex-1 justify-center mt-10 mb-10 m-10 pl-6 pr-6'>
       <div class='flex flex-col gap-4'>
+
         <div class='flex flex-col gap-1'>
           <div class='flex items-center justify-between'>
             <span style="font-size: 24px; font-weight: bold;">创建课程</span>
           </div>
-          <span style="color : gray">创建课程需要输入课程名字,开始日期,结束日期,课程简介</span>
         </div>
 
         <Divider />
 
         <div class='flex flex-col gap-2'>
-          <div style="font-style: italic; color: gray;">以下空行为必填内容</div>
-          <span>课程名字</span>
-          <TextField
-            label="课程名字"
-            size='small'
-            value={courseName()}
-            onChange={(_event, value) => {
-              setCourseName(value)
-            }} />
-          <div class='flex gap-2 items-center'>
-            <span>开始日期</span>
-            <TextField sx={{ width: 100 }} size='small' label='年' type='number' value={beginYear()} onChange={(_event, value) => { if (parseInt(value) > 0) setBeginYear(value) }} />
-            <TextField sx={{ width: 70 }} size='small' label='月' type='number' value={beginMonth()} onChange={(_event, value) => { if (parseInt(value) > 0) setBeginMonth(value) }} />
-            <TextField sx={{ width: 70 }} size='small' label='日' type='number' value={beginDay()} onChange={(_event, value) => { if (parseInt(value) > 0) setBeginDay(value) }} />
+          <div class='flex items-center gap-2 h-17'>
+            <div class='flex flex-col gap-2 h-full'>
+              <span>创建者</span>
+              <div class='flex flex-1 items-center gap-2'>
+                <Avatar sx={{ width: 30, height: 30 }}>{username()?.at(0)}</Avatar>
+                <span>
+                  {username()}
+                </span>
+              </div>
+            </div>
+
+            <div class='h-full text-3xl mt-16'>
+              /
+            </div>
+
+            <div class='flex flex-col gap-2 h-full'>
+              <span>课程名字</span>
+              <div class='flex'>
+                <TextField
+                  size='small'
+                  value={courseName()}
+                  onChange={(_event, value) => {
+                    setCourseName(value)
+                  }} />
+              </div>
+            </div>
           </div>
-          <div class='flex gap-2 items-center'>
-            <span>结束日期</span>
-            <TextField sx={{ width: 100 }} size='small' label='年' type='number' value={endYear()} onChange={(_event, value) => { if (parseInt(value) > 0) setEndYear(value) }} />
-            <TextField sx={{ width: 70 }} size='small' label='月' type='number' value={endMonth()} onChange={(_event, value) => { if (parseInt(value) > 0) setEndMonth(value) }} />
-            <TextField sx={{ width: 70 }} size='small' label='日' type='number' value={endDay()} onChange={(_event, value) => { if (parseInt(value) > 0) setEndDay(value) }} />
-          </div>
-          <span>课程简介</span>
+
+          <span class='text-sm'>课程简介</span>
           <TextField
-            label="课程简介"
             size='small'
             value={description()}
             onChange={(_event, value) => {
               setDescription(value)
             }}
           />
+
+          <div class='pr-2'>
+            <span class='text-sm'>课程起止日期</span>
+            <DatePicker
+              inputClass='rounded border-[#00000045] border-1 h-5.5 p-2 text-[#777777] mt-2'
+              value={dateRange}
+              setValue={setDateRange}
+              type='range'
+              onChange={(data) => {
+                if (data.type === "range") {
+                  console.log(data.startDate, data.endDate);
+                }
+              }} />
+
+          </div>
         </div>
         <div>
         </div>
@@ -87,7 +109,7 @@ export default function Create() {
             variant='contained'
             size='small'
             onClick={() => {
-              if (courseName() && description() && beginYear() && beginMonth() && beginDay() && endYear() && endMonth() && endDay()) {
+              if (courseName() && description() && dateRange().value.start && dateRange().value.end) {
                 createCourse()
               }
             }}>
@@ -95,6 +117,6 @@ export default function Create() {
           </Button>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

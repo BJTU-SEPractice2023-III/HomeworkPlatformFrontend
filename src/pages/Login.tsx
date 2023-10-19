@@ -18,6 +18,7 @@ export default function Login() {
 
       // TODO: put these state in the store
       localStorage.setItem('homework-platform-jwt', data.token)
+      localStorage.setItem('homework-platform-username', data.user.username)
       console.log(`isAdmin: ${data.user.is_admin}`)
       navigate('/')
     }).catch((err) => {

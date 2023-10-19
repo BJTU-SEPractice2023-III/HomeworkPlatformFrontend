@@ -1,4 +1,4 @@
-import { Route, Outlet, useNavigate } from '@solidjs/router'
+import { Route, Outlet, useNavigate, A } from '@solidjs/router'
 import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
@@ -12,6 +12,7 @@ export default function Main() {
 
   async function getteachingcourse() {
     const res = await getTeachingCourse()
+    console.log(res)
     setTeachingLessons(res)
   }
 
@@ -42,20 +43,13 @@ export default function Main() {
           <Show when={teachingLessons().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
-          {/* <For each={teachingLessons()}>{(lesson, i) => <span>
-            {lesson.name}
-          </span>}
-          </For> */}
           <For each={teachingLessons()}>
-            {(lesson, i) => <span> (
-              <a href={`/course/${lesson.id}`}>
+            {(lesson, i) => <div>
+              <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                 {lesson.name}
-              </a>
-              )</span>}
+              </A>
+            </div>}
           </For>
-          <a href={"/course/1"}>
-            {"原神"}
-          </a>
         </div>
 
         <Divider />
