@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@rnwonder/solid-date-picker':
+    specifier: ^0.8.0
+    version: 0.8.0(solid-js@1.7.6)
   '@solidjs/router':
     specifier: ^0.8.3
     version: 0.8.3(solid-js@1.7.6)
@@ -715,6 +718,15 @@ packages:
 
   /@popperjs/core@2.11.8:
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+    dev: false
+
+  /@rnwonder/solid-date-picker@0.8.0(solid-js@1.7.6):
+    resolution: {integrity: sha512-cEnROqDA9/2Ykg0k6L1ZWcbU+wM8Hsnnc25ojia0em5/uuC0FbTZ6oMcDBCbVvvEwafhU2Xv9lTchcrqUtDP0A==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      solid-js: 1.7.6
     dev: false
 
   /@rollup/pluginutils@5.0.2:
