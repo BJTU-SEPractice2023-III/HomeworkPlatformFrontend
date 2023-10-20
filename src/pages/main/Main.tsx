@@ -2,33 +2,16 @@ import { Route, Outlet, useNavigate, A } from '@solidjs/router'
 import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
-import { getTeachingCourse, getLearningCourse } from '../../lib/course';
+
+import { store, teachingCourses, setTeachingCourses, learningCourses, setLearningCourses, updateCourses } from '../../lib/store';
 
 export default function Main() {
-  const [teachingLessons, setTeachingLessons] = createSignal([])
-  const [learningLessons, setLearningLessons] = createSignal([])
+  // const [teachingLessons, setTeachingLessons] = createSignal([])
+  // const [learningLessons, setLearningLessons] = createSignal([])
   const navigate = useNavigate();
 
-
-  async function getteachingcourse() {
-    const res = await getTeachingCourse()
-    console.log(res)
-    setTeachingLessons(res)
-  }
-
-
-  async function getlearningcourse() {
-    getLearningCourse().then(
-      (res) => {
-        console.log(res)
-        setLearningLessons(res)
-      }
-    )
-  }
-
   onMount(async () => {
-    await getteachingcourse();
-    getlearningcourse();
+    await updateCourses()
   });
 
   return (
@@ -40,10 +23,10 @@ export default function Main() {
             <Button variant='contained' size='small' onClick={() => navigate('/course/create')}>创建课程</Button>
           </div>
           <TextField label="search" size='small' />
-          <Show when={teachingLessons().length == 0}>
+          <Show when={teachingCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
-          <For each={teachingLessons()}>
+          <For each={teachingCourses()}>
             {(lesson, i) => <div>
               <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                 {lesson.name}
@@ -59,12 +42,15 @@ export default function Main() {
             <span>学的课程</span>
           </div>
           <TextField label="search" size='small' />
-          <Show when={learningLessons().length == 0}>
+          <Show when={learningCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
-          <For each={learningLessons()}>{(lesson, i) => <span>
-            {lesson}
-          </span>}
+          <For each={learningCourses()}>
+            {(lesson, i) => <div>
+              <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
+                {lesson.name}
+              </A>
+            </div>}
           </For>
         </div>
       </aside>
