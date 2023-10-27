@@ -8,7 +8,7 @@ export function get(url: string): Promise<any> {
       .get(`${host}${url}`, {
         timeout: 3000,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('homework-platform-jwt')}`,
+          Authorization: `Bearer ${window.localStorage.getItem('jwt')}`,
           "Content-Type": 'application/json',
         }
       })
@@ -26,7 +26,7 @@ export function post(url: string, data: any): Promise<any> {
     axios.post(`${host}${url}`, data, {
       timeout: 3000,
       headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('homework-platform-jwt')}`,
+        Authorization: `Bearer ${window.localStorage.getItem('jwt')}`,
         "Content-Type": 'application/json',
       }
     })

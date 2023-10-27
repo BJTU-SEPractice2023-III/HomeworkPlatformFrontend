@@ -5,7 +5,6 @@ import { getCourse } from '../../lib/course';
 import type { Course } from '../../lib/course';
 import { formatDateTime } from '../../lib/utils';
 import { Favorite, LocationOn, Restore } from '@suid/icons-material';
-import { store } from '../../lib/store';
 
 export default function Course() {
   const params = useParams();

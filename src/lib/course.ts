@@ -9,6 +9,19 @@ export type Course = {
     endDate: string
 }
 
+export type UserCourse = {
+    ID: number,
+    name: string,
+    description: string
+    beginDate: string,
+    endDate: string
+    CourseType: number
+}
+
+export function getUserCourses(id: number): Promise<UserCourse[]> {
+    return get(`/users/${id}/courses`)
+}
+
 export function getCourses(): Promise<Course[]> {
     return get('/course')
 }

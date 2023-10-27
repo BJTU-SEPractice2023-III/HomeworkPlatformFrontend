@@ -3,15 +3,16 @@ import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
 
-import { store, teachingCourses, setTeachingCourses, learningCourses, setLearningCourses, updateCourses } from '../../lib/store';
+import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
 
 export default function Main() {
-  // const [teachingLessons, setTeachingLessons] = createSignal([])
-  // const [learningLessons, setLearningLessons] = createSignal([])
+  const {loginInfo} = LoginInfoStore()
+
+  const {updateUserCourses, learningCourses, teachingCourses, userCourses } = UserCoursesStore()
   const navigate = useNavigate();
 
   onMount(async () => {
-    await updateCourses()
+    await updateUserCourses()
   });
 
   return (
@@ -23,7 +24,7 @@ export default function Main() {
             <Button variant='contained' size='small' onClick={() => navigate('/course/create')}>创建课程</Button>
           </div>
           <TextField label="search" size='small' />
-          <Show when={teachingCourses().length == 0}>
+          <Show when={learningCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={teachingCourses()}>

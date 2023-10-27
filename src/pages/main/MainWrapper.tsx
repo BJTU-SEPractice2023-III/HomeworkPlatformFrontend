@@ -1,10 +1,13 @@
 import { Outlet, useNavigate } from '@solidjs/router';
 import { AppBar, Button, IconButton, Toolbar, Typography } from '@suid/material';
 import HomeIcon from "@suid/icons-material/Home";
+import { LoginInfoStore } from '../../lib/store';
 
 
 export default function MainWrapper() {
   const navigate = useNavigate();
+
+  const {loginInfo} = LoginInfoStore()
 
   return (
     <div class='h-full w-full flex flex-col'>
@@ -33,7 +36,7 @@ export default function MainWrapper() {
           <Button color="inherit" onClick={() => {
             localStorage.removeItem('homework-platform-jwt')
             navigate('/login')
-          }}>Logout</Button>
+          }}>{loginInfo.user.username} Logout</Button>
         </Toolbar>
       </AppBar>
       <Outlet />
