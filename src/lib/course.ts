@@ -1,4 +1,5 @@
 // import { get } from "./axios"
+// import { get } from "./axios"
 import { get, post } from "./axios"
 
 export type Course = {
@@ -7,6 +8,11 @@ export type Course = {
     description: string
     beginDate: string,
     endDate: string
+}
+
+export type Student = {
+    ID: number,
+    name: string
 }
 
 export function getCourses(): Promise<Course[]> {
@@ -36,6 +42,12 @@ export function create(name: string, description: string, beginDate: Date, endDa
 
 export function selectCourse(courseId: number) {
     return post(`/course/select`, {
+        courseId
+    })
+}
+
+export function StudentList(courseId: number) {
+    return post(`/course/userlists`, {
         courseId
     })
 }

@@ -1,23 +1,29 @@
 import { useParams, A } from '@solidjs/router';
 import { BottomNavigation, BottomNavigationAction, Button, Card, CardContent, Typography } from '@suid/material';
 import { For, Match, Show, Switch, createSignal, onMount } from 'solid-js';
-import { getCourse } from '../../lib/course';
-import type { Course } from '../../lib/course';
+import { StudentList, getCourse } from '../../lib/course';
+import type { Course, Student } from '../../lib/course';
 import { formatDateTime } from '../../lib/utils';
 import { Favorite, LocationOn, Restore } from '@suid/icons-material';
-import { store } from '../../lib/store';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
 
 export default function Course() {
   const params = useParams();
 
   const [course, setCourse] = createSignal<Course | null>();
   const [tab, setTab] = createSignal('index');
+  const [studentList, setStudentList] = createSignal<Student[]>([])
 
   onMount(() => {
     getCourse(parseInt(params.id)).then((res) => {
       // console.log(res);
       setCourse(res);
     });
+
+    StudentList(parseInt(params.id)).then((res) => {
+      setStudentList(res);
+    });
+
   });
 
   function index() {
@@ -45,12 +51,30 @@ export default function Course() {
 
   function homework() {
     return <>
-      homework</>
+      asdasd</>
   }
 
   function students() {
-    return <>
-      students</>
+    return <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>姓名</TableCell>
+            <TableCell>成绩</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <For each={studentList()}>{(studentList, i) =>
+            <TableRow>
+              <TableCell>{studentList.ID}</TableCell>
+              <TableCell>{studentList.name}</TableCell>
+            </TableRow>
+          }
+          </For>
+        </TableBody>
+      </Table>
+    </TableContainer>
   }
 
   return (
