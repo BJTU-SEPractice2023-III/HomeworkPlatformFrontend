@@ -1,4 +1,3 @@
-// import { get } from "./axios"
 import { get, post } from "./axios"
 
 export type Course = {
