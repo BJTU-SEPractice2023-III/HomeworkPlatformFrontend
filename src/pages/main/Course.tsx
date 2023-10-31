@@ -51,7 +51,7 @@ export default function Course() {
 
   function homework() {
     return <>
-      homework</>
+      asdasd</>
   }
 
   function students() {
