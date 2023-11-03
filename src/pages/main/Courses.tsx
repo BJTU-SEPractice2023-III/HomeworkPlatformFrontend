@@ -9,7 +9,7 @@ export default function Courses() {
 
   const [courses, setCourses] = createSignal<Course[]>([])
 
-  onMount(async () => {
+  onMount(() => {
     updateCourses()
     getCourses().then((res) => {
       console.log(res)

@@ -44,8 +44,6 @@ export function selectCourse(courseId: number) {
     })
 }
 
-export function StudentList(courseId: number) {
-    return post(`/course/userlists`, {
-        courseId
-    })
+export function StudentList(id:number) {
+    return get(`/courses/${id}/students`)
 }

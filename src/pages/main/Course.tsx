@@ -14,16 +14,15 @@ export default function Course() {
   const [tab, setTab] = createSignal('index');
   const [studentList, setStudentList] = createSignal<Student[]>([])
 
-  onMount(() => {
+  onMount(async() => {
     getCourse(parseInt(params.id)).then((res) => {
       // console.log(res);
       setCourse(res);
-    });
-
+    })
     StudentList(parseInt(params.id)).then((res) => {
       setStudentList(res);
+      console.log(res);
     });
-
   });
 
   function index() {
@@ -50,8 +49,23 @@ export default function Course() {
   }
 
   function homework() {
-    return <>
-      asdasd</>
+    return <Card sx={{ minWidth: 275 }}>
+      <CardContent>
+        <Typography variant="h3" component="div">
+          {"准备写作业名"}
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          <A href='' class='text-blue'>作业链接</A>
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          {"作业期限:"}
+          {formatDateTime(course().beginDate)}～{formatDateTime(course().endDate)}
+        </Typography>
+        <Typography variant="body2">
+          {"作业简介"}
+        </Typography>
+      </CardContent>
+    </Card>
   }
 
   function students() {

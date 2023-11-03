@@ -9,6 +9,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MainWrapper from './pages/main/MainWrapper';
 import Create from './pages/main/Create';
+import CreateHomework from './pages/main/CreateHomework';
+import Homework from './pages/main/Homework';
 
 const root = document.getElementById('root');
 
@@ -41,8 +43,12 @@ render(() => (
         <Route path="/courses" component={Courses} />
         {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
         <Route path="/course/:id" component={Course} />
+        {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
+        <Route path="/homework/:id" component={Homework}/>
         {/* 创建课程页面*/}
         <Route path="/course/create" component={Create} />
+        {/* 创建课程作业页面*/}
+        <Route path="/homework/createHomework" component={CreateHomework} />
       </Route>
     </Routes>
   </Router>
