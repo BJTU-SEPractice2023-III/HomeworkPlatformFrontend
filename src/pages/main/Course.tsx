@@ -4,25 +4,33 @@ import { For, Match, Show, Switch, createSignal, onMount } from 'solid-js';
 import { StudentList, getCourse } from '../../lib/course';
 import type { Course, Student } from '../../lib/course';
 import { formatDateTime } from '../../lib/utils';
+import { ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
 import { Favorite, LocationOn, Restore } from '@suid/icons-material';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
+import { homeworklists, Homework } from '../../lib/homework'
+import { useNavigate } from '@solidjs/router';
 
 export default function Course() {
   const params = useParams();
+  const navigate = useNavigate()
 
   const [course, setCourse] = createSignal<Course | null>();
   const [tab, setTab] = createSignal('index');
   const [studentList, setStudentList] = createSignal<Student[]>([])
-
-  onMount(async () => {
+  const [homeworkList, setHomeworkList] = createSignal<Homework[]>([])
+  onMount(() => {
     getCourse(parseInt(params.id)).then((res) => {
       // console.log(res);
       setCourse(res);
-    })
+    });
     StudentList(parseInt(params.id)).then((res) => {
       setStudentList(res);
       console.log(res);
     });
+    homeworklists(parseInt(params.id)).then((res) => {
+      setHomeworkList(res);
+    }).catch((err) => {
+      console.error(err)
+    })
   });
 
   function index() {
@@ -50,23 +58,34 @@ export default function Course() {
 
   function homework() {
     return <TableContainer component={Paper}>
-    <Table sx={{ minWidth: 650 }}>
-      <TableHead>
-        <TableRow>
-          <TableCell>作业名</TableCell>
-          <TableCell>发布人</TableCell>
-          <TableCell>起始时间</TableCell>
-          <TableCell>结束时间</TableCell>
-          <TableCell size='medium'>提交作业</TableCell>
-          <TableCell size='medium'>批阅任务</TableCell>
-          <TableCell>我的成绩</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        
-      </TableBody>
-    </Table>
-  </TableContainer>
+      <Table sx={{ minWidth: 650 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>作业名</TableCell>
+            <TableCell>起始时间</TableCell>
+            <TableCell>结束时间</TableCell>
+            <TableCell size='medium'>提交作业</TableCell>
+            <TableCell size='medium'>批阅任务</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <For each={homeworkList()}>{(homeworkList, i) =>
+            <TableRow>
+              <TableCell>{homeworkList.name}</TableCell>
+              <TableCell>{homeworkList.beginDate}</TableCell>
+              <TableCell>{homeworkList.endDate}</TableCell>
+              <TableCell size='medium'>
+                <Button onClick={() => { navigate(`/homework/${homeworkList.ID}`) }}>提交作业</Button>
+              </TableCell>
+              <TableCell size='medium'>
+                <Button onClick={() => { navigate(``) }}>批阅作业</Button>
+              </TableCell>
+            </TableRow>
+          }
+          </For>
+        </TableBody>
+      </Table>
+    </TableContainer>
   }
 
   function students() {

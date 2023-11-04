@@ -126,9 +126,6 @@ export default function CreateHomework() {
                             class="border border-gray-300 p-2 mt-1 rounded"
                             required
                         />
-                        <Button variant='contained'>
-                            提交
-                        </Button>
                     </form>
 
                     <div class='pr-2'>
