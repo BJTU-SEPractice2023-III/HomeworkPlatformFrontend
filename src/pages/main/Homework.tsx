@@ -5,12 +5,13 @@ export default function Homework() {
   const params = useParams();
 
   onMount(() => {
-    
+
   })
 
   return (
     <div>
-      你好
+      {parseInt(params.id)}
     </div>
+
   );
 }
