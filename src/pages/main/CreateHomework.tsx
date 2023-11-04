@@ -167,7 +167,7 @@ export default function CreateHomework() {
                                 createHomework()
                             }
                         }}>
-                        创建作业
+                        布置作业
                     </Button>
                 </div>
             </div>
