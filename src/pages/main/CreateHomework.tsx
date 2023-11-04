@@ -3,10 +3,11 @@ import { createSignal, onMount } from 'solid-js'
 import { assignHomework } from '../../lib/homework'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
-import { useParams, A } from '@solidjs/router';
+import { useParams } from '@solidjs/router';
 
 
 export default function CreateHomework() {
+    const params = useParams();
     const [dateRange, setDateRange] = createSignal<PickerValue>({
         value: {},
         label: "",
@@ -30,7 +31,7 @@ export default function CreateHomework() {
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
-      };
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -56,7 +57,6 @@ export default function CreateHomework() {
     };
 
     function createHomework() {
-        const params = useParams();
         let beginDate = new Date(dateRange().value.start)
         let endDate = new Date(dateRange().value.end)
         let commentenddate = new Date(commentdateend().value.end)
@@ -66,6 +66,10 @@ export default function CreateHomework() {
         }).catch((err) => {
             console.error(err)
         })
+    }
+
+    function hello() {
+
     }
 
     return (
@@ -163,6 +167,8 @@ export default function CreateHomework() {
                         variant='contained'
                         size='small'
                         onClick={() => {
+                            console.log("h")
+                            console.log(homeworkName() && description() && dateRange().value.start && dateRange().value.end)
                             if (homeworkName() && description() && dateRange().value.start && dateRange().value.end) {
                                 createHomework()
                             }

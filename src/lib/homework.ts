@@ -10,7 +10,7 @@ export type Homework = {
     commentenddate: string
 }
 export function assignHomework(files: File, courseid: number, name: string, description: string, beginDate: Date, endDate: Date, commentenddate: Date) {
-    return post(`homework/assign`, {
+    return post(`/homework/assign`, {
         files,
         courseid,
         name,
@@ -22,7 +22,7 @@ export function assignHomework(files: File, courseid: number, name: string, desc
 }
 
 export function homeworklists(courseid: number) {
-    return post(`homework/homeworklists`, {
+    return post(`/homework/homeworklists`, {
         courseid
     })
 }

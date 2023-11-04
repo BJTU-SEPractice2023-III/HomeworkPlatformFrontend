@@ -48,7 +48,7 @@ render(() => (
         {/* 创建课程页面*/}
         <Route path="/course/create" component={Create} />
         {/* 创建课程作业页面*/}
-        <Route path="/homework/createHomework" component={CreateHomework} />
+        <Route path="/homework/createHomework/:id" component={CreateHomework} />
       </Route>
     </Routes>
   </Router>

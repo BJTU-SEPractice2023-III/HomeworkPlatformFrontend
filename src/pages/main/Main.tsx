@@ -31,7 +31,7 @@ export default function Main() {
               <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                 {lesson.name}
               </A>
-              <Button size='small' onClick={() => navigate('/homework/createHomework')}>布置作业</Button>
+              <Button size='small' onClick={() => navigate(`/homework/createHomework/${lesson.ID}`)}>布置作业</Button>
             </div>}
           </For>
         </div>
