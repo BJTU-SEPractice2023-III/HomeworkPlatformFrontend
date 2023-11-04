@@ -14,7 +14,7 @@ export default function Course() {
   const [tab, setTab] = createSignal('index');
   const [studentList, setStudentList] = createSignal<Student[]>([])
 
-  onMount(async() => {
+  onMount(async () => {
     getCourse(parseInt(params.id)).then((res) => {
       // console.log(res);
       setCourse(res);
@@ -49,23 +49,24 @@ export default function Course() {
   }
 
   function homework() {
-    return <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <Typography variant="h3" component="div">
-          {"准备写作业名"}
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          <A href='' class='text-blue'>作业链接</A>
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {"作业期限:"}
-          {formatDateTime(course().beginDate)}～{formatDateTime(course().endDate)}
-        </Typography>
-        <Typography variant="body2">
-          {"作业简介"}
-        </Typography>
-      </CardContent>
-    </Card>
+    return <TableContainer component={Paper}>
+    <Table sx={{ minWidth: 650 }}>
+      <TableHead>
+        <TableRow>
+          <TableCell>作业名</TableCell>
+          <TableCell>发布人</TableCell>
+          <TableCell>起始时间</TableCell>
+          <TableCell>结束时间</TableCell>
+          <TableCell size='medium'>提交作业</TableCell>
+          <TableCell size='medium'>批阅任务</TableCell>
+          <TableCell>我的成绩</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        
+      </TableBody>
+    </Table>
+  </TableContainer>
   }
 
   function students() {
