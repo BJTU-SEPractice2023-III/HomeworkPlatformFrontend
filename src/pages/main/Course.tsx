@@ -26,11 +26,11 @@ export default function Course() {
       setStudentList(res);
       console.log(res);
     });
-    homeworklists(parseInt(params.id)).then((res) => {
-      setHomeworkList(res);
-    }).catch((err) => {
-      console.error(err)
-    })
+    // homeworklists(parseInt(params.id)).then((res) => {
+    //   setHomeworkList(res);
+    // }).catch((err) => {
+    //   console.error(err)
+    // })
   });
 
   function index() {
@@ -57,35 +57,37 @@ export default function Course() {
   }
 
   function homework() {
-    return <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>作业名</TableCell>
-            <TableCell>起始时间</TableCell>
-            <TableCell>结束时间</TableCell>
-            <TableCell size='medium'>提交作业</TableCell>
-            <TableCell size='medium'>批阅任务</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <For each={homeworkList()}>{(homeworkList, i) =>
+    return <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead>
             <TableRow>
-              <TableCell>{homeworkList.name}</TableCell>
-              <TableCell>{homeworkList.beginDate}</TableCell>
-              <TableCell>{homeworkList.endDate}</TableCell>
-              <TableCell size='medium'>
-                <Button onClick={() => { navigate(`/homework/${homeworkList.ID}`) }}>提交作业</Button>
-              </TableCell>
-              <TableCell size='medium'>
-                <Button onClick={() => { navigate(``) }}>批阅作业</Button>
-              </TableCell>
+              <TableCell>作业名</TableCell>
+              <TableCell>起始时间</TableCell>
+              <TableCell>结束时间</TableCell>
+              <TableCell size='medium'>提交作业</TableCell>
+              <TableCell size='medium'>批阅任务</TableCell>
             </TableRow>
-          }
-          </For>
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            <For each={homeworkList()}>{(homework, i) =>
+              <TableRow>
+                <TableCell>{homework.name}</TableCell>
+                <TableCell>{homework.beginDate}</TableCell>
+                <TableCell>{homework.endDate}</TableCell>
+                <TableCell size='medium'>
+                  <Button onClick={() => { navigate(`/homework/${homework.ID}`) }}>提交作业</Button>
+                </TableCell>
+                <TableCell size='medium'>
+                  <Button onClick={() => { navigate(``) }}>批阅作业</Button>
+                </TableCell>
+              </TableRow>
+            }
+            </For>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   }
 
   function students() {
@@ -112,8 +114,8 @@ export default function Course() {
   }
 
   return (
-    <div class='flex-1 p-4 gap-2'>
-      <div class='flex w-full gap-2 mb-2'>
+    <div class='flex-1 p-4 gap-2 flex-col max-w-[80%] w-full'>
+      <div class='flex gap-2 mb-2 bg-[#00005002] border-rounded'>
         <Button sx={{ borderBottom: tab() == 'index' ? 1 : 0 }} onClick={() => { setTab('index') }}>
           简介
         </Button>

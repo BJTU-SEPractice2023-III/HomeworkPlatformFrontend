@@ -7,7 +7,7 @@ export default function MainWrapper() {
   const navigate = useNavigate();
 
   return (
-    <div class='h-full w-full flex flex-col'>
+    <div class='h-full w-full flex flex-col items-center'>
       <AppBar position='sticky'>
         <Toolbar>
           <IconButton

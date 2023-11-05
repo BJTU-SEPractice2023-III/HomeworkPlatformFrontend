@@ -14,11 +14,11 @@ export type Student = {
 }
 
 export function getCourses(): Promise<Course[]> {
-    return get('/course')
+    return get('/v1/courses')
 }
 
 export function getCourse(id: number): Promise<Course> {
-    return get(`/course/${id}`)
+    return get(`/v1/courses/${id}`)
 }
 
 export function getTeachingCourses(): Promise<Course[]> {
@@ -30,7 +30,7 @@ export function getLearningCourses(): Promise<Course[]> {
 }
 
 export function create(name: string, description: string, beginDate: Date, endDate: Date) {
-    return post(`/course/create`, {
+    return post(`/v1/courses`, {
         name,
         description,
         beginDate,
@@ -45,5 +45,5 @@ export function selectCourse(courseId: number) {
 }
 
 export function StudentList(id:number) {
-    return get(`/courses/${id}/students`)
+    return get(`/v1/courses/${id}/students`)
 }
