@@ -59,18 +59,16 @@ export default function CreateHomework() {
     function createHomework() {
         let beginDate = new Date(dateRange().value.start)
         let endDate = new Date(dateRange().value.end)
-        let commentenddate = new Date(commentdateend().value.end)
+        let commentenddate = new Date(commentdateend().value.selected )
         assignHomework(file(), parseInt(params.id), homeworkName(), description(), beginDate, endDate, commentenddate).then((res) => {
             const id = res.data
+            console.log(id)
             navigate(`/homework/${id}`)
         }).catch((err) => {
             console.error(err)
         })
     }
 
-    function hello() {
-
-    }
 
     return (
         <div class='flex-1 justify-center mt-10 mb-10 m-10 pl-6 pr-6'>
@@ -153,7 +151,11 @@ export default function CreateHomework() {
                             inputClass='rounded border-[#00000045] border-1 h-5.5 p-2 text-[#777777] mt-2'
                             value={commentdateend}
                             setValue={setcommentdateend}
+                            type='single'
                             onChange={(data) => {
+                                if (data.type === "single") { 
+                                    console.log(data);
+                                }
                             }} />
 
                     </div>
@@ -167,7 +169,6 @@ export default function CreateHomework() {
                         variant='contained'
                         size='small'
                         onClick={() => {
-                            console.log("h")
                             console.log(homeworkName() && description() && dateRange().value.start && dateRange().value.end)
                             if (homeworkName() && description() && dateRange().value.start && dateRange().value.end) {
                                 createHomework()
