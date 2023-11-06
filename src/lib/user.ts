@@ -8,7 +8,7 @@ export function login(username: string, password: string) {
 }
 
 export function register(username: string, password: string) {
-  return post(`/v1/user/register`, {
+  return post(`/v1/user`, {
     username: username,
     password: password
   })
