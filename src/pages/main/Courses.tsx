@@ -52,8 +52,9 @@ export default function Courses() {
                       <Button onClick={() => {
                         // TODO: 选课
                         selectCourse(course.ID).then((res) => {
-                          // updateCourses()
-                          console.log(res)
+                          console.log(`选课成功`)
+                          updateUserCourses()
+                          // TODO: 直接更改全局状态，添加入 leaningCourses
                         })
                       }}>选课</Button>
                     }>

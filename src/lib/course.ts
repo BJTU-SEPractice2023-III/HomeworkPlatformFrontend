@@ -9,8 +9,8 @@ export type Course = {
 }
 
 export type Student = {
-    ID: number,
-    name: string
+    id: number,
+    username: string
 }
 
 export interface UserCourses {

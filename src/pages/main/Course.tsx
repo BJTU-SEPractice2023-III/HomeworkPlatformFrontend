@@ -28,7 +28,7 @@ export default function Course() {
     });
     getCourseStudents(parseInt(params.id)).then((res) => {
       setStudentList(res);
-      // console.log('studentList: ', res);
+      console.log('studentList: ', res);
     });
   });
 
@@ -102,8 +102,8 @@ export default function Course() {
         <TableBody>
           <For each={studentList()}>{(studentList, i) =>
             <TableRow>
-              <TableCell>{studentList.ID}</TableCell>
-              <TableCell>{studentList.name}</TableCell>
+              <TableCell>{studentList.id}</TableCell>
+              <TableCell>{studentList.username}</TableCell>
             </TableRow>
           }
           </For>
