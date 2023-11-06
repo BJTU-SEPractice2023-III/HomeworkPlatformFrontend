@@ -16,7 +16,7 @@ export default function Main() {
   });
 
   return (
-    <div class='flex-1 flex'>
+    <div class='flex-1 flex w-full'>
       <aside class='min-w-[250px] border-0 border-r border-solid border-slate-200 p-6 flex flex-col gap-4'>
         <div class='flex flex-col gap-2'>
           <div class='flex items-center justify-between'>
