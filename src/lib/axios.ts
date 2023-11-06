@@ -26,7 +26,7 @@ export function post(url: string, data: any): Promise<any> {
     axios.post(`${host}${url}`, data, {
       timeout: 3000,
       headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('homework-platform-jwt')}`,
+        Authorization: `Bearer ${window.localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       }
     }).then((res) => {
