@@ -53,6 +53,6 @@ export function selectCourse(courseId: number) {
     })
 }
 
-export function StudentList(id:number) {
+export function getCourseStudents(id:number) {
     return get(`/v1/courses/${id}/students`)
 }
