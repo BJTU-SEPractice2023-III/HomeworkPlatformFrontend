@@ -8,19 +8,23 @@ import { ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableH
 import { Favorite, LocationOn, Restore } from '@suid/icons-material';
 import { homeworklists, Homework, getCourseHomeworks } from '../../lib/homework'
 import { useNavigate } from '@solidjs/router';
+import { UserCoursesStore } from '../../lib/store';
 
 export default function Course() {
   const params = useParams();
   const navigate = useNavigate()
+  const { isTeaching, updateUserCourses } = UserCoursesStore()
 
   const [course, setCourse] = createSignal<Course | null>();
   const [tab, setTab] = createSignal('index');
   const [studentList, setStudentList] = createSignal<Student[]>([])
   const [homeworkList, setHomeworkList] = createSignal<Homework[]>([])
-  onMount(() => {
+  onMount(async () => {
+    await updateUserCourses();
     getCourse(parseInt(params.id)).then((res) => {
       setCourse(res);
-      // console.log('course: ', res);
+      console.log('course: ', res)
+      console.log(isTeaching(course()))
     });
     getCourseHomeworks(parseInt(params.id)).then((res) => {
       setHomeworkList(res)
@@ -124,6 +128,11 @@ export default function Course() {
         <Button sx={{ borderBottom: tab() == 'students' ? 1 : 0 }} onClick={() => { setTab('students') }}>
           学生列表
         </Button>
+        <Show when={course() && isTeaching(course())}>
+          <Button size='small' onClick={() => navigate(`/homework/createHomework/${course().ID}`)}>
+            布置作业
+          </Button>
+        </Show>
       </div>
 
       <Show when={course() != null}>
