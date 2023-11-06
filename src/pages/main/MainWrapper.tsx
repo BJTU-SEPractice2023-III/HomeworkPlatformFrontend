@@ -34,7 +34,8 @@ export default function MainWrapper() {
           </Button>
           {/* TODO: change it according to the login state */}
           <Button color="inherit" onClick={() => {
-            localStorage.removeItem('homework-platform-jwt')
+            localStorage.removeItem('jwt')
+            localStorage.removeItem('user')
             navigate('/login')
           }}>{loginInfo.user.username} Logout</Button>
         </Toolbar>
