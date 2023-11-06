@@ -26,3 +26,6 @@ export function homeworklists(courseid: number) {
         courseid
     })
 }
+export function getCourseHomeworks(id: number) {
+    return get(`/v1/courses/${id}/homeworks`)
+}

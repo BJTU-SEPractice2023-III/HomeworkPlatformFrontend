@@ -1,12 +1,12 @@
 import { useParams, A } from '@solidjs/router';
 import { BottomNavigation, BottomNavigationAction, Button, Card, CardContent, Typography } from '@suid/material';
 import { For, Match, Show, Switch, createSignal, onMount } from 'solid-js';
-import { StudentList, getCourse } from '../../lib/course';
+import { getCourse, getCourseStudents } from '../../lib/course';
 import type { Course, Student } from '../../lib/course';
 import { formatDateTime } from '../../lib/utils';
 import { ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
 import { Favorite, LocationOn, Restore } from '@suid/icons-material';
-import { homeworklists, Homework } from '../../lib/homework'
+import { homeworklists, Homework, getCourseHomeworks } from '../../lib/homework'
 import { useNavigate } from '@solidjs/router';
 
 export default function Course() {
@@ -19,18 +19,17 @@ export default function Course() {
   const [homeworkList, setHomeworkList] = createSignal<Homework[]>([])
   onMount(() => {
     getCourse(parseInt(params.id)).then((res) => {
-      // console.log(res);
       setCourse(res);
+      // console.log('course: ', res);
     });
-    StudentList(parseInt(params.id)).then((res) => {
+    getCourseHomeworks(parseInt(params.id)).then((res) => {
+      setHomeworkList(res)
+      // console.log('homeworks: ', res)
+    });
+    getCourseStudents(parseInt(params.id)).then((res) => {
       setStudentList(res);
-      console.log(res);
+      // console.log('studentList: ', res);
     });
-    // homeworklists(parseInt(params.id)).then((res) => {
-    //   setHomeworkList(res);
-    // }).catch((err) => {
-    //   console.error(err)
-    // })
   });
 
   function index() {
