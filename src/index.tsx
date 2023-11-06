@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MainWrapper from './pages/main/MainWrapper';
 import Create from './pages/main/Create';
+import { LoginInfoStore } from './lib/store';
 import CreateHomework from './pages/main/CreateHomework';
 import Homework from './pages/main/Homework';
 
@@ -20,10 +21,12 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
+const { jwt } = LoginInfoStore()
+
 // 检验登录，若 localStorage 中无 jwt 则跳转到 login
 export function LoginData({ params, location, navigate, data }) {
-  const jwt = localStorage.getItem("homework-platform-jwt");
-  if (!jwt) {
+  // console.log("[loginData]:", jwt())
+  if (!jwt()) {
     navigate('/login')
   }
 }

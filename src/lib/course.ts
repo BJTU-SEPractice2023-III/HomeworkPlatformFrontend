@@ -13,6 +13,15 @@ export type Student = {
     name: string
 }
 
+export interface UserCourses {
+    teachingCourses?: Course[]
+    learningCourses?: Course[],
+}
+
+export function getUserCourses(id: number): Promise<UserCourses> {
+    return get(`/v1/users/${id}/courses`)
+}
+
 export function getCourses(): Promise<Course[]> {
     return get('/v1/courses')
 }

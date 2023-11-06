@@ -2,17 +2,18 @@ import { useNavigate } from '@solidjs/router';
 import { For, Match, Switch, createSignal, onMount } from 'solid-js';
 import { Course, getCourses, selectCourse } from '../../lib/course';
 import { Button, ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
-import { isLearing, isTeaching, updateCourses } from '../../lib/store';
+import { UserCoursesStore } from '../../lib/store';
+// import { isLearing, isTeaching, updateCourses } from '../../lib/store';
 
 export default function Courses() {
   const navigate = useNavigate()
 
+  const {updateUserCourses, isLearning, isTeaching} = UserCoursesStore()
   const [courses, setCourses] = createSignal<Course[]>([])
 
-  onMount(() => {
-    updateCourses()
+  onMount(async () => {
+    await updateUserCourses()
     getCourses().then((res) => {
-      console.log(res)
       setCourses(res)
     })
   })
@@ -51,12 +52,12 @@ export default function Courses() {
                       <Button onClick={() => {
                         // TODO: 选课
                         selectCourse(course.ID).then((res) => {
-                          updateCourses()
+                          // updateCourses()
                           console.log(res)
                         })
                       }}>选课</Button>
                     }>
-                      <Match when={isLearing(course)}>
+                      <Match when={isLearning(course)}>
                         <Button sx={{ color: 'red' }} onClick={() => { }} disabled>学习中</Button>
                       </Match>
                       <Match when={isTeaching(course)}>

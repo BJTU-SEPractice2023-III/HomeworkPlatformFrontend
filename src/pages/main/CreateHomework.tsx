@@ -4,6 +4,8 @@ import { assignHomework } from '../../lib/homework'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
+import { createStore } from 'solid-js/store';
+import { postFormData } from '../../lib/axios';
 
 
 export default function CreateHomework() {
@@ -21,7 +23,7 @@ export default function CreateHomework() {
     const [homeworkName, setHomeworkName] = createSignal('')
     const [description, setDescription] = createSignal('')
     const [username, setUsername] = createSignal('')
-    const [file, setFile] = createSignal<File>()
+    const [files, setFiles] = createStore<File[]>([])
 
     onMount(() => {
         setUsername(localStorage.getItem('homework-platform-username'))
@@ -29,44 +31,41 @@ export default function CreateHomework() {
 
     const navigate = useNavigate()
 
-    const handleFileChange = (event) => {
-        setFile(event.target.files[0]);
+    const handleFileChange = (event: any) => {
+        setFiles([...files, ...event.target.files]);
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // 创建一个 FormData 对象
-        const formData = new FormData();
-        formData.append("attachment", file());
 
-        // 使用 fetch API 
-        fetch("/your-upload-endpoint", {
-            method: "POST",
-            body: formData,
-        })
-            .then((response) => {
-                if (response.ok) {
-                    console.log("附件上传成功！");
-                } else {
-                    console.error("上传失败，请重试。");
-                }
-            })
-            .catch((error) => {
-                console.error("上传过程中出现错误：", error);
-            });
-    };
 
     function createHomework() {
         let beginDate = new Date(dateRange().value.start)
         let endDate = new Date(dateRange().value.end)
-        let commentenddate = new Date(commentdateend().value.selected )
-        assignHomework(file(), parseInt(params.id), homeworkName(), description(), beginDate, endDate, commentenddate).then((res) => {
-            const id = res.data
-            console.log(id)
-            navigate(`/homework/${id}`)
+        let commentEndDate = new Date(commentdateend().value.selected )
+
+        const formData = new FormData();
+        for (let file in files) {
+            formData.append("attachment", file);
+        }
+        formData.set("name", `${homeworkName()}`)
+        formData.set("description", `${description()}`)
+        formData.set("beginDate", `${beginDate}`);
+        formData.set("endDate", `${endDate}`);
+        formData.set("commentEndDate", `${commentEndDate}`);
+
+        // createCourseHomework(parseInt(params.id), homeworkName(), description(), beginDate, endDate, commentEndDate, files)
+        postFormData(`/v1/courses/${params.id}/homeworks`, formData).then((res) => {
+            console.log(res)
         }).catch((err) => {
             console.error(err)
         })
+
+        // assignHomework(files(), parseInt(params.id), homeworkName(), description(), beginDate, endDate, commentEndDate).then((res) => {
+        //     const id = res.data
+        //     console.log(id)
+        //     navigate(`/homework/${id}`)
+        // }).catch((err) => {
+        //     console.error(err)
+        // })
     }
 
 
@@ -119,13 +118,14 @@ export default function CreateHomework() {
                             setDescription(value)
                         }}
                     />
-                    <form onSubmit={handleSubmit} class="mt-4">
+                    <form class="mt-4">
                         <label class="block text-sm">选择附件：</label>
                         <input
                             type="file"
                             name="attachment"
                             onChange={handleFileChange}
                             class="border border-gray-300 p-2 mt-1 rounded"
+                            multiple
                             required
                         />
                     </form>
