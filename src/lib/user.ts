@@ -13,3 +13,7 @@ export function register(username: string, password: string) {
     password: password
   })
 }
+
+export function getUserCourses(id: number) {
+  return get(`/v1/users/${id}/courses`)
+}

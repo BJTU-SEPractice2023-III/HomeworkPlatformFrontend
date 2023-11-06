@@ -4,24 +4,28 @@ import { assignHomework } from '../../lib/homework'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
-import { createStore } from 'solid-js/store';
 import { postFormData } from '../../lib/axios';
-
+import { createStore } from 'solid-js/store';
 
 export default function CreateHomework() {
     const params = useParams();
     const [dateRange, setDateRange] = createSignal<PickerValue>({
-        value: {},
+        value: {
+            start: "2021-01-31T23:00:00.000Z",
+            end: "2021-02-04T23:00:00.000Z"
+        },
         label: "",
     });
 
     const [commentdateend, setcommentdateend] = createSignal<PickerValue>({
-        value: {},
+        value: {
+            selected: "2021-01-31T23:00:00.000Z"
+        },
         label: "",
     });
 
-    const [homeworkName, setHomeworkName] = createSignal('')
-    const [description, setDescription] = createSignal('')
+    const [homeworkName, setHomeworkName] = createSignal('name')
+    const [description, setDescription] = createSignal('desc')
     const [username, setUsername] = createSignal('')
     const [files, setFiles] = createStore<File[]>([])
 
@@ -31,11 +35,10 @@ export default function CreateHomework() {
 
     const navigate = useNavigate()
 
-    const handleFileChange = (event: any) => {
+    const handleFileChange = (event) => {
+        console.log(event.target.files)
         setFiles([...files, ...event.target.files]);
     };
-
-
 
     function createHomework() {
         let beginDate = new Date(dateRange().value.start)
@@ -46,8 +49,8 @@ export default function CreateHomework() {
         for (let file in files) {
             formData.append("attachment", file);
         }
-        formData.set("name", `${homeworkName()}`)
-        formData.set("description", `${description()}`)
+        formData.set("name", homeworkName())
+        formData.set("description", description())
         formData.set("beginDate", `${beginDate}`);
         formData.set("endDate", `${endDate}`);
         formData.set("commentEndDate", `${commentEndDate}`);
@@ -153,7 +156,7 @@ export default function CreateHomework() {
                             setValue={setcommentdateend}
                             type='single'
                             onChange={(data) => {
-                                if (data.type === "single") { 
+                                if (data.type === "single") {
                                     console.log(data);
                                 }
                             }} />
@@ -169,10 +172,10 @@ export default function CreateHomework() {
                         variant='contained'
                         size='small'
                         onClick={() => {
-                            console.log(homeworkName() && description() && dateRange().value.start && dateRange().value.end)
-                            if (homeworkName() && description() && dateRange().value.start && dateRange().value.end) {
-                                createHomework()
-                            }
+                            // console.log(homeworkName() && description() && dateRange().value.start && dateRange().value.end)
+                            // if (homeworkName() && description() && dateRange().value.start && dateRange().value.end) {
+                            createHomework()
+                            // }
                         }}>
                         布置作业
                     </Button>
