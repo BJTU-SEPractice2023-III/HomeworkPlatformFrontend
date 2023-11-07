@@ -29,3 +29,7 @@ export function homeworklists(courseid: number) {
 export function getCourseHomeworks(id: number) {
     return get(`/v1/courses/${id}/homeworks`)
 }
+
+export function getHomework(id: number): Promise<Homework> {
+    return get(`/v1/homeworks/${id}`)
+}

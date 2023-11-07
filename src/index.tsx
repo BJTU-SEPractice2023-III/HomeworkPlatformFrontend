@@ -11,7 +11,7 @@ import MainWrapper from './pages/main/MainWrapper';
 import Create from './pages/main/Create';
 import { LoginInfoStore } from './lib/store';
 import CreateHomework from './pages/main/CreateHomework';
-import Homework from './pages/main/Homework';
+import Homeworks from './pages/main/Homework';
 
 const root = document.getElementById('root');
 
@@ -47,7 +47,7 @@ render(() => (
         {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
         <Route path="/course/:id" component={Course} />
         {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
-        <Route path="/homework/:id" component={Homework}/>
+        <Route path="/homework/:id" component={Homeworks}/>
         {/* 创建课程页面*/}
         <Route path="/course/create" component={Create} />
         {/* 创建课程作业页面*/}

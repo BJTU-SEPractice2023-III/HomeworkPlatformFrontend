@@ -24,7 +24,6 @@ export default function Course() {
     getCourse(parseInt(params.id)).then((res) => {
       setCourse(res);
       console.log('course: ', res)
-      console.log(isTeaching(course()))
     });
     getCourseHomeworks(parseInt(params.id)).then((res) => {
       setHomeworkList(res)
