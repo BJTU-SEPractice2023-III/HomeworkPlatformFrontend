@@ -1,4 +1,4 @@
-import { get, post } from "./axios"
+import { get, post, del } from "./axios"
 export type Homework = {
     ID: number,
     files: File,
@@ -32,4 +32,11 @@ export function getCourseHomeworks(id: number) {
 
 export function getHomework(id: number): Promise<Homework> {
     return get(`/v1/homeworks/${id}`)
+}
+
+export function delHomework(courseid: number,homeworkid:number) {
+    return del(`/v1/homeworks`, {
+        courseid,
+        homeworkid
+    })
 }

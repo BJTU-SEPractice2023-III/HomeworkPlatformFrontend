@@ -6,16 +6,16 @@ import type { Course, Student } from '../../lib/course';
 import { formatDateTime } from '../../lib/utils';
 import { ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
 import { Favorite, LocationOn, Restore } from '@suid/icons-material';
-import { homeworklists, Homework, getCourseHomeworks } from '../../lib/homework'
+import { homeworklists, Homework, getCourseHomeworks, delHomework } from '../../lib/homework'
 import { useNavigate } from '@solidjs/router';
 import { UserCoursesStore } from '../../lib/store';
 
 export default function Course() {
   const params = useParams();
   const navigate = useNavigate()
-  const { isTeaching, updateUserCourses } = UserCoursesStore()
+  const { isTeaching, updateUserCourses, isLearning } = UserCoursesStore()
 
-  const [course, setCourse] = createSignal<Course | null>();
+  const [course, setCourse] = createSignal<Course>();
   const [tab, setTab] = createSignal('index');
   const [studentList, setStudentList] = createSignal<Student[]>([])
   const [homeworkList, setHomeworkList] = createSignal<Homework[]>([])
@@ -69,6 +69,7 @@ export default function Course() {
               <TableCell>结束时间</TableCell>
               <TableCell size='medium'>提交作业</TableCell>
               <TableCell size='medium'>批阅任务</TableCell>
+              <TableCell size='medium'>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -83,12 +84,31 @@ export default function Course() {
                 <TableCell size='medium'>
                   <Button onClick={() => { navigate(``) }}>批阅作业</Button>
                 </TableCell>
+                <TableCell>
+                  <Show when={isTeaching(course())}>
+                    <ButtonGroup aria-label="outlined primary button group" sx={{ width: 200 }}>
+                      <Button onClick={() => {
+                        delHomework(parseInt(params.id), homework.ID).then((res) => {
+                          const updatedHomeworkList = homeworkList().filter(item => item.ID !== homework.ID);
+                          setHomeworkList(updatedHomeworkList);
+                          console.log(res);
+                        });
+                      }}>删除作业</Button>
+                      <Button onClick={() => { }}>修改作业</Button>
+                    </ButtonGroup>
+                  </Show>
+                  <Show when={isLearning(course())}>
+                    <div>
+                      /
+                    </div>
+                  </Show>
+                </TableCell>
               </TableRow>
             }
             </For>
           </TableBody>
-        </Table>
-      </TableContainer>
+        </Table >
+      </TableContainer >
     </>
   }
 

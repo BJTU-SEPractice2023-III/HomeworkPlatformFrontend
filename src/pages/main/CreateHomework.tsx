@@ -60,8 +60,7 @@ export default function CreateHomework() {
             console.log(res)
         }).catch((err) => {
             console.error(err)
-        })
-
+        })      
         // assignHomework(files(), parseInt(params.id), homeworkName(), description(), beginDate, endDate, commentEndDate).then((res) => {
         //     const id = res.data
         //     console.log(id)

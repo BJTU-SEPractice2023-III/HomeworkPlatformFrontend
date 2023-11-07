@@ -37,6 +37,24 @@ export function post(url: string, data: any): Promise<any> {
   })
 }
 
+export function del(url: string, data: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    axios.delete(`${host}${url}`, {
+        data: data,
+        timeout: 3000,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('jwt')}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        resolve(res.data)
+      })
+      .catch((err) => {
+        reject(err)
+      });
+  });
+}
 export function postFormData(url: string, data: FormData): Promise<any> {
   return new Promise((resolve, reject) => {
     axios.post(`${host}${url}`, data, {
