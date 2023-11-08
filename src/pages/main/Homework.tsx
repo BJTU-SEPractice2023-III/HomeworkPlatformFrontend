@@ -39,12 +39,36 @@ export default function Homeworks() {
       </div>
 
       <Divider />
-      <div class="font-bold text-xl">
-        请输入答案：
+      <div class="mt-4">
+        <label class="font-bold text-xl block text-gray-700 text-sm font-bold mb-2" for="inputField">
+          请输入答案：
+        </label>
+        <form class="mt-4">
+          <label class="block text-sm">选择附件：</label>
+          <input
+            type="file"
+            name="attachment"
+            // onChange={handleFileChange}
+            class="border border-gray-300 p-2 mt-1 rounded"
+            multiple
+            required
+          />
+        </form>
+        <textarea
+          id="textAreaField"
+          // value={text()}
+          // onInput={handleTextAreaChange}
+          rows="16"
+          class="w-full px-3 py-2 border rounded-md text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500"
+        />
       </div>
-      <Card sx={{ minWidth: 275 }}>
-       
-      </Card>
+      <Divider />
+      <Button style={{ width: '8%' }} variant='contained' size='small'>
+        提交作业
+      </Button>
+      <Button style={{ width: '8%' }}>
+        互评作业
+      </Button>
     </div>
   );
 }
