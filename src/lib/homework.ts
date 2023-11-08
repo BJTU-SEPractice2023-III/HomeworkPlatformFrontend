@@ -34,9 +34,16 @@ export function getHomework(id: number): Promise<Homework> {
     return get(`/v1/homeworks/${id}`)
 }
 
-export function delHomework(courseid: number,homeworkid:number) {
+export function delHomework(courseid: number, homeworkid: number) {
     return del(`/v1/homeworks`, {
         courseid,
         homeworkid
+    })
+}
+
+export function submit(files: File, answers: string) {
+    return post(`/v1/submit`, {
+        files,
+        answers
     })
 }
