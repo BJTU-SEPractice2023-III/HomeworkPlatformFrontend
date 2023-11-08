@@ -1,10 +1,10 @@
 import { useParams } from '@solidjs/router';
-import { For, Match, Show, Switch, createSignal, onMount } from 'solid-js';
-import { homeworklists, getHomework, Homework, submit } from '../../lib/homework'
+import { createSignal, onMount } from 'solid-js';
+import { homeworklists, getHomework, Homework, submit } from '../../../lib/homework'
 import { Button, Card, CardContent, Typography, Divider, TextField, } from '@suid/material';
-import { UserCoursesStore } from '../../lib/store';
+import { UserCoursesStore } from '../../../lib/store';
 import { createStore } from 'solid-js/store';
-import { postFormData } from '../../lib/axios';
+import { postFormData } from '../../../lib/axios';
 
 export default function Homeworks() {
   const params = useParams();

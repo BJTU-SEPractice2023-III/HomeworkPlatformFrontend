@@ -4,14 +4,19 @@ import { Router } from '@solidjs/router';
 import { Routes, Route, A } from '@solidjs/router';
 import Main from './pages/main/Main';
 import Courses from './pages/main/Courses';
-import Course from './pages/main/Course';
+import Course from './pages/main/course/Course';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import MainWrapper from './pages/main/MainWrapper';
+import CourseWrapper from './pages/main/course/CourseWrapper';
 import Create from './pages/main/Create';
 import { LoginInfoStore } from './lib/store';
 import CreateHomework from './pages/main/CreateHomework';
-import Homeworks from './pages/main/Homework';
+import Homework from './pages/main/course/Homework';
+import Homeworks from './pages/main/course/Homeworks';
+import Students from './pages/main/course/Students';
+import { getCourse } from './lib/course';
+import { createResource } from 'solid-js';
 
 const root = document.getElementById('root');
 
@@ -31,6 +36,11 @@ export function LoginData({ params, location, navigate, data }) {
   }
 }
 
+export function CourseData({ params, location, navigate, data }) {
+  const [course] = createResource(() => params.id, async () => (await getCourse(parseInt(params.id))));
+  return course
+}
+
 // TODO: add alert stack gor global usage
 render(() => (
   <Router>
@@ -42,12 +52,21 @@ render(() => (
       <Route path="/" component={MainWrapper} data={LoginData}>
         {/* 主页 */}
         <Route path="/" component={Main} />
+
+        {/* 课程页面 */}
+        <Route path="/course/:id" component={CourseWrapper} data={CourseData}>
+          <Route path="/" component={Course} />
+          <Route path="/homeworks" component={Homeworks} />
+          <Route path="/students" component={Students} />
+
+        </Route>
+
         {/* 课程列表页面 */}
         <Route path="/courses" component={Courses} />
         {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
-        <Route path="/course/:id" component={Course} />
+        {/* <Route path="/course/:id" component={Course} /> */}
         {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
-        <Route path="/homework/:id" component={Homeworks}/>
+        <Route path="/homework/:id" component={Homework} />
         {/* 创建课程页面*/}
         <Route path="/course/create" component={Create} />
         {/* 创建课程作业页面*/}

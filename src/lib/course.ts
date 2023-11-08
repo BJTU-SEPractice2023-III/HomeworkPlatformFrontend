@@ -27,6 +27,7 @@ export function getCourses(): Promise<Course[]> {
 }
 
 export function getCourse(id: number): Promise<Course> {
+    console.log("get", id)
     return get(`/v1/courses/${id}`)
 }
 
