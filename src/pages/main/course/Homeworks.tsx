@@ -1,4 +1,4 @@
-import { Breadcrumbs, Button, ButtonGroup, Divider, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@suid/material";
+import { Box, Breadcrumbs, Button, ButtonGroup, Divider, Link, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from "@suid/material";
 import { For, Match, Show, Switch, createSignal, onMount } from "solid-js";
 import { Course } from "../../../lib/course";
 import { UserCoursesStore } from "../../../lib/store";
@@ -7,19 +7,24 @@ import { homeworklists, Homework, getCourseHomeworks, delHomework } from '../../
 import { CourseData } from "../../../index";
 import { formatDateTime } from "../../../lib/utils";
 import { Delete, Edit, ManageSearch } from "@suid/icons-material";
+import HomeworksTable from "../../../components/HomeworksTable";
 
 export default function Homeworks() {
   const params = useParams();
   const navigate = useNavigate()
-  const { isTeaching, updateUserCourses, isLearning } = UserCoursesStore()
+  const { isTeaching, isLearning } = UserCoursesStore()
 
   const course = useRouteData<typeof CourseData>()
-  const [homeworkList, setHomeworkList] = createSignal<Homework[]>([])
+  // const [homeworkList, setHomeworkList] = createSignal<Homework[]>([])
+  const homeworks = createSignal<Homework[]>([])
   onMount(async () => {
     getCourseHomeworks(parseInt(params.id)).then((res) => {
-      setHomeworkList(res)
+      homeworks[1](res)
     });
   });
+
+  const theme = useTheme()
+  const [open, setOpen] = createSignal(true)
 
   return <div class="flex flex-col flex-1 items-start p-4 gap-4">
     <Show when={course()}>
@@ -37,60 +42,36 @@ export default function Homeworks() {
         </Link>
         <Typography color="text.primary">Homeworks</Typography>
       </Breadcrumbs>
+
       <Button variant="contained">创建作业</Button>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>作业名</TableCell>
-              <TableCell>起始时间</TableCell>
-              <TableCell>结束时间</TableCell>
-              <Switch>
-                <Match when={isLearning(course())}>
-                  <TableCell size='medium'>提交作业</TableCell>
-                  <TableCell size='medium'>批阅任务</TableCell>
-                </Match>
-                <Match when={isTeaching(course())}>
-                  <TableCell size='medium'>操作</TableCell>
-                </Match>
-              </Switch>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <For each={homeworkList()}>{(homework, i) => <TableRow>
-              <TableCell>{homework.name}</TableCell>
-              <TableCell>{formatDateTime(homework.beginDate)}</TableCell>
-              <TableCell>{formatDateTime(homework.endDate)}</TableCell>
-              <Switch>
-                <Match when={isLearning(course())}>
-                  <TableCell size='medium'>
-                    <Button onClick={() => { navigate(`/homework/${homework.ID}`); }}>提交作业</Button>
-                  </TableCell>
-                  <TableCell size='medium'>
-                    <Button onClick={() => { navigate(``); }}>批阅作业</Button>
-                  </TableCell>
-                </Match>
-                <Match when={isTeaching(course())}>
-                  <TableCell>
-                    <ButtonGroup aria-label="outlined primary button group" sx={{ width: 300 }}>
-                      <Button><ManageSearch /></Button>
-                      <Button onClick={() => { }}><Edit /></Button>
-                      <Button onClick={() => {
-                        delHomework(parseInt(params.id), homework.ID).then((res) => {
-                          const updatedHomeworkList = homeworkList().filter(item => item.ID !== homework.ID);
-                          setHomeworkList(updatedHomeworkList);
-                          console.log(res);
-                        });
-                      }}><Delete /></Button>
-                    </ButtonGroup>
-                  </TableCell>
-                </Match>
-              </Switch>
-            </TableRow>}
-            </For>
-          </TableBody>
-        </Table>
-      </TableContainer>
+
+      <Modal
+        open={open()}
+        onClose={() => { setOpen(false) }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "60%",
+            maxWidth: "1000px",
+            bgcolor: theme.palette.background.paper,
+            boxShadow: "24px",
+            p: 4,
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            创建作业
+          </Typography>
+
+        </Box>
+      </Modal>
+
+      <HomeworksTable homeworks={homeworks} isTeaching={isTeaching(course())} />
     </Show>
   </div>;
 }
