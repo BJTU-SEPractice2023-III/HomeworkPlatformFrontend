@@ -11,7 +11,7 @@ export default function Students() {
   onMount(() => {
     getCourseStudents(parseInt(params.id)).then((res) => {
       setStudentList(res);
-      console.log('studentList: ', res);
+      // console.log('studentList: ', res);
     });
   });
 

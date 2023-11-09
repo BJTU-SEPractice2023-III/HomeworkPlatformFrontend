@@ -10,23 +10,11 @@ import { CourseData } from '../../../index';
 
 export default function Course() {
   const params = useParams();
-  const { isTeaching, updateUserCourses, isLearning } = UserCoursesStore()
 
   const course = useRouteData<typeof CourseData>()
-  onMount(async () => {
-    await updateUserCourses();
-  });
 
   return (
-    <div class='flex-1 p-4 gap-2 flex-col max-w-[80%] w-full'>
-      <div class='flex gap-2 mb-2 bg-[#00005002] border-rounded'>
-        {/* <Show when={course && isTeaching(course())}>
-          <Button size='small' onClick={() => navigate(`/homework/createHomework/${course().ID}`)}>
-            布置作业
-          </Button>
-        </Show> */}
-      </div>
-
+    <div class='flex-1 p-4 gap-2 flex-col w-full'>
       <Show when={course()}>
         <Card sx={{ minWidth: 275 }}>
           <CardContent>

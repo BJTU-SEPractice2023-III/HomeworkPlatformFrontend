@@ -10,7 +10,7 @@ import Register from './pages/Register';
 import MainWrapper from './pages/main/MainWrapper';
 import CourseWrapper from './pages/main/course/CourseWrapper';
 import Create from './pages/main/Create';
-import { LoginInfoStore } from './lib/store';
+import { LoginInfoStore, UserCoursesStore } from './lib/store';
 import CreateHomework from './pages/main/CreateHomework';
 import Homework from './pages/main/course/Homework';
 import Homeworks from './pages/main/course/Homeworks';
@@ -37,6 +37,8 @@ export function LoginData({ params, location, navigate, data }) {
 }
 
 export function CourseData({ params, location, navigate, data }) {
+  const {updateUserCourses} = UserCoursesStore()
+  updateUserCourses()
   const [course] = createResource(() => params.id, async () => (await getCourse(parseInt(params.id))));
   return course
 }
@@ -58,7 +60,6 @@ render(() => (
           <Route path="/" component={Course} />
           <Route path="/homeworks" component={Homeworks} />
           <Route path="/students" component={Students} />
-
         </Route>
 
         {/* 课程列表页面 */}
