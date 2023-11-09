@@ -24,7 +24,7 @@ export default function MainWrapper() {
             <HomeIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Main Wrapper
+            HomeworkPlatform
           </Typography>
           {/* <Button color='inherit' onClick={() => navigate('/')}>
             主页

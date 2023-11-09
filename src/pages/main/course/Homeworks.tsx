@@ -8,6 +8,7 @@ import { CourseData } from "../../../index";
 import { formatDateTime } from "../../../lib/utils";
 import { Delete, Edit, ManageSearch } from "@suid/icons-material";
 import HomeworksTable from "../../../components/HomeworksTable";
+import CreateHomeworkModal from "../../../components/CreateHomeworkModal";
 
 export default function Homeworks() {
   const params = useParams();
@@ -16,62 +17,23 @@ export default function Homeworks() {
 
   const course = useRouteData<typeof CourseData>()
   // const [homeworkList, setHomeworkList] = createSignal<Homework[]>([])
-  const homeworks = createSignal<Homework[]>([])
+  const _homeworks = createSignal<Homework[]>([])
+  const [homeworks, setHomeworks] = _homeworks
   onMount(async () => {
     getCourseHomeworks(parseInt(params.id)).then((res) => {
-      homeworks[1](res)
+      setHomeworks(res)
     });
   });
 
   const theme = useTheme()
-  const [open, setOpen] = createSignal(true)
 
-  return <div class="flex flex-col flex-1 items-start p-4 gap-4">
+  return (
     <Show when={course()}>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link underline="hover" color="inherit" href="/" target="none">
-          HomeworkPlatform
-        </Link>
-        <Link
-          underline="hover"
-          color="inherit"
-          href={`/course/${params.id}`}
-          target="none"
-        >
-          Course
-        </Link>
-        <Typography color="text.primary">Homeworks</Typography>
-      </Breadcrumbs>
+      <Button variant="contained" onClick={() => { navigate('new') }}>创建作业</Button>
 
-      <Button variant="contained">创建作业</Button>
+      {/* <CreateHomeworkModal open={_open}/> */}
 
-      <Modal
-        open={open()}
-        onClose={() => { setOpen(false) }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "60%",
-            maxWidth: "1000px",
-            bgcolor: theme.palette.background.paper,
-            boxShadow: "24px",
-            p: 4,
-          }}
-        >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            创建作业
-          </Typography>
-
-        </Box>
-      </Modal>
-
-      <HomeworksTable homeworks={homeworks} isTeaching={isTeaching(course())} />
+      <HomeworksTable homeworks={_homeworks} isTeaching={isTeaching(course())} />
     </Show>
-  </div>;
+  );
 }

@@ -15,21 +15,7 @@ export default function Students() {
     });
   });
 
-  return <div class="flex flex-col flex-1 items-start p-4 gap-4">
-    <Breadcrumbs aria-label="breadcrumb">
-      <Link underline="hover" color="inherit" href="/" target="none">
-        HomeworkPlatform
-      </Link>
-      <Link
-        underline="hover"
-        color="inherit"
-        href={`/course/${params.id}`}
-        target="none"
-      >
-        Course
-      </Link>
-      <Typography color="text.primary">Students</Typography>
-    </Breadcrumbs>
+  return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }}>
         <TableHead>
@@ -48,5 +34,5 @@ export default function Students() {
         </TableBody>
       </Table>
     </TableContainer>
-  </div>
+  );
 }

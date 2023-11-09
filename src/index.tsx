@@ -11,7 +11,7 @@ import MainWrapper from './pages/main/MainWrapper';
 import CourseWrapper from './pages/main/course/CourseWrapper';
 import Create from './pages/main/Create';
 import { LoginInfoStore, UserCoursesStore } from './lib/store';
-import CreateHomework from './pages/main/CreateHomework';
+import CreateHomework from './pages/main/course/CreateHomework';
 import Homework from './pages/main/course/Homework';
 import Homeworks from './pages/main/course/Homeworks';
 import Students from './pages/main/course/Students';
@@ -59,6 +59,7 @@ render(() => (
         <Route path="/course/:id" component={CourseWrapper} data={CourseData}>
           <Route path="/" component={Course} />
           <Route path="/homeworks" component={Homeworks} />
+          <Route path="/homeworks/new" component={CreateHomework} />
           <Route path="/students" component={Students} />
         </Route>
 
