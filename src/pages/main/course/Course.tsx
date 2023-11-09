@@ -1,5 +1,5 @@
 import { useParams, A, useRouteData } from '@solidjs/router';
-import { Button, Card, CardContent, Typography } from '@suid/material';
+import { Breadcrumbs, Button, Card, CardContent, Link, Typography } from '@suid/material';
 import { Match, Show, Switch, createSignal, onMount } from 'solid-js';
 import type { Course } from '../../../lib/course';
 import { formatDateTime } from '../../../lib/utils';
@@ -14,9 +14,15 @@ export default function Course() {
   const course = useRouteData<typeof CourseData>()
 
   return (
-    <div class='flex-1 p-4 gap-2 flex-col w-full'>
+    <div class="flex flex-col flex-1 items-start p-4 gap-4">
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link underline="hover" color="inherit" href="/" target="none">
+          HomeworkPlatform
+        </Link>
+        <Typography color="text.primary">Course</Typography>
+      </Breadcrumbs>
       <Show when={course()}>
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ width: "100%", minWidth: 275 }}>
           <CardContent>
             <Typography variant="h3" component="div">
               {course().name}

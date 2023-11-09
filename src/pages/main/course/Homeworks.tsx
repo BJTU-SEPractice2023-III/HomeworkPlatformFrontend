@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
+import { Breadcrumbs, Button, ButtonGroup, Divider, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@suid/material";
 import { For, Match, Show, Switch, createSignal, onMount } from "solid-js";
 import { Course } from "../../../lib/course";
 import { UserCoursesStore } from "../../../lib/store";
@@ -21,8 +21,22 @@ export default function Homeworks() {
     });
   });
 
-  return <div class="flex flex-col flex-1 items-start p-4">
+  return <div class="flex flex-col flex-1 items-start p-4 gap-4">
     <Show when={course()}>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link underline="hover" color="inherit" href="/" target="none">
+          HomeworkPlatform
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          href={`/course/${params.id}`}
+          target="none"
+        >
+          Course
+        </Link>
+        <Typography color="text.primary">Homeworks</Typography>
+      </Breadcrumbs>
       <Button variant="contained">创建作业</Button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
