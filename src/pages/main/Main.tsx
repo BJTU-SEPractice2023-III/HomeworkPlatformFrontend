@@ -4,15 +4,18 @@ import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid
 import { For, Show, createSignal, onMount } from 'solid-js'
 
 import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
-
+import { getNotifications } from '../../lib/user';
 export default function Main() {
   const {loginInfo} = LoginInfoStore()
 
   const {updateUserCourses, learningCourses, teachingCourses, userCourses } = UserCoursesStore()
   const navigate = useNavigate();
+  const { user } = LoginInfoStore()
 
   onMount(async () => {
     await updateUserCourses()
+    const res = await getNotifications(user().id)
+    console.log(res)
   });
 
   return (

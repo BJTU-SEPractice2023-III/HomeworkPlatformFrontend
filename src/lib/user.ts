@@ -17,3 +17,7 @@ export function register(username: string, password: string) {
 export function getUserCourses(id: number) {
   return get(`/v1/users/${id}/courses`)
 }
+
+export function getNotifications(id: number) {
+  return get(`/v1/users/${id}/notifications`)
+}
