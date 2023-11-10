@@ -24,7 +24,7 @@ export default function Main() {
             <Button variant='contained' size='small' onClick={() => navigate('/course/create')}>创建课程</Button>
           </div>
           <TextField label="search" size='small' />
-          <Show when={learningCourses().length == 0}>
+          <Show when={teachingCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={teachingCourses()}>

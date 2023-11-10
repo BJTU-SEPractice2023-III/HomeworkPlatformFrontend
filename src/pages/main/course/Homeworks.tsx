@@ -29,7 +29,9 @@ export default function Homeworks() {
 
   return (
     <Show when={course()}>
-      <Button variant="contained" onClick={() => { navigate('new') }}>创建作业</Button>
+      <Show when={isTeaching(course())}>
+        <Button variant="contained" onClick={() => { navigate('new') }}>创建作业</Button>
+      </Show>
 
       {/* <CreateHomeworkModal open={_open}/> */}
 

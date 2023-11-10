@@ -12,7 +12,7 @@ import CourseWrapper from './pages/main/course/CourseWrapper';
 import Create from './pages/main/Create';
 import { LoginInfoStore, UserCoursesStore } from './lib/store';
 import CreateHomework from './pages/main/course/CreateHomework';
-import Homework from './pages/main/course/Homework';
+import HomeworkDetail from './pages/main/course/HomeworkDetail';
 import Homeworks from './pages/main/course/Homeworks';
 import Students from './pages/main/course/Students';
 import { getCourse } from './lib/course';
@@ -59,6 +59,7 @@ render(() => (
         <Route path="/course/:id" component={CourseWrapper} data={CourseData}>
           <Route path="/" component={Course} />
           <Route path="/homeworks" component={Homeworks} />
+          <Route path="/homeworks/:id" component={HomeworkDetail} />
           <Route path="/homeworks/new" component={CreateHomework} />
           <Route path="/students" component={Students} />
         </Route>
@@ -68,7 +69,7 @@ render(() => (
         {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
         {/* <Route path="/course/:id" component={Course} /> */}
         {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
-        <Route path="/homework/:id" component={Homework} />
+        <Route path="/homework/:id" component={HomeworkDetail} />
         {/* 创建课程页面*/}
         <Route path="/course/create" component={Create} />
         {/* 创建课程作业页面*/}

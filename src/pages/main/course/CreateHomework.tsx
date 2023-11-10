@@ -29,39 +29,26 @@ export default function CreateHomework() {
 
   const navigate = useNavigate()
 
-  const handleFileChange = (event) => {
-    console.log(event.target.files)
-    setFiles([...files, ...event.target.files]);
-  };
-
   function createHomework() {
     let beginDate = new Date(dateRange().value.start)
     let endDate = new Date(dateRange().value.end)
     let commentEndDate = new Date(commentdateend().value.selected)
 
     const formData = new FormData();
-    for (let file in files) {
-      formData.append("attachment", file);
-    }
+    files.forEach((file) => {
+      formData.append("files", file);
+    })
     formData.set("name", homeworkName())
     formData.set("description", description())
-    formData.set("beginDate", `${beginDate}`);
-    formData.set("endDate", `${endDate}`);
-    formData.set("commentEndDate", `${commentEndDate}`);
+    formData.set("beginDate", beginDate.toISOString());
+    formData.set("endDate", endDate.toISOString());
+    formData.set("commentEndDate", commentEndDate.toISOString());
 
-    // createCourseHomework(parseInt(params.id), homeworkName(), description(), beginDate, endDate, commentEndDate, files)
     postFormData(`/v1/courses/${params.id}/homeworks`, formData).then((res) => {
       console.log(res)
     }).catch((err) => {
       console.error(err)
     })
-    // assignHomework(files(), parseInt(params.id), homeworkName(), description(), beginDate, endDate, commentEndDate).then((res) => {
-    //     const id = res.data
-    //     console.log(id)
-    //     navigate(`/homework/${id}`)
-    // }).catch((err) => {
-    //     console.error(err)
-    // })
   }
 
 
@@ -97,7 +84,7 @@ export default function CreateHomework() {
             <input
               type="file"
               name="attachment"
-              onChange={handleFileChange}
+              onChange={(event) => { setFiles([...files, ...event.target.files]) }}
               class="border border-gray-300 p-2 mt-1 rounded"
               multiple
               required

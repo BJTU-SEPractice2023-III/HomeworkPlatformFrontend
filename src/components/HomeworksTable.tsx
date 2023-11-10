@@ -18,15 +18,7 @@ export default function HomeworksTable(props: { homeworks: Signal<Homework[]>, i
                     <TableCell>作业名</TableCell>
                     <TableCell>起始时间</TableCell>
                     <TableCell>结束时间</TableCell>
-                    <Switch>
-                        <Match when={!isTeaching}>
-                            <TableCell size='medium'>提交作业</TableCell>
-                            <TableCell size='medium'>批阅任务</TableCell>
-                        </Match>
-                        <Match when={isTeaching}>
-                            <TableCell size='medium'>操作</TableCell>
-                        </Match>
-                    </Switch>
+                    <TableCell size='medium'>操作</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -36,18 +28,21 @@ export default function HomeworksTable(props: { homeworks: Signal<Homework[]>, i
                     <TableCell>{formatDateTime(homework.endDate)}</TableCell>
                     <Switch>
                         <Match when={!isTeaching}>
-                            <TableCell size='medium'>
-                                <Button onClick={() => { navigate(`/homework/${homework.ID}`); }}>提交作业</Button>
+                            <TableCell size="medium">
+                                <Button onClick={() => { navigate(`${homework.ID}`) }}>查看</Button>
+                            </TableCell>
+                            {/* <TableCell size='medium'>
+                                <Button onClick={() => { navigate(`${homework.ID}/submit`); }}>提交作业</Button>
                             </TableCell>
                             <TableCell size='medium'>
-                                <Button onClick={() => { navigate(``); }}>批阅作业</Button>
-                            </TableCell>
+                                <Button onClick={() => { navigate(`${homework.ID}/comment`); }}>批阅作业</Button>
+                            </TableCell> */}
                         </Match>
                         <Match when={isTeaching}>
                             <TableCell>
                                 <ButtonGroup aria-label="outlined primary button group" sx={{ width: 300 }}>
-                                    <Button><ManageSearch /></Button>
-                                    <Button onClick={() => { }}><Edit /></Button>
+                                    <Button onClick={() => {navigate(`${homework.ID}`)}}><ManageSearch /></Button>
+                                    <Button onClick={() => {navigate(`${homework.ID}/edit`)}}><Edit /></Button>
                                     <Button onClick={() => {
                                         delHomework(homework.ID).then((res) => {
                                             setHomeworkList((homeworkList) => {
