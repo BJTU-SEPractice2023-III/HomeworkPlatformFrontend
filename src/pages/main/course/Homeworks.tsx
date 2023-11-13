@@ -20,7 +20,7 @@ export default function Homeworks() {
   const _homeworks = createSignal<Homework[]>([])
   const [homeworks, setHomeworks] = _homeworks
   onMount(async () => {
-    getCourseHomeworks(parseInt(params.id)).then((res) => {
+    getCourseHomeworks(parseInt(params.courseId)).then((res) => {
       setHomeworks(res)
     });
   });

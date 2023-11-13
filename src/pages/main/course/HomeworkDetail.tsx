@@ -16,7 +16,7 @@ export default function HomeworkDetail() {
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
 
   onMount(() => {
-    getHomework(parseInt(params.id)).then((res) => {
+    getHomework(parseInt(params.courseId)).then((res) => {
       setHomework(res);
       console.log(homework())
     });
@@ -27,12 +27,14 @@ export default function HomeworkDetail() {
 
       <HomeworkSubmitModal homeworkId={homework().ID} open={submitModalOpen} setOpen={setSubmitModalOpen} />
 
-      <div class='flex flex-col gap-4' style={{ width: '80%' }}>
+      <div class='flex-1 flex flex-col gap-4 max-w-[80%]'>
 
         {/* 作业信息 */}
         <Paper sx={{
           padding: 4, "& .content": {
-            textIndent: 32
+            textIndent: 32,
+            // overflowWrap: "break-word",
+            wordBreak: "break-all"
           }
         }}>
           <div class='flex flex-col gap-2'>
