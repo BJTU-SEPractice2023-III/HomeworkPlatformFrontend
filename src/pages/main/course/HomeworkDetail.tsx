@@ -1,17 +1,14 @@
 import { useParams } from '@solidjs/router';
 import { Show, createSignal, onMount } from 'solid-js';
-import { homeworklists, getHomework, Homework, submit } from '../../../lib/homework'
-import { Button, Card, CardContent, Typography, Divider, TextField, Paper, } from '@suid/material';
-import { UserCoursesStore } from '../../../lib/store';
+import { getHomework, Homework } from '../../../lib/homework'
+import { Button, Typography, Divider, Paper, } from '@suid/material';
 import { createStore } from 'solid-js/store';
-import { postFormData } from '../../../lib/axios';
 import { formatDateTime } from '../../../lib/utils';
 import HomeworkSubmitModal from '../../../components/HomeworkSubmitModal';
 
 export default function HomeworkDetail() {
   const params = useParams();
   const [homework, setHomework] = createSignal<Homework>();
-  const [files, setFiles] = createStore<File[]>([])
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
 
