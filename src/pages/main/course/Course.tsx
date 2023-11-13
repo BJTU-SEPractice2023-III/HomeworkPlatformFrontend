@@ -1,11 +1,8 @@
 import { useParams, A, useRouteData } from '@solidjs/router';
-import { Breadcrumbs, Button, Card, CardContent, Link, Typography } from '@suid/material';
-import { Match, Show, Switch, createSignal, onMount } from 'solid-js';
+import { Card, CardContent, Typography } from '@suid/material';
+import { Show } from 'solid-js';
 import type { Course } from '../../../lib/course';
 import { formatDateTime } from '../../../lib/utils';
-import { Homework, getCourseHomeworks } from '../../../lib/homework'
-import { useNavigate } from '@solidjs/router';
-import { UserCoursesStore } from '../../../lib/store';
 import { CourseData } from '../../../index';
 
 export default function Course() {

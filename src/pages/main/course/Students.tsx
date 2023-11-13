@@ -1,4 +1,4 @@
-import { Breadcrumbs, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@suid/material";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { For, createSignal, onMount } from "solid-js";
 import { Student, getCourseStudents } from "../../../lib/course";
 import { useParams } from "@solidjs/router";
