@@ -31,7 +31,7 @@ export default function CourseWrapper() {
   const { loginInfo } = LoginInfoStore()
 
   return (
-    <div class='w-full h-full flex'>
+    <div class='w-full h-full flex overflow-x-hidden'>
       <Box
         sx={{
           width: "100%",
@@ -42,7 +42,7 @@ export default function CourseWrapper() {
         <nav aria-label="main mailbox folders">
           <List>
             <ListItem disablePadding sx={{ backgroundColor: isHome() ? "#00000010" : "" }}>
-              <ListItemButton onclick={() => { navigate(`/course/${params.id}`) }}>
+              <ListItemButton onclick={() => { navigate(`/course/${params.courseId}`) }}>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
@@ -51,7 +51,7 @@ export default function CourseWrapper() {
             </ListItem>
             <Divider />
             <ListItem disablePadding sx={{ backgroundColor: isHomeworks() ? "#00000010" : "" }}>
-              <ListItemButton onclick={() => { navigate(`/course/${params.id}/homeworks`) }}>
+              <ListItemButton onclick={() => { navigate(`/course/${params.courseId}/homeworks`) }}>
                 <ListItemIcon>
                   <AssignmentIcon />
                 </ListItemIcon>
@@ -59,7 +59,7 @@ export default function CourseWrapper() {
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding sx={{ backgroundColor: isStudents() ? "#00000010" : "" }}>
-              <ListItemButton onclick={() => { navigate(`/course/${params.id}/students`) }}>
+              <ListItemButton onclick={() => { navigate(`/course/${params.courseId}/students`) }}>
                 <ListItemIcon>
                   <People />
                 </ListItemIcon>
@@ -78,7 +78,7 @@ export default function CourseWrapper() {
           <Link
             underline="hover"
             color="inherit"
-            href={`/course/${params.id}`}
+            href={`/course/${params.courseId}`}
           >
             Course
           </Link>
@@ -87,7 +87,7 @@ export default function CourseWrapper() {
               <Link
                 underline="hover"
                 color="inherit"
-                href={`/course/${params.id}/homeworks`}
+                href={`/course/${params.courseId}/homeworks`}
               >
                 Homeworks
               </Link>

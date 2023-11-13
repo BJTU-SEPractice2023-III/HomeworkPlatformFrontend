@@ -39,7 +39,7 @@ export function LoginData({ params, location, navigate, data }) {
 export function CourseData({ params, location, navigate, data }) {
   const {updateUserCourses} = UserCoursesStore()
   updateUserCourses()
-  const [course] = createResource(() => params.id, async () => (await getCourse(parseInt(params.id))));
+  const [course] = createResource(() => params.courseId, async () => (await getCourse(parseInt(params.courseId))));
   return course
 }
 
@@ -56,10 +56,10 @@ render(() => (
         <Route path="/" component={Main} />
 
         {/* 课程页面 */}
-        <Route path="/course/:id" component={CourseWrapper} data={CourseData}>
+        <Route path="/course/:courseId" component={CourseWrapper} data={CourseData}>
           <Route path="/" component={Course} />
           <Route path="/homeworks" component={Homeworks} />
-          <Route path="/homeworks/:id" component={HomeworkDetail} />
+          <Route path="/homeworks/:homeworkId" component={HomeworkDetail} />
           <Route path="/homeworks/new" component={CreateHomework} />
           <Route path="/students" component={Students} />
         </Route>

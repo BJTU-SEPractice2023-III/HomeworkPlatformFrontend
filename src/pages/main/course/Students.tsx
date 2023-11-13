@@ -9,7 +9,7 @@ export default function Students() {
   const [studentList, setStudentList] = createSignal<Student[]>([])
 
   onMount(() => {
-    getCourseStudents(parseInt(params.id)).then((res) => {
+    getCourseStudents(parseInt(params.courseId)).then((res) => {
       setStudentList(res);
       // console.log('studentList: ', res);
     });

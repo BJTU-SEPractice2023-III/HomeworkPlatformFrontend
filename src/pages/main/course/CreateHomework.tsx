@@ -44,7 +44,7 @@ export default function CreateHomework() {
     formData.set("endDate", endDate.toISOString());
     formData.set("commentEndDate", commentEndDate.toISOString());
 
-    postFormData(`/v1/courses/${params.id}/homeworks`, formData).then((res) => {
+    postFormData(`/v1/courses/${params.courseId}/homeworks`, formData).then((res) => {
       console.log(res)
     }).catch((err) => {
       console.error(err)
