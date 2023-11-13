@@ -3,19 +3,23 @@ import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
 
-import { store, teachingCourses, setTeachingCourses, learningCourses, setLearningCourses, updateCourses } from '../../lib/store';
-
+import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
+import { getNotifications } from '../../lib/user';
 export default function Main() {
-  // const [teachingLessons, setTeachingLessons] = createSignal([])
-  // const [learningLessons, setLearningLessons] = createSignal([])
+  const {loginInfo} = LoginInfoStore()
+
+  const {updateUserCourses, learningCourses, teachingCourses, userCourses } = UserCoursesStore()
   const navigate = useNavigate();
+  const { user } = LoginInfoStore()
 
   onMount(async () => {
-    await updateCourses()
+    await updateUserCourses()
+    const res = await getNotifications(user().id)
+    console.log(res)
   });
 
   return (
-    <div class='flex-1 flex'>
+    <div class='flex-1 flex w-full'>
       <aside class='min-w-[250px] border-0 border-r border-solid border-slate-200 p-6 flex flex-col gap-4'>
         <div class='flex flex-col gap-2'>
           <div class='flex items-center justify-between'>

@@ -1,5 +1,3 @@
-// import { get } from "./axios"
-// import { get } from "./axios"
 import { get, post } from "./axios"
 
 export type Course = {
@@ -11,16 +9,26 @@ export type Course = {
 }
 
 export type Student = {
-    ID: number,
-    name: string
+    id: number,
+    username: string
+}
+
+export interface UserCourses {
+    teachingCourses?: Course[]
+    learningCourses?: Course[],
+}
+
+export function getUserCourses(id: number): Promise<UserCourses> {
+    return get(`/v1/users/${id}/courses`)
 }
 
 export function getCourses(): Promise<Course[]> {
-    return get('/course')
+    return get('/v1/courses')
 }
 
 export function getCourse(id: number): Promise<Course> {
-    return get(`/course/${id}`)
+    console.log("get", id)
+    return get(`/v1/courses/${id}`)
 }
 
 export function getTeachingCourses(): Promise<Course[]> {
@@ -32,7 +40,7 @@ export function getLearningCourses(): Promise<Course[]> {
 }
 
 export function create(name: string, description: string, beginDate: Date, endDate: Date) {
-    return post(`/course/create`, {
+    return post(`/v1/courses`, {
         name,
         description,
         beginDate,
@@ -46,8 +54,6 @@ export function selectCourse(courseId: number) {
     })
 }
 
-export function StudentList(courseId: number) {
-    return post(`/course/userlists`, {
-        courseId
-    })
+export function getCourseStudents(id:number) {
+    return get(`/v1/courses/${id}/students`)
 }

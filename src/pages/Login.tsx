@@ -3,9 +3,12 @@ import { A, useNavigate, useParams } from '@solidjs/router';
 import { Box, Button, TextField } from '@suid/material';
 import { login } from '../lib/user';
 import { createSignal } from 'solid-js';
+import { LoginInfoStore } from '../lib/store';
 
 export default function Login() {
   const navigate = useNavigate();
+
+  const { setLoginInfo } = LoginInfoStore()
 
   const [username, setUsername] = createSignal('')
   const [password, setPassword] = createSignal('')
@@ -16,10 +19,8 @@ export default function Login() {
       console.log("[Login]: login success")
       const data = res.data
 
-      // TODO: put these state in the store
-      localStorage.setItem('homework-platform-jwt', data.token)
-      localStorage.setItem('homework-platform-username', data.user.username)
-      console.log(`isAdmin: ${data.user.is_admin}`)
+      console.log(data)
+      setLoginInfo(data.token, data.user)
       navigate('/')
     }).catch((err) => {
       console.error(err)
