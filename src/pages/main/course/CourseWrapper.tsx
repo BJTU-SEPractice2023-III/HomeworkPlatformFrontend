@@ -13,7 +13,7 @@ import {
 } from "@suid/material";
 import useTheme from "@suid/material/styles/useTheme";
 import { People } from '@suid/icons-material';
-import { Match, Switch} from 'solid-js';
+import { Match, Show, Switch} from 'solid-js';
 
 export default function CourseWrapper() {
   const navigate = useNavigate()
@@ -22,6 +22,7 @@ export default function CourseWrapper() {
 
   const isHome = useMatch(() => "/course/:id")
   const isHomeworks = useMatch(() => "/course/:id/homeworks/*")
+  const isHomework = useMatch(() => "/course/:courseId/homeworks/:homeworkId")
   const isStudents = useMatch(() => "/course/:id/students/*")
   const isCreateHomework = useMatch(() => "/course/:id/homeworks/new")
 
@@ -87,6 +88,16 @@ export default function CourseWrapper() {
                 Homeworks
               </Link>
               <Typography color="text.primary">New</Typography>
+            </Match>
+            <Match when={isHomework()}>
+              <Link
+                underline="hover"
+                color="inherit"
+                href={`/course/${params.courseId}/homeworks`}
+              >
+                Homeworks
+              </Link>
+              <Typography color="text.primary">TODO: HomeworkName</Typography>
             </Match>
             <Match when={isHomeworks()}>
               <Typography color="text.primary">Homeworks</Typography>
