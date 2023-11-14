@@ -17,6 +17,7 @@ import Homeworks from './pages/main/course/Homeworks';
 import Students from './pages/main/course/Students';
 import { getCourse } from './lib/course';
 import { createResource } from 'solid-js';
+import { Comment } from '@suid/icons-material';
 
 const root = document.getElementById('root');
 
@@ -70,6 +71,8 @@ render(() => (
         {/* <Route path="/course/:id" component={Course} /> */}
         {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
         <Route path="/homework/:id" component={HomeworkDetail} />
+        {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
+        <Route path="/comment/:id" component={Comment} />
         {/* 创建课程页面*/}
         <Route path="/course/create" component={Create} />
         {/* 创建课程作业页面*/}

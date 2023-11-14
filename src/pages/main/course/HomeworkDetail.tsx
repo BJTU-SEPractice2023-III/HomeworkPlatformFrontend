@@ -57,7 +57,7 @@ export default function HomeworkDetail() {
         <Paper sx={{ padding: 4 }}>
           <div class="mt-4">
             <div class="font-bold text-xl">
-              作业提交：
+              互评作业：
             </div>
 
           </div>
