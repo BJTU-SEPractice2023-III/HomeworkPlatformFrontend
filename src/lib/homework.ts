@@ -31,3 +31,11 @@ export function submit(files: File, answers: string) {
         answers
     })
 }
+
+export function notStartYet(homework: Homework) {
+    return new Date(homework.beginDate) > new Date()
+}
+
+export function isEnded(homework: Homework) {
+    return new Date(homework.endDate) < new Date()
+}

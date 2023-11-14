@@ -1,6 +1,6 @@
 import { useParams } from '@solidjs/router';
 import { Show, createSignal, onMount } from 'solid-js';
-import { getHomework, StudentHomework } from '../../../lib/homework'
+import { getHomework, isEnded, notStartYet, StudentHomework } from '../../../lib/homework'
 import { Button, Typography, Divider, Paper, } from '@suid/material';
 import { formatDateTime } from '../../../lib/utils';
 import HomeworkSubmitModal from '../../../components/HomeworkSubmitModal';
@@ -36,7 +36,7 @@ export default function HomeworkDetail() {
           <div class='flex flex-col gap-2'>
             <div class='flex justify-between'>
               <span style="font-size: 32px; font-weight: bold;">{homework().name}</span>
-              <Button variant='contained' onClick={() => { setSubmitModalOpen(true) }}>提交作业</Button>
+              <Button disabled={isEnded(homework()) || notStartYet(homework())} variant='contained' onClick={() => { setSubmitModalOpen(true) }}>提交作业</Button>
             </div>
             <Typography variant='caption' sx={{ color: "#999999" }}>
               {"截止时间:" + formatDateTime(homework().endDate)}

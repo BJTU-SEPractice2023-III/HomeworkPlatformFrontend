@@ -12,8 +12,7 @@ export default function Homeworks() {
   const { isTeaching, isLearning } = UserCoursesStore()
 
   const course = useRouteData<typeof CourseData>()
-  const _homeworks = createSignal<Homework[]>([])
-  const [homeworks, setHomeworks] = _homeworks
+  const [homeworks, setHomeworks] = createSignal<Homework[]>([])
   onMount(async () => {
     getCourseHomeworks(parseInt(params.courseId)).then((res) => {
       res
@@ -33,7 +32,7 @@ export default function Homeworks() {
 
       {/* <CreateHomeworkModal open={_open}/> */}
 
-      <HomeworksTable homeworks={_homeworks} isTeaching={isTeaching(course())} />
+      <HomeworksTable homeworks={homeworks} setHomeworks={setHomeworks} isTeaching={isTeaching(course())} />
     </Show>
   );
 }
