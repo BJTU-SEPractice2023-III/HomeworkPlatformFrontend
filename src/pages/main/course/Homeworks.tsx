@@ -2,7 +2,7 @@ import { Button, useTheme } from "@suid/material";
 import { Show, createSignal, onMount } from "solid-js";
 import { UserCoursesStore } from "../../../lib/store";
 import { useNavigate, useParams, useRouteData } from "@solidjs/router";
-import { Homework, getCourseHomeworks } from '../../../lib/homework'
+import { Homework, StudentHomework, getCourseHomeworks } from '../../../lib/homework'
 import { CourseData } from "../../../index";
 import HomeworksTable from "../../../components/HomeworksTable";
 
@@ -16,9 +16,10 @@ export default function Homeworks() {
   const [homeworks, setHomeworks] = _homeworks
   onMount(async () => {
     getCourseHomeworks(parseInt(params.courseId)).then((res) => {
-      console.log(res)
       res
+      console.log(res)
       setHomeworks(res)
+      console.log("homeworks: ", homeworks())
     });
   });
 

@@ -1,13 +1,13 @@
 import { useParams } from '@solidjs/router';
 import { Show, createSignal, onMount } from 'solid-js';
-import { getHomework, Homework } from '../../../lib/homework'
+import { getHomework, StudentHomework } from '../../../lib/homework'
 import { Button, Typography, Divider, Paper, } from '@suid/material';
 import { formatDateTime } from '../../../lib/utils';
 import HomeworkSubmitModal from '../../../components/HomeworkSubmitModal';
 
 export default function HomeworkDetail() {
   const params = useParams();
-  const [homework, setHomework] = createSignal<Homework>();
+  const [homework, setHomework] = createSignal<StudentHomework>();
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
 
@@ -21,7 +21,7 @@ export default function HomeworkDetail() {
   return (
     <Show when={homework()}>
 
-      <HomeworkSubmitModal homeworkId={homework().ID} open={submitModalOpen} setOpen={setSubmitModalOpen} />
+      <HomeworkSubmitModal homeworkId={() => homework().ID} open={submitModalOpen} setOpen={setSubmitModalOpen} />
 
       <div class='flex-1 flex flex-col gap-4 w-100% max-w-[80%]'>
 

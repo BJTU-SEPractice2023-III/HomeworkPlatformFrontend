@@ -7,13 +7,17 @@ export type Homework = {
     description: string
     beginDate: string,
     endDate: string,
-    commentenddate: string
+    commentEndDate: string
 }
-export function getCourseHomeworks(id: number): Promise<Homework[]> {
+export interface StudentHomework extends Homework {
+    submitted: boolean,
+    score: number
+}
+export function getCourseHomeworks(id: number): Promise<StudentHomework[]> {
     return get(`/v1/courses/${id}/homeworks`)
 }
 
-export function getHomework(id: number): Promise<Homework> {
+export function getHomework(id: number): Promise<StudentHomework> {
     return get(`/v1/homeworks/${id}`)
 }
 
