@@ -1,6 +1,6 @@
-import { ManageSearch, Edit, Delete, HomeWork } from "@suid/icons-material";
+import { ManageSearch, Edit, Delete } from "@suid/icons-material";
 import { Button, ButtonGroup, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
-import { Switch, Match, For, Signal, createSignal, createEffect, Setter, Accessor, Show } from "solid-js";
+import { Switch, Match, For, createSignal, Setter, Accessor, Show } from "solid-js";
 import { Homework, StudentHomework, delHomework, isEnded, notStartYet } from "../lib/homework";
 import { formatDateTime } from "../lib/utils";
 import { useNavigate } from "@solidjs/router";
@@ -10,18 +10,6 @@ export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>,
   const navigate = useNavigate()
 
   const { homeworks, setHomeworks, isTeaching } = props
-
-  createEffect(() => {
-    homeworks().toSorted((a, b) => {
-      if (new Date(a.beginDate) < new Date() && new Date(b.beginDate) > new Date()) {
-        return -1
-      } else {
-        if (new Date(a.endDate) < new Date(b.endDate)) {
-          return -1
-        }
-      }
-    })
-  })
 
   const [submitHomeworkId, setSubmitHomeworkId] = createSignal(-1)
   const [open, setOpen] = createSignal(false)
@@ -36,6 +24,14 @@ export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>,
     return ''
   }
 
+  function getScoreStr(homework: StudentHomework) {
+    if (homework.score == -1) {
+      return '*/100'
+    } else {
+      return `${homework.score}/100`
+    }
+  }
+
 
   return (
     <>
@@ -44,14 +40,19 @@ export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>,
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
             <TableRow>
+              <TableCell>ID</TableCell>
               <TableCell>作业名</TableCell>
               <TableCell>起始时间</TableCell>
               <TableCell>结束时间</TableCell>
+              <Show when={!isTeaching}>
+                <TableCell>分数</TableCell>
+              </Show>
               <TableCell size='medium'>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <For each={homeworks()}>{(homework, i) => <TableRow>
+              <TableCell><span class={getColor(homework)}>{homework.ID}</span></TableCell>
               <TableCell>
                 <div class="flex gap-2 items-center">
                   <span class={getColor(homework)}>{homework.name}</span>
@@ -65,6 +66,9 @@ export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>,
               </TableCell>
               <TableCell><span class={getColor(homework)}>{formatDateTime(homework.beginDate)}</span></TableCell>
               <TableCell><span class={getColor(homework)}>{formatDateTime(homework.endDate)}</span></TableCell>
+              <Show when={!isTeaching}>
+                <TableCell><span class={getColor(homework)}>{getScoreStr(homework as StudentHomework)}</span></TableCell>
+              </Show>
               <Switch>
                 <Match when={!isTeaching}>
                   <TableCell size="medium">

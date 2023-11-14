@@ -13,7 +13,7 @@ import Create from './pages/main/Create';
 import { LoginInfoStore, UserCoursesStore } from './lib/store';
 import CreateHomework from './pages/main/course/CreateHomework';
 import HomeworkDetail from './pages/main/course/HomeworkDetail';
-import Homeworks from './pages/main/course/Homeworks';
+import Homeworks from "./pages/main/course/Homeworks";
 import Students from './pages/main/course/Students';
 import { getCourse } from './lib/course';
 import { createResource } from 'solid-js';
