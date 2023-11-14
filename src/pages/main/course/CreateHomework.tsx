@@ -1,10 +1,13 @@
-import { Button, Divider, TextField } from '@suid/material'
-import { createSignal } from 'solid-js'
+import { Box, Button, Divider, TextField } from '@suid/material'
+import { For, createSignal } from 'solid-js'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
 import { postFormData } from '../../../lib/axios';
 import { createStore } from 'solid-js/store';
+import { createCourseHomework } from '../../../lib/course';
+import { DeleteOutline } from '@suid/icons-material';
+import FileUploader from '../../../components/FileUploader';
 
 export default function CreateHomework() {
   const params = useParams();
@@ -16,60 +19,55 @@ export default function CreateHomework() {
     label: "",
   });
 
-  const [commentdateend, setcommentdateend] = createSignal<PickerValue>({
+  const [commentDateEnd, setcommentdateend] = createSignal<PickerValue>({
     value: {
       selected: (new Date()).toString()
     },
     label: "",
   });
 
-  const [homeworkName, setHomeworkName] = createSignal('name')
+  const [name, setHomeworkName] = createSignal('name')
   const [description, setDescription] = createSignal('desc')
   const [files, setFiles] = createStore<File[]>([])
 
   const navigate = useNavigate()
 
   function createHomework() {
+    // TODO: Make a toast
+    if (!name() || !description() || !dateRange().value.start || !dateRange().value.end || !commentDateEnd().value.selected) {
+      return
+    }
+
     let beginDate = new Date(dateRange().value.start)
     let endDate = new Date(dateRange().value.end)
-    let commentEndDate = new Date(commentdateend().value.selected)
+    let commentEndDate = new Date(commentDateEnd().value.selected)
 
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append("files", file);
-    })
-    formData.set("name", homeworkName())
-    formData.set("description", description())
-    formData.set("beginDate", beginDate.toISOString());
-    formData.set("endDate", endDate.toISOString());
-    formData.set("commentEndDate", commentEndDate.toISOString());
-
-    postFormData(`/v1/courses/${params.courseId}/homeworks`, formData).then((res) => {
-      console.log(res)
+    createCourseHomework(parseInt(params.courseId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
+      console.log('Created homework: ', res)
+      navigate('../')
     }).catch((err) => {
-      console.error(err)
+      console.error('Create homework failed: ', err)
     })
   }
 
 
   return (
     <div class='flex flex-col gap-4 w-full max-w-[80%]'>
-
       <span style="font-size: 24px; font-weight: bold;">布置作业</span>
 
       <Divider />
 
       <div class="flex gap-4">
         <div class='flex flex-1 flex-col gap-2 w-full'>
-          <span>作业名字</span>
+          <span>标题</span>
           <TextField
             size='small'
-            value={homeworkName()}
+            value={name()}
             onChange={(_event, value) => {
               setHomeworkName(value)
             }} />
 
-          <span class='text-sm'>作业内容</span>
+          <span>内容</span>
           <TextField
             size='small'
             minRows={4}
@@ -79,17 +77,10 @@ export default function CreateHomework() {
               setDescription(value)
             }}
           />
-          <form class="mt-4">
-            <label class="block text-sm">选择附件：</label>
-            <input
-              type="file"
-              name="attachment"
-              onChange={(event) => { setFiles([...files, ...event.target.files]) }}
-              class="border border-gray-300 p-2 mt-1 rounded"
-              multiple
-              required
-            />
-          </form>
+
+
+          <span>附件</span>
+          <FileUploader files={files} setFiles={setFiles} />
         </div>
         <div class='flex-col gap-10'>
           <span class='text-sm'>作业起止日期</span>
@@ -107,7 +98,7 @@ export default function CreateHomework() {
           <span class='text-sm'>评论截止日期</span>
           <DatePicker
             inputClass='rounded border-[#00000045] border-1 h-5.5 p-2 text-[#777777] mt-2'
-            value={commentdateend}
+            value={commentDateEnd}
             setValue={setcommentdateend}
             type='single'
             onChange={(data) => {
@@ -126,12 +117,7 @@ export default function CreateHomework() {
         <Button
           variant='contained'
           size='small'
-          onClick={() => {
-            console.log(homeworkName() && description() && dateRange().value.start && dateRange().value.end)
-            if (homeworkName() && description() && dateRange().value.start && dateRange().value.end) {
-              createHomework()
-            }
-          }}>
+          onClick={createHomework}>
           布置作业
         </Button>
       </div>
