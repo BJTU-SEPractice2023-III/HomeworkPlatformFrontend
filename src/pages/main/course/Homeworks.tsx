@@ -16,6 +16,8 @@ export default function Homeworks() {
   const [homeworks, setHomeworks] = _homeworks
   onMount(async () => {
     getCourseHomeworks(parseInt(params.courseId)).then((res) => {
+      console.log(res)
+      res
       setHomeworks(res)
     });
   });

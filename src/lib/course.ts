@@ -1,4 +1,4 @@
-import { get, post } from "./axios"
+import { get, post, postFormData } from "./axios"
 
 export type Course = {
     ID: number,
@@ -54,6 +54,20 @@ export function selectCourse(courseId: number) {
     })
 }
 
-export function getCourseStudents(id:number) {
+export function getCourseStudents(id: number) {
     return get(`/v1/courses/${id}/students`)
+}
+
+export function createCourseHomework(id: number, name: string, description: string, beginDate: Date, endDate: Date, commentEndDate: Date, files: File[]) {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("files", file);
+    })
+    formData.set("name", name)
+    formData.set("description", description)
+    formData.set("beginDate", beginDate.toISOString());
+    formData.set("endDate", endDate.toISOString());
+    formData.set("commentEndDate", commentEndDate.toISOString());
+
+    return postFormData(`/v1/courses/${id}/homeworks`, formData);
 }

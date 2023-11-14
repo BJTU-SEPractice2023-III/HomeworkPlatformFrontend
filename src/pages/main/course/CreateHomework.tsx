@@ -5,6 +5,7 @@ import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
 import { postFormData } from '../../../lib/axios';
 import { createStore } from 'solid-js/store';
+import { createCourseHomework } from '../../../lib/course';
 
 export default function CreateHomework() {
   const params = useParams();
@@ -23,7 +24,7 @@ export default function CreateHomework() {
     label: "",
   });
 
-  const [homeworkName, setHomeworkName] = createSignal('name')
+  const [name, setHomeworkName] = createSignal('name')
   const [description, setDescription] = createSignal('desc')
   const [files, setFiles] = createStore<File[]>([])
 
@@ -34,17 +35,7 @@ export default function CreateHomework() {
     let endDate = new Date(dateRange().value.end)
     let commentEndDate = new Date(commentdateend().value.selected)
 
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append("files", file);
-    })
-    formData.set("name", homeworkName())
-    formData.set("description", description())
-    formData.set("beginDate", beginDate.toISOString());
-    formData.set("endDate", endDate.toISOString());
-    formData.set("commentEndDate", commentEndDate.toISOString());
-
-    postFormData(`/v1/courses/${params.courseId}/homeworks`, formData).then((res) => {
+    createCourseHomework(parseInt(params.courseId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
       console.log(res)
     }).catch((err) => {
       console.error(err)
@@ -54,22 +45,21 @@ export default function CreateHomework() {
 
   return (
     <div class='flex flex-col gap-4 w-full max-w-[80%]'>
-
       <span style="font-size: 24px; font-weight: bold;">布置作业</span>
 
       <Divider />
 
       <div class="flex gap-4">
         <div class='flex flex-1 flex-col gap-2 w-full'>
-          <span>作业名字</span>
+          <span>标题</span>
           <TextField
             size='small'
-            value={homeworkName()}
+            value={name()}
             onChange={(_event, value) => {
               setHomeworkName(value)
             }} />
 
-          <span class='text-sm'>作业内容</span>
+          <span>内容</span>
           <TextField
             size='small'
             minRows={4}
@@ -79,17 +69,20 @@ export default function CreateHomework() {
               setDescription(value)
             }}
           />
-          <form class="mt-4">
-            <label class="block text-sm">选择附件：</label>
+
+
+          <span>附件</span>
+          <Button variant='outlined'>
             <input
               type="file"
               name="attachment"
               onChange={(event) => { setFiles([...files, ...event.target.files]) }}
-              class="border border-gray-300 p-2 mt-1 rounded"
+              class="opacity-0 absolute inset-0"
               multiple
               required
             />
-          </form>
+            上传文件
+          </Button>
         </div>
         <div class='flex-col gap-10'>
           <span class='text-sm'>作业起止日期</span>
@@ -127,8 +120,8 @@ export default function CreateHomework() {
           variant='contained'
           size='small'
           onClick={() => {
-            console.log(homeworkName() && description() && dateRange().value.start && dateRange().value.end)
-            if (homeworkName() && description() && dateRange().value.start && dateRange().value.end) {
+            console.log(name() && description() && dateRange().value.start && dateRange().value.end)
+            if (name() && description() && dateRange().value.start && dateRange().value.end) {
               createHomework()
             }
           }}>
