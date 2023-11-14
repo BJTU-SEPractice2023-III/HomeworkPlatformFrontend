@@ -1,11 +1,13 @@
-import { Button, Divider, TextField } from '@suid/material'
-import { createSignal } from 'solid-js'
+import { Box, Button, Divider, TextField } from '@suid/material'
+import { For, createSignal } from 'solid-js'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
 import { postFormData } from '../../../lib/axios';
 import { createStore } from 'solid-js/store';
 import { createCourseHomework } from '../../../lib/course';
+import { DeleteOutline } from '@suid/icons-material';
+import FileUploader from '../../../components/FileUploader';
 
 export default function CreateHomework() {
   const params = useParams();
@@ -17,7 +19,7 @@ export default function CreateHomework() {
     label: "",
   });
 
-  const [commentdateend, setcommentdateend] = createSignal<PickerValue>({
+  const [commentDateEnd, setcommentdateend] = createSignal<PickerValue>({
     value: {
       selected: (new Date()).toString()
     },
@@ -31,14 +33,20 @@ export default function CreateHomework() {
   const navigate = useNavigate()
 
   function createHomework() {
+    // TODO: Make a toast
+    if (!name() || !description() || !dateRange().value.start || !dateRange().value.end || !commentDateEnd().value.selected) {
+      return
+    }
+
     let beginDate = new Date(dateRange().value.start)
     let endDate = new Date(dateRange().value.end)
-    let commentEndDate = new Date(commentdateend().value.selected)
+    let commentEndDate = new Date(commentDateEnd().value.selected)
 
     createCourseHomework(parseInt(params.courseId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
-      console.log(res)
+      console.log('Created homework: ', res)
+      navigate('../')
     }).catch((err) => {
-      console.error(err)
+      console.error('Create homework failed: ', err)
     })
   }
 
@@ -72,17 +80,7 @@ export default function CreateHomework() {
 
 
           <span>附件</span>
-          <Button variant='outlined'>
-            <input
-              type="file"
-              name="attachment"
-              onChange={(event) => { setFiles([...files, ...event.target.files]) }}
-              class="opacity-0 absolute inset-0"
-              multiple
-              required
-            />
-            上传文件
-          </Button>
+          <FileUploader files={files} setFiles={setFiles} />
         </div>
         <div class='flex-col gap-10'>
           <span class='text-sm'>作业起止日期</span>
@@ -100,7 +98,7 @@ export default function CreateHomework() {
           <span class='text-sm'>评论截止日期</span>
           <DatePicker
             inputClass='rounded border-[#00000045] border-1 h-5.5 p-2 text-[#777777] mt-2'
-            value={commentdateend}
+            value={commentDateEnd}
             setValue={setcommentdateend}
             type='single'
             onChange={(data) => {
@@ -119,12 +117,7 @@ export default function CreateHomework() {
         <Button
           variant='contained'
           size='small'
-          onClick={() => {
-            console.log(name() && description() && dateRange().value.start && dateRange().value.end)
-            if (name() && description() && dateRange().value.start && dateRange().value.end) {
-              createHomework()
-            }
-          }}>
+          onClick={createHomework}>
           布置作业
         </Button>
       </div>

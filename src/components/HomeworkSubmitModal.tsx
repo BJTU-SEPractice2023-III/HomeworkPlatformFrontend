@@ -2,6 +2,7 @@ import { Box, Button, Modal, Paper, TextField, Typography, useTheme } from "@sui
 import { Accessor, Setter, Signal, createSignal } from "solid-js"
 import { createStore } from "solid-js/store"
 import { postFormData } from "../lib/axios"
+import FileUploader from "./FileUploader"
 
 export default function HomeworkSubmitModal(props: { homeworkId: number, open: Accessor<boolean>, setOpen: Setter<boolean> }) {
   const { homeworkId, open, setOpen } = props
@@ -55,7 +56,7 @@ export default function HomeworkSubmitModal(props: { homeworkId: number, open: A
           提交作业
         </Typography>
 
-        <span class='text-sm'>作业内容</span>
+        <span class='text-sm'>内容</span>
         <TextField
           size='small'
           value={content()}
@@ -65,19 +66,9 @@ export default function HomeworkSubmitModal(props: { homeworkId: number, open: A
             setContent(value)
           }}
         />
-        <form class="mt-4">
-          <label class="block text-sm">选择附件：</label>
-          <input
-            type="file"
-            name="attachment"
-            onChange={(event) => {
-              setFiles([...files, ...event.target.files]);
-            }}
-            class="border border-gray-300 p-2 mt-1 rounded"
-            multiple
-            required
-          />
-        </form>
+
+        <span class='text-sm'>附件</span>
+        <FileUploader files={files} setFiles={setFiles} />
 
         <div class="flex gap-2">
           <Button variant="contained" onClick={onSubmit}>提交</Button>
