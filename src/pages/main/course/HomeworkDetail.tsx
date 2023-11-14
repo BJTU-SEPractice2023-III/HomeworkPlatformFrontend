@@ -23,14 +23,14 @@ export default function HomeworkDetail() {
 
       <HomeworkSubmitModal homeworkId={homework().ID} open={submitModalOpen} setOpen={setSubmitModalOpen} />
 
-      <div class='flex-1 flex flex-col gap-4 max-w-[80%]'>
+      <div class='flex-1 flex flex-col gap-4 w-100% max-w-[80%]'>
 
         {/* 作业信息 */}
         <Paper sx={{
           padding: 4, "& .content": {
             textIndent: 32,
             // overflowWrap: "break-word",
-            wordBreak: "break-all"
+            wordBreak: "break-all",
           }
         }}>
           <div class='flex flex-col gap-2'>
