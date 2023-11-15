@@ -1,6 +1,6 @@
 import { useParams } from '@solidjs/router';
 import { Show, createSignal, onMount } from 'solid-js';
-import { getHomework, isEnded, notStartYet, StudentHomework } from '../../../lib/homework'
+import { getHomework, isEnded, notStartYet, StudentHomework,homeworksComment } from '../../../lib/homework'
 import { Button, Typography, Divider, Paper, } from '@suid/material';
 import { formatDateTime } from '../../../lib/utils';
 import HomeworkSubmitModal from '../../../components/HomeworkSubmitModal';
@@ -15,6 +15,12 @@ export default function HomeworkDetail() {
     getHomework(parseInt(params.homeworkId)).then((res) => {
       setHomework(res);
       console.log(homework())
+    });
+    homeworksComment(parseInt(params.homeworkId)).then((res) => {
+      console.log("aaaa")
+      console.log(res)
+    }).catch((err) => {
+      console.error('get commend failed: ', err)
     });
   })
 

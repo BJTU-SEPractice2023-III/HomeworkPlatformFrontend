@@ -25,6 +25,10 @@ export function delHomework(homeworkId: number) {
     return del(`/v1/homeworks/${homeworkId}`, {})
 }
 
+export function homeworksComment(id:number){
+    return get(`/v1/homeworks/${id}/comments`)
+}
+
 export function submit(files: File, answers: string) {
     return post(`/v1/submit`, {
         files,
