@@ -64,7 +64,6 @@ export default function HomeworkDetail() {
             <div class="font-bold text-xl">
               互评作业：
             </div>
-
           </div>
         </Paper>
       </div>

@@ -33,10 +33,9 @@ export default function HomeworkEdit() {
     getHomework(parseInt(params.homeworkId)).then((res) => {
         setHomeworkName(res.name)
         setDescription(res.description)
-        // setDateRange()
-        // setcommentdateend()
-    //   setHomework(res);
-    //   console.log(homework())
+        dateRange().value.start = res.beginDate
+        dateRange().value.end = res.endDate
+        commentDateEnd().value.selected = res.commentEndDate
     });
   })
 
@@ -45,11 +44,6 @@ export default function HomeworkEdit() {
   const [files, setFiles] = createStore<File[]>([])
 
   const navigate = useNavigate()
-
-//   onMount(() => {
-//    console.log(params.homeworkId)
-//     });
-
 
   function createHomework() {
     // TODO: Make a toast
