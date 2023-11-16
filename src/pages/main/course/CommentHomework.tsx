@@ -1,8 +1,15 @@
 import { useParams } from '@solidjs/router';
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
+import { Show, createSignal, onMount } from 'solid-js';
 
 export default function CommentHomework() {
     const params = useParams();
+    const [score, setScore] = createSignal();
+    const [comments, setComments] = createSignal('');
+    const handleScoreChange = (event) => {
+        const newValue = parseInt(event.target.value, 10); // 解析输入的新值为整数
+        setScore(newValue); // 更新状态值
+    };
 
 
     return (
@@ -36,6 +43,7 @@ export default function CommentHomework() {
                     max="100"
                     step="1"
                     class="px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                    onChange={handleScoreChange}
                 />
                 <Divider />
                 <div class='flex flex-col gap-2'>
@@ -43,6 +51,10 @@ export default function CommentHomework() {
                 </div>
                 <TextField
                     size='small'
+                    value = {comments()}
+                    onChange={(_event, value) => {
+                        setComments(value)
+                      }}
                 />
 
                 <Button variant='contained'>
