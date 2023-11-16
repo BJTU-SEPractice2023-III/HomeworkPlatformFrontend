@@ -17,7 +17,6 @@ export default function HomeworkDetail() {
       console.log(homework())
     });
     homeworksComment(parseInt(params.homeworkId)).then((res) => {
-      console.log("aaaa")
       console.log(res)
     }).catch((err) => {
       console.error('get commend failed: ', err)

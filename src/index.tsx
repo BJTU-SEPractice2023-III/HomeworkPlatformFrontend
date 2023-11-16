@@ -18,6 +18,7 @@ import Students from './pages/main/course/Students';
 import { getCourse } from './lib/course';
 import { createResource } from 'solid-js';
 import CommentHomework from './pages/main/course/CommentHomework';
+import HomeworkEdit from './pages/main/course/HomeworkEdit';
 
 const root = document.getElementById('root');
 
@@ -64,6 +65,7 @@ render(() => (
           <Route path="/" component={Course} />
           <Route path="/homeworks" component={Homeworks} />
           <Route path="/homeworks/:homeworkId" component={HomeworkDetail} />
+          <Route path="/homeworks/:homeworkId/edit" component={HomeworkEdit}/>
           <Route path="/homeworks/new" component={CreateHomework} />
           <Route path="/students" component={Students} />
         </Route>
