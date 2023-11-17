@@ -2,7 +2,7 @@ import { Route, Outlet, useNavigate, A } from '@solidjs/router'
 import Courses from "./Courses"
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
-
+import { Homework } from '../../lib/homework'
 import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
 import { getNotifications } from '../../lib/user';
 export default function Main() {
@@ -12,10 +12,17 @@ export default function Main() {
   const navigate = useNavigate();
   const { user } = LoginInfoStore()
 
+  const [homeworkProgress, setHomeworkProgress] = createSignal<Homework[]>([]);
+  const [commentCompleted, setCommentCompleted] = createSignal('')
+  const [commentIn, setCommentIn] = createSignal('')
+  const [commentProgress, setCommentProgress] = createSignal('')
+
   onMount(async () => {
     await updateUserCourses()
     const res = await getNotifications(user().id)
     console.log(res)
+    setHomeworkProgress(res.commentInProcess)
+    console.log(homeworkProgress())
   });
 
   return (
@@ -62,25 +69,6 @@ export default function Main() {
         <div class='flex'>
           <Typography>Home</Typography>
         </div>
-        <Card>
-          <CardContent>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-              Course Name
-            </Typography>
-            <Typography variant="h5" component="div">
-              Message Title
-            </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              message type(homework/notice)
-            </Typography>
-            <Typography variant="body2">
-              content content content
-              <br />
-              content content
-            </Typography>
-          </CardContent>
-        </Card>
-
         <Card>
           <CardContent>
             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>

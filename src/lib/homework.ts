@@ -29,6 +29,17 @@ export function homeworksComment(id:number){
     return get(`/v1/homeworks/${id}/comments`)
 }
 
+export function getSubmit(id:number){
+    return get(`/v1/submit/${id}`)
+}
+
+export function postComment(id:number,score:number,comment:string){
+    return post(`/v1/comment/${id}`, {
+        score,
+        comment
+    })
+}
+
 export function submit(files: File, answers: string) {
     return post(`/v1/submit`, {
         files,

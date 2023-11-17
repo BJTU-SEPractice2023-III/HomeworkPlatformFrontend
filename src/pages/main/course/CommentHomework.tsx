@@ -1,15 +1,30 @@
 import { useParams } from '@solidjs/router';
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { Show, createSignal, onMount } from 'solid-js';
+import { getSubmit, Homework, postComment } from '../../../lib/homework';
 
 export default function CommentHomework() {
     const params = useParams();
-    const [score, setScore] = createSignal();
+    const [score, setScore] = createSignal(0);
     const [comments, setComments] = createSignal('');
+    const [Submit, setSubmit] = createSignal<Homework>();
     const handleScoreChange = (event) => {
         const newValue = parseInt(event.target.value, 10); // 解析输入的新值为整数
         setScore(newValue); // 更新状态值
     };
+
+    onMount(() => {
+        getSubmit(parseInt(params.id)).then((res) => {
+            console.log(res)
+        });
+    })
+
+    function asd() {
+        postComment(parseInt(params.id), score(), comments()).then((res) => {
+            console.log(res)
+        });
+    }
+
 
 
     return (
@@ -51,16 +66,19 @@ export default function CommentHomework() {
                 </div>
                 <TextField
                     size='small'
-                    value = {comments()}
+                    value={comments()}
                     onChange={(_event, value) => {
                         setComments(value)
-                      }}
+                    }}
                 />
 
-                <Button variant='contained'>
+                <Button 
+                variant='contained'
+                onClick={() => {
+                    asd()
+                  }}>
                     提交批改
                 </Button>
-
             </aside>
         </div>
     );
