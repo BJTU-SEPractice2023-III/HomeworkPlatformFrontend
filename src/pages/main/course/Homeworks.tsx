@@ -16,11 +16,11 @@ export default function Homeworks() {
   const [homeworks, setHomeworks] = createSignal<Homework[]>([]);
   onMount(async () => {
     getCourseHomeworks(parseInt(params.courseId)).then((res) => {
-      res;
-      console.log(res);
-      res.sort((a, b) => {
-        return b.ID - a.ID
-      })
+      // res;
+      // console.log(res);
+      // res.sort((a, b) => {
+      //   return b.ID - a.ID
+      // })
       setHomeworks(res.toSorted((a, b) => {
         console.log(a.ID, b.ID, notStartYet(a), notStartYet(b))
         if (!notStartYet(a) && notStartYet(b)) {

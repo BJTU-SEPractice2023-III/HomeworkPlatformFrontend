@@ -1,4 +1,4 @@
-import { get, post, del } from "./axios"
+import { get, post, del, put, putFormData } from "./axios"
 export type Homework = {
     ID: number,
     files: File,
@@ -25,19 +25,33 @@ export function delHomework(homeworkId: number) {
     return del(`/v1/homeworks/${homeworkId}`, {})
 }
 
-export function homeworksComment(id:number){
+export function homeworksComment(id: number) {
     return get(`/v1/homeworks/${id}/comments`)
 }
 
-export function getSubmit(id:number){
+export function getSubmit(id: number) {
     return get(`/v1/submit/${id}`)
 }
 
-export function postComment(id:number,score:number,comment:string){
+export function postComment(id: number, score: number, comment: string) {
     return post(`/v1/comment/${id}`, {
         score,
         comment
     })
+}
+
+export function putHomework(id: number, name: string, description: string, beginDate: Date, endDate: Date, commentEndDate: Date, files: File[]) {
+    const formData = new FormData();
+    files.forEach((file) => {
+        formData.append("files", file);
+    })
+    formData.set("name", name)
+    formData.set("description", description)
+    formData.set("beginDate", beginDate.toISOString());
+    formData.set("endDate", endDate.toISOString());
+    formData.set("commentEndDate", commentEndDate.toISOString());
+
+    return putFormData(`/v1/homeworks/${id}`, formData);
 }
 
 export function submit(files: File, answers: string) {

@@ -6,9 +6,9 @@ import { useParams } from '@solidjs/router';
 import { postFormData } from '../../../lib/axios';
 import { getHomework, isEnded, notStartYet, StudentHomework,homeworksComment } from '../../../lib/homework'
 import { createStore } from 'solid-js/store';
-import { createCourseHomework } from '../../../lib/course';
 import { DeleteOutline } from '@suid/icons-material';
 import FileUploader from '../../../components/FileUploader';
+import { putHomework } from '../../../lib/homework';
 
 export default function HomeworkEdit() {
   const params = useParams();
@@ -45,7 +45,7 @@ export default function HomeworkEdit() {
 
   const navigate = useNavigate()
 
-  function createHomework() {
+  function modifyHomework() {
     // TODO: Make a toast
     if (!name() || !description() || !dateRange().value.start || !dateRange().value.end || !commentDateEnd().value.selected) {
       return
@@ -55,8 +55,8 @@ export default function HomeworkEdit() {
     let endDate = new Date(dateRange().value.end)
     let commentEndDate = new Date(commentDateEnd().value.selected)
 
-    createCourseHomework(parseInt(params.courseId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
-      console.log('Created homework: ', res)
+    putHomework(parseInt(params.homeworkId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
+      console.log('Modify homework: ', res)
       navigate('../')
     }).catch((err) => {
       console.error('Create homework failed: ', err)
@@ -130,8 +130,8 @@ export default function HomeworkEdit() {
         <Button
           variant='contained'
           size='small'
-          onClick={createHomework}>
-          布置作业
+          onClick={modifyHomework}>
+          修改作业
         </Button>
       </div>
     </div>
