@@ -9,6 +9,18 @@ export type Homework = {
     endDate: string,
     commentEndDate: string
 }
+
+export type commentHomework = {
+    ID: number,
+    files: File,
+    homeworkId: number,
+    CreatedAt: string,
+    DeletedAt: string,
+    UpdatedAt: string,
+    content:string,
+    score:number,
+    userId:number
+}
 export interface StudentHomework extends Homework {
     submitted: boolean,
     score: number

@@ -1,13 +1,14 @@
 import { useParams } from '@solidjs/router';
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { Show, createSignal, onMount } from 'solid-js';
-import { getSubmit, Homework, postComment } from '../../../lib/homework';
+import { getSubmit, Homework, postComment,commentHomework } from '../../../lib/homework';
 
 export default function CommentHomework() {
     const params = useParams();
     const [score, setScore] = createSignal(0);
     const [comments, setComments] = createSignal('');
-    const [Submit, setSubmit] = createSignal<Homework>();
+    const [submit, setSubmit] = createSignal<commentHomework>();
+
     const handleScoreChange = (event) => {
         const newValue = parseInt(event.target.value, 10); // 解析输入的新值为整数
         setScore(newValue); // 更新状态值
@@ -16,10 +17,11 @@ export default function CommentHomework() {
     onMount(() => {
         getSubmit(parseInt(params.id)).then((res) => {
             console.log(res)
+            setSubmit(res)
         });
     })
 
-    function asd() {
+    function submission() {
         postComment(parseInt(params.id), score(), comments()).then((res) => {
             console.log(res)
         });
@@ -30,21 +32,23 @@ export default function CommentHomework() {
     return (
         <div class='flex-1 flex w-full'>
             <div class='flex flex-col gap-2 w-full'>
-                <Card>
-                    <CardContent>
-                        <Typography variant="h5" component="div">
-                            作业名
-                        </Typography>
-                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                            截止日期
-                        </Typography>
-                        <Typography variant="body2">
-                            作业内容
-                            <br />
-                            作业内容
-                        </Typography>
-                    </CardContent>
-                </Card>
+                <Show when={submit()}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h5" component="div">
+                                编号：{submit().ID}
+                            </Typography>
+                            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                最近更新：{submit().UpdatedAt}
+                            </Typography>
+                            <Typography variant="body2">
+                                作业内容：{submit().content}
+                                <br />
+                                作业链接
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Show>
             </div>
 
             <aside class='min-w-[250px] border-0 border-l border-solid border-slate-200 p-6 flex flex-col gap-4'>
@@ -72,11 +76,11 @@ export default function CommentHomework() {
                     }}
                 />
 
-                <Button 
-                variant='contained'
-                onClick={() => {
-                    asd()
-                  }}>
+                <Button
+                    variant='contained'
+                    onClick={() => {
+                        submission()
+                    }}>
                     提交批改
                 </Button>
             </aside>

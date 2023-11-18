@@ -1,13 +1,19 @@
 import { useParams } from '@solidjs/router';
 import { Show, createSignal, onMount } from 'solid-js';
-import { getHomework, isEnded, notStartYet, StudentHomework,homeworksComment } from '../../../lib/homework'
+import { getHomework, Homework, isEnded, notStartYet, StudentHomework, homeworksComment } from '../../../lib/homework'
 import { Button, Typography, Divider, Paper, } from '@suid/material';
+import { For } from 'solid-js';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { formatDateTime } from '../../../lib/utils';
 import HomeworkSubmitModal from '../../../components/HomeworkSubmitModal';
+import { useNavigate } from '@solidjs/router';
 
 export default function HomeworkDetail() {
   const params = useParams();
+
+  const navigate = useNavigate()
   const [homework, setHomework] = createSignal<StudentHomework>();
+  const [homeworkSubmission, setHomeworkSubmission] = createSignal<Homework[]>([]);
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
 
@@ -18,6 +24,7 @@ export default function HomeworkDetail() {
     });
     homeworksComment(parseInt(params.homeworkId)).then((res) => {
       console.log(res)
+      setHomeworkSubmission(res.homework_submission)
     }).catch((err) => {
       console.error('get commend failed: ', err)
     });
@@ -64,6 +71,39 @@ export default function HomeworkDetail() {
             <div class="font-bold text-xl">
               互评作业：
             </div>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>编号</TableCell>
+                    <TableCell>评论</TableCell>
+                    <TableCell>成绩</TableCell>
+                    <TableCell>操作</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <For each={homeworkSubmission()}>{(homeworkSubmissions, i) => <TableRow>
+                    <TableCell>{i() + 1}</TableCell>
+                    <TableCell>
+                      <p class="text-ellipsis overflow-hidden ...">
+                        ...
+                      </p>
+                    </TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>
+                      <Button
+                        variant='contained'
+                        size='small'
+                        onClick={() => { navigate(`../../../../comment/${homeworkSubmissions.ID}`) }}
+                      >
+                        批改
+                      </Button>
+                    </TableCell>
+                  </TableRow>}
+                  </For>
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </Paper>
       </div>
