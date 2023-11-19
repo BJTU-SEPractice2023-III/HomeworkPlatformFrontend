@@ -1,5 +1,5 @@
-import { useParams } from '@solidjs/router';
-import { Show, createSignal, onMount } from 'solid-js';
+import { useParams, useRouteData } from '@solidjs/router';
+import { Show, createEffect, createSignal, onMount } from 'solid-js';
 import { getHomework, Homework, isEnded, notStartYet, StudentHomework, homeworksComment } from '../../../lib/homework'
 import { Button, Typography, Divider, Paper, } from '@suid/material';
 import { For } from 'solid-js';
@@ -7,34 +7,47 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from
 import { formatDateTime } from '../../../lib/utils';
 import HomeworkSubmitModal from '../../../components/HomeworkSubmitModal';
 import { useNavigate } from '@solidjs/router';
+import { CommentTask } from '../../../lib/homework';
+import { CourseData, HomeworkData } from '../../..';
+import { Switch, Match } from 'solid-js';
 
 export default function HomeworkDetail() {
   const params = useParams();
+  const homework = useRouteData<typeof HomeworkData>()
+  // const  = useRouteData<typeof CourseData>()
+  const [tab, setTab] = createSignal('index');
 
   const navigate = useNavigate()
-  const [homework, setHomework] = createSignal<StudentHomework>();
+  // const [homework, setHomework] = createSignal<StudentHomework>();
   const [homeworkSubmission, setHomeworkSubmission] = createSignal<Homework[]>([]);
+  const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
 
-  onMount(() => {
-    getHomework(parseInt(params.homeworkId)).then((res) => {
-      setHomework(res);
-      console.log(homework())
-    });
-    homeworksComment(parseInt(params.homeworkId)).then((res) => {
-      console.log(res)
-      setHomeworkSubmission(res.homework_submission)
-    }).catch((err) => {
-      console.error('get commend failed: ', err)
-    });
+  createEffect(() => {
+    if (homework()) {
+      homeworksComment(parseInt(params.homeworkId)).then((res) => {
+        console.log(res)
+        // setHomeworkSubmission(res.homework_submission)
+        setCommentTasks(res)
+      }).catch((err) => {
+        console.error('get commend failed: ', err)
+      });
+    }
   })
+
+  function a() {
+    return <>
+      homework</>
+  }
+  function submit() {
+    return <>
+      students</>
+  }
 
   return (
     <Show when={homework()}>
-
       <HomeworkSubmitModal homeworkId={() => homework().ID} open={submitModalOpen} setOpen={setSubmitModalOpen} />
-
       <div class='flex-1 flex flex-col gap-4 w-100% max-w-[80%]'>
 
         {/* 作业信息 */}
@@ -65,6 +78,26 @@ export default function HomeworkDetail() {
           </div>
         </Paper>
 
+        <div class='flex w-full gap-2 mb-2'>
+          <Button sx={{ borderBottom: tab() == 'a' ? 1 : 0 }} onClick={() => { setTab('a') }}>
+            互评作业
+          </Button>
+          <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit') }}>
+            提交作业
+          </Button>
+        </div>
+
+        <Show when={homework()}>
+          <Switch fallback={<>在写了在写了</>}>
+            <Match when={tab() == 'a'}>
+              {a()}
+            </Match>
+            <Match when={tab() == 'submit'}>
+              {submit()}
+            </Match>
+          </Switch>
+        </Show>
+
         {/* 提交作业 */}
         <Paper sx={{ padding: 4 }}>
           <div class="mt-4">
@@ -82,21 +115,24 @@ export default function HomeworkDetail() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <For each={homeworkSubmission()}>{(homeworkSubmissions, i) => <TableRow>
+                  <For each={commentTasks()}>{(commentTask, i) => <TableRow>
                     <TableCell>{i() + 1}</TableCell>
                     <TableCell>
-                      <p class="text-ellipsis overflow-hidden ...">
-                        ...
+                      <p class="text-ellipsis overflow-hidden">
+                        {commentTask.comment}
                       </p>
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>
+                      {commentTask.score}
+                    </TableCell>
                     <TableCell>
                       <Button
                         variant='contained'
                         size='small'
-                        onClick={() => { navigate(`../../../../comment/${homeworkSubmissions.ID}`) }}
+                        onClick={() => { navigate(`submissions/${commentTask.targetSubmissionId}/comment`) }}
+                      // disabled={commentTask.done}
                       >
-                        批改
+                        {commentTask.done ? "已批改" : "批改"}
                       </Button>
                     </TableCell>
                   </TableRow>}

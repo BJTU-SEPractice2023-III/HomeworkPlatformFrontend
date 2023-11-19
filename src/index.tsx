@@ -19,6 +19,7 @@ import { getCourse } from './lib/course';
 import { createResource } from 'solid-js';
 import CommentHomework from './pages/main/course/CommentHomework';
 import HomeworkEdit from './pages/main/course/HomeworkEdit';
+import { getHomework } from './lib/homework';
 
 const root = document.getElementById('root');
 
@@ -45,6 +46,13 @@ export function CourseData({ params, location, navigate, data }) {
   return course
 }
 
+export function HomeworkData({ params, location, navigate, data}) {
+  // console.log(params.homeworkId)
+  const [homework] = createResource(() => params.homeworkId, async () => await getHomework(parseInt(params.homeworkId)))
+  // console.log("homeworkdata: ", data())
+  return homework
+}
+
 // TODO: add alert stack gor global usage
 render(() => (
   <Router>
@@ -58,14 +66,16 @@ render(() => (
         <Route path="/" component={Main} />
 
         {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
-        <Route path="/comment/:id" component={CommentHomework} />
 
         {/* 课程页面 */}
         <Route path="/course/:courseId" component={CourseWrapper} data={CourseData}>
           <Route path="/" component={Course} />
+          <Route path="/homeworks/:homeworkId" data={HomeworkData}>
+            <Route path="/" component={HomeworkDetail} />
+            <Route path="/edit" component={HomeworkEdit}/>
+            <Route path="/submissions/:submissionId/comment" component={CommentHomework} />
+          </Route>
           <Route path="/homeworks" component={Homeworks} />
-          <Route path="/homeworks/:homeworkId" component={HomeworkDetail} />
-          <Route path="/homeworks/:homeworkId/edit" component={HomeworkEdit}/>
           <Route path="/homeworks/new" component={CreateHomework} />
           <Route path="/students" component={Students} />
         </Route>

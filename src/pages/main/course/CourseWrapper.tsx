@@ -1,4 +1,4 @@
-import { Outlet, useMatch, useNavigate, useParams } from '@solidjs/router';
+import { Outlet, useMatch, useNavigate, useParams, useRouteData } from '@solidjs/router';
 import {  Breadcrumbs, Link, Typography } from '@suid/material';
 import HomeIcon from "@suid/icons-material/Home";
 import AssignmentIcon from "@suid/icons-material/Assignment";
@@ -14,15 +14,19 @@ import {
 import useTheme from "@suid/material/styles/useTheme";
 import { People } from '@suid/icons-material';
 import { Match, Show, Switch} from 'solid-js';
+import { HomeworkData } from '../../..';
 
 export default function CourseWrapper() {
   const navigate = useNavigate()
   const params = useParams()
   const theme = useTheme()
 
+  const homework = useRouteData<typeof HomeworkData>()
+
   const isHome = useMatch(() => "/course/:id")
   const isHomeworks = useMatch(() => "/course/:id/homeworks/*")
   const isHomework = useMatch(() => "/course/:courseId/homeworks/:homeworkId")
+  const isComment  = useMatch(() => "/course/:courseId/homeworks/:homeworkId/submissions/:submissionId/comment")
   const isStudents = useMatch(() => "/course/:id/students/*")
   const isCreateHomework = useMatch(() => "/course/:id/homeworks/new")
 
@@ -97,7 +101,28 @@ export default function CourseWrapper() {
               >
                 Homeworks
               </Link>
-              <Typography color="text.primary">TODO: HomeworkName</Typography>
+              <Show when={homework()}>
+                <Typography color="text.primary">{homework().name}</Typography>
+              </Show>
+            </Match>
+            <Match when={isComment()}>
+              <Link
+                underline="hover"
+                color="inherit"
+                href={`/course/${params.courseId}/homeworks`}
+              >
+                Homeworks
+              </Link>
+              <Show when={homework()}>
+                <Link
+                  underline="hover"
+                  color="inherit"
+                  href={`/course/${params.courseId}/homeworks/${params.homeworkId}`}
+                >
+                  {homework().name}
+                </Link>
+              </Show>
+              <Typography color="text.primary">Comment</Typography>
             </Match>
             <Match when={isHomeworks()}>
               <Typography color="text.primary">Homeworks</Typography>

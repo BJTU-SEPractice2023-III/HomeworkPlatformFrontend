@@ -71,97 +71,105 @@ export default function Main() {
         <div class='flex'>
           <Typography>通知</Typography>
         </div>
-            <For each={homeworkProgress()}>{(homeworkProgresses, i) => <Card>
-              <CardContent>
-                <Typography>
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    进行中的作业
-                  </Typography>
-                  <Typography variant="h5" component="div">
-                    {homeworkProgresses.name}
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {homeworkProgresses.description}
-                  </Typography>
-                  <Typography variant="body2">
-                    开始日期：{homeworkProgresses.beginDate}
-                    <br />
-                    结束日期：{homeworkProgresses.endDate}
-                  </Typography>
-                </Typography>
-              </CardContent>
-            </Card>
-            }
-            </For>
-            <For each={homeworkCompleted()}>{(homeworkCompleteds, i) => <Card>
-              <CardContent>
-                <Typography>
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    结束的作业
-                  </Typography>
-                  <Typography variant="h5" component="div">
-                    {homeworkCompleteds.name}
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {homeworkCompleteds.description}
-                  </Typography>
-                  <Typography variant="body2">
-                    开始日期：{homeworkCompleteds.beginDate}
-                    <br />
-                    结束日期：{homeworkCompleteds.endDate}
-                  </Typography>
-                </Typography>
-              </CardContent>
-            </Card>
-            }
-            </For>
+        <For each={homeworkProgress()}>{(homeworkProgresses, i) => <Card>
+          <CardContent>
+            <Typography>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                进行中的作业
+              </Typography>
+              <Typography variant="h5" component="div">
+                <A href={`/course/${homeworkProgresses.CourseID}/homeworks/${homeworkProgresses.ID}`} class='text-black no-underline hover:underline'>
+                  {homeworkProgresses.name}
+                </A>
+              </Typography>
+              <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                {homeworkProgresses.description}
+              </Typography>
+              <Typography variant="body2">
+                开始日期：{homeworkProgresses.beginDate}
+                <br />
+                结束日期：{homeworkProgresses.endDate}
+              </Typography>
+            </Typography>
+          </CardContent>
+        </Card>
+        }
+        </For>
+        <For each={homeworkCompleted()}>{(homeworkCompleteds, i) => <Card>
+          <CardContent>
+            <Typography>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                结束的作业
+              </Typography>
+              <Typography variant="h5" component="div">
+                <A href={`/course/${homeworkCompleteds.CourseID}/homeworks/${homeworkCompleteds.ID}`} class='text-black no-underline hover:underline'>
+                  {homeworkCompleteds.name}
+                </A>
+              </Typography>
+              <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                {homeworkCompleteds.description}
+              </Typography>
+              <Typography variant="body2">
+                开始日期：{homeworkCompleteds.beginDate}
+                <br />
+                结束日期：{homeworkCompleteds.endDate}
+              </Typography>
+            </Typography>
+          </CardContent>
+        </Card>
+        }
+        </For>
 
-            <For each={commentProgress()}>{(commentProgresses, i) => <Card>
-              <CardContent>
-                <Typography>
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    进行中的互评
-                  </Typography>
-                  <Typography variant="h5" component="div">
-                    {commentProgresses.name}
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {commentProgresses.description}
-                  </Typography>
-                  <Typography variant="body2">
-                    互评开始日期：{commentProgresses.endDate}
-                    <br />
-                    互评结束日期：{commentProgresses.commentEndDate}
-                  </Typography>
-                </Typography>
-              </CardContent>
-            </Card>
-            }
-            </For>
+        <For each={commentProgress()}>{(commentProgresses, i) => <Card>
+          <CardContent>
+            <Typography>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                进行中的互评
+              </Typography>
+              <Typography variant="h5" component="div">
+                <A href={`/course/${commentProgresses.CourseID}/homeworks/${commentProgresses.ID}`} class='text-black no-underline hover:underline'>
+                  {commentProgresses.name}
+                </A>
+              </Typography>
+              <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                {commentProgresses.description}
+              </Typography>
+              <Typography variant="body2">
+                互评开始日期：{commentProgresses.endDate}
+                <br />
+                互评结束日期：{commentProgresses.commentEndDate}
+              </Typography>
+            </Typography>
+          </CardContent>
+        </Card>
+        }
+        </For>
 
 
-            <For each={commentCompleted()}>{(commentCompleteds, i) => <Card>
-              <CardContent>
-                <Typography>
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    结束的互评
-                  </Typography>
-                  <Typography variant="h5" component="div">
-                    {commentCompleteds.name}
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {commentCompleteds.description}
-                  </Typography>
-                  <Typography variant="body2">
-                    互评开始日期：{commentCompleteds.endDate}
-                    <br />
-                    互评结束日期：{commentCompleteds.commentEndDate}
-                  </Typography>
-                </Typography>
-              </CardContent>
-            </Card>
-            }
-            </For>
+        <For each={commentCompleted()}>{(commentCompleteds, i) => <Card>
+          <CardContent>
+            <Typography>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                结束的互评
+              </Typography>
+              <Typography variant="h5" component="div">
+                <A href={`/course/${commentCompleteds.CourseID}/homeworks/${commentCompleteds.ID}`} class='text-black no-underline hover:underline'>
+                  {commentCompleteds.name}
+                </A>
+              </Typography>
+              <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                {commentCompleteds.description}
+              </Typography>
+              <Typography variant="body2">
+                互评开始日期：{commentCompleteds.endDate}
+                <br />
+                互评结束日期：{commentCompleteds.commentEndDate}
+              </Typography>
+            </Typography>
+          </CardContent>
+        </Card>
+        }
+        </For>
       </div>
     </div >
   )

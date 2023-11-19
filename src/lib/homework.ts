@@ -17,10 +17,18 @@ export type commentHomework = {
     CreatedAt: string,
     DeletedAt: string,
     UpdatedAt: string,
-    content:string,
-    score:number,
-    userId:number
+    content: string,
+    score: number,
+    userId: number
 }
+export type CommentTask = {
+    commentId: number,
+    targetSubmissionId: number,
+    comment: string,
+    score: number,
+    done: boolean
+}
+
 export interface StudentHomework extends Homework {
     submitted: boolean,
     score: number

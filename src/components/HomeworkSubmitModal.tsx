@@ -71,6 +71,10 @@ export default function HomeworkSubmitModal(props: { homeworkId: Accessor<number
           onChange={(_event, value) => {
             setContent(value)
           }}
+          sx={{
+            // height: /
+            overflowY: 'auto'
+          }}
         />
 
         <span class='text-sm'>附件</span>
