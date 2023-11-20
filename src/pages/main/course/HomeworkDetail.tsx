@@ -128,19 +128,27 @@ export default function HomeworkDetail() {
         <div class="font-bold text-xl">
           提交的作业：
         </div>
-        <div>
-          {submitHomework().content}
-        </div>
-        <For each={submitHomework().file_paths}>
-          {(file, i) => <div>
-            <Button
-              onClick={() => {
-                getFilesList(file)
-              }}>
-              {getFilename(file)}
-            </Button>
-          </div>}
-        </For>
+        <Show when={submitHomework()}>
+          <div>
+            {submitHomework().content}
+          </div>
+          <For each={submitHomework().file_paths}>
+            {(file, i) => <div>
+              <Button
+                onClick={() => {
+                  getFilesList(file)
+                }}>
+                {getFilename(file)}
+              </Button>
+            </div>}
+          </For>
+        </Show>
+
+        <Show when={!submitHomework()}>
+          <div>
+            没交作业
+          </div>
+        </Show>
       </div>
     </Paper>
   }
