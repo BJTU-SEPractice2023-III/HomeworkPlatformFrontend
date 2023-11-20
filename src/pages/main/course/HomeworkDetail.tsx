@@ -10,6 +10,8 @@ import { useNavigate } from '@solidjs/router';
 import { CommentTask } from '../../../lib/homework';
 import { CourseData, HomeworkData } from '../../..';
 import { Switch, Match } from 'solid-js';
+import { A } from '@solidjs/router';
+import { getFiles } from '../../../lib/homework';
 
 export default function HomeworkDetail() {
   const params = useParams();
@@ -19,7 +21,7 @@ export default function HomeworkDetail() {
 
   const navigate = useNavigate()
   // const [homework, setHomework] = createSignal<StudentHomework>();
-  const [homeworkSubmission, setHomeworkSubmission] = createSignal<Homework[]>([]);
+  const [fileLists, setfileLists] = createSignal<string[]>([]);
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
@@ -30,11 +32,17 @@ export default function HomeworkDetail() {
         console.log(res)
         // setHomeworkSubmission(res.homework_submission)
         setCommentTasks(res.comment_lists)
+        setfileLists(homework().file_paths)
       }).catch((err) => {
         console.error('get commend failed: ', err)
       });
     }
   })
+
+  function getFilesList(path: string) {
+    const res = getFiles(path)
+    console.log(res)
+  }
 
   function mutualAssessment() {
     return <Paper sx={{ padding: 4 }}>
@@ -83,13 +91,13 @@ export default function HomeworkDetail() {
   }
   function submit() {
     return <Paper sx={{ padding: 4 }}>
-    <div class="mt-4">
-      <div class="font-bold text-xl">
-        提交的作业：
+      <div class="mt-4">
+        <div class="font-bold text-xl">
+          提交的作业：
+        </div>
+
       </div>
-      
-    </div>
-  </Paper>
+    </Paper>
   }
 
   return (
@@ -122,6 +130,16 @@ export default function HomeworkDetail() {
             <div class="content">
               {homework().description}
             </div>
+            <For each={fileLists()}>
+              {(fileList, i) => <div>
+                <Button
+                  onClick={() => {
+                    getFilesList(fileList)
+                  }}>
+                  {fileList}
+                </Button>
+              </div>}
+            </For>
           </div>
         </Paper>
 

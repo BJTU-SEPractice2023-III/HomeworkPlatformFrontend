@@ -7,7 +7,8 @@ export type Homework = {
     description: string
     beginDate: string,
     endDate: string,
-    commentEndDate: string
+    commentEndDate: string,
+    file_paths : string[]
 }
 
 export type commentHomework = {
@@ -51,6 +52,10 @@ export function homeworksComment(id: number) {
 
 export function getSubmit(id: number) {
     return get(`/v1/submit/${id}`)
+}
+
+export function getFiles(path:string){
+    return get(`/v1/file/${path}`)
 }
 
 export function postComment(id: number, score: number, comment: string) {
