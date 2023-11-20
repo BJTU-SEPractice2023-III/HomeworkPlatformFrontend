@@ -50,7 +50,7 @@ export default function Main() {
           </Show>
           <For each={teachingCourses()}>
             {(lesson, i) => <div>
-              <Show when = {lesson.name == searchTeaching() || searchTeaching() == ''}>
+              <Show when = {lesson.name.includes(searchTeaching())  || searchTeaching() == ''}>
                 <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                   {lesson.name}
                 </A>
@@ -78,7 +78,7 @@ export default function Main() {
           </Show>
           <For each={learningCourses()}>
             {(lesson, i) => <div>
-              <Show when = {lesson.name == searchLeaching() || searchLeaching() == ''}>
+              <Show when = {lesson.name.includes(searchLeaching()) || searchLeaching() == ''}>
               <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                 {lesson.name}
               </A>
