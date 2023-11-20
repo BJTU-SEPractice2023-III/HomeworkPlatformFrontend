@@ -98,7 +98,7 @@ export default function Main() {
                 进行中的作业
               </Typography>
               <Typography variant="h5" component="div">
-                <A href={`/course/${homeworkProgresses.CourseID}/homeworks/${homeworkProgresses.ID}`} class='text-black no-underline hover:underline'>
+                <A href={`/course/${homeworkProgresses.courseId}/homeworks/${homeworkProgresses.ID}`} class='text-black no-underline hover:underline'>
                   {homeworkProgresses.name}
                 </A>
               </Typography>
@@ -122,7 +122,7 @@ export default function Main() {
                 结束的作业
               </Typography>
               <Typography variant="h5" component="div">
-                <A href={`/course/${homeworkCompleteds.CourseID}/homeworks/${homeworkCompleteds.ID}`} class='text-black no-underline hover:underline'>
+                <A href={`/course/${homeworkCompleteds.courseId}/homeworks/${homeworkCompleteds.ID}`} class='text-black no-underline hover:underline'>
                   {homeworkCompleteds.name}
                 </A>
               </Typography>
@@ -147,7 +147,7 @@ export default function Main() {
                 进行中的互评
               </Typography>
               <Typography variant="h5" component="div">
-                <A href={`/course/${commentProgresses.CourseID}/homeworks/${commentProgresses.ID}`} class='text-black no-underline hover:underline'>
+                <A href={`/course/${commentProgresses.courseId}/homeworks/${commentProgresses.ID}`} class='text-black no-underline hover:underline'>
                   {commentProgresses.name}
                 </A>
               </Typography>
@@ -173,7 +173,7 @@ export default function Main() {
                 结束的互评
               </Typography>
               <Typography variant="h5" component="div">
-                <A href={`/course/${commentCompleteds.CourseID}/homeworks/${commentCompleteds.ID}`} class='text-black no-underline hover:underline'>
+                <A href={`/course/${commentCompleteds.courseId}/homeworks/${commentCompleteds.ID}`} class='text-black no-underline hover:underline'>
                   {commentCompleteds.name}
                 </A>
               </Typography>

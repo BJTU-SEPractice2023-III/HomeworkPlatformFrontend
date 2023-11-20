@@ -11,20 +11,29 @@ import { CommentTask } from '../../../lib/homework';
 import { CourseData, HomeworkData } from '../../..';
 import { Switch, Match } from 'solid-js';
 import { A } from '@solidjs/router';
-import { getFiles } from '../../../lib/homework';
+// import { getFiles } from '../../../lib/homework';
+import { getHomeworkById } from '../../../lib/homework';
+import axios from 'axios';
 
 export default function HomeworkDetail() {
   const params = useParams();
   const homework = useRouteData<typeof HomeworkData>()
-  // const  = useRouteData<typeof CourseData>()
+  // const  = useRouteData<typeof CourseData>HomeworkData()
   const [tab, setTab] = createSignal('mutualAssessment');
 
   const navigate = useNavigate()
-  // const [homework, setHomework] = createSignal<StudentHomework>();
-  const [fileLists, setfileLists] = createSignal<string[]>([]);
+  const [submitHomework, setSubmitHomework] = createSignal<Homework>();
+  const [fileList, setfileList] = createSignal<string[]>([]);
+
+  const [fileName,setFileName] = createSignal('');
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
+
+  const getFilename = (path: string) => {
+    const parts = path.split('\\')
+    return parts[parts.length - 1]
+  }
 
   createEffect(() => {
     if (homework()) {
@@ -32,16 +41,40 @@ export default function HomeworkDetail() {
         console.log(res)
         // setHomeworkSubmission(res.homework_submission)
         setCommentTasks(res.comment_lists)
-        setfileLists(homework().file_paths)
+        setfileList(homework().file_paths)
       }).catch((err) => {
         console.error('get commend failed: ', err)
       });
     }
   })
 
-  function getFilesList(path: string) {
-    const res = getFiles(path)
-    console.log(res)
+  onMount(() => {
+    getHomeworkById(parseInt(params.homeworkId)).then(res => {
+      setSubmitHomework(res)
+      console.log(res)
+    })
+  })
+
+  async function getFilesList(path: string) {
+    axios.get(`http://127.0.0.1:8888/api/v1/file/${path}`, {
+      responseType: 'blob',
+      timeout: 3000,
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('jwt')}`,
+        'Content-Type': 'application/json',
+      }
+    }).then((res) => {
+      // console.log(res.data)
+      var link = document.createElement('a');
+      link.href = window.URL.createObjectURL(new Blob([res.data]));
+      //设置链接的下载属性和文件名
+      const result = path.split("\\");
+      link.download = result[result.length-1]
+      //触发点击事件
+      link.click();
+      //释放虚拟链接
+      window.URL.revokeObjectURL(link.href);
+    })
   }
 
   function mutualAssessment() {
@@ -95,7 +128,9 @@ export default function HomeworkDetail() {
         <div class="font-bold text-xl">
           提交的作业：
         </div>
-
+        <div>
+          {submitHomework().content}
+        </div>
       </div>
     </Paper>
   }
@@ -130,13 +165,13 @@ export default function HomeworkDetail() {
             <div class="content">
               {homework().description}
             </div>
-            <For each={fileLists()}>
-              {(fileList, i) => <div>
+            <For each={fileList()}>
+              {(file, i) => <div>
                 <Button
                   onClick={() => {
-                    getFilesList(fileList)
+                    getFilesList(file)
                   }}>
-                  {fileList}
+                  {getFilename(file)}
                 </Button>
               </div>}
             </For>

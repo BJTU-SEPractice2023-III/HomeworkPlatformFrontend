@@ -1,14 +1,16 @@
+import axios from "axios"
 import { get, post, del, put, putFormData } from "./axios"
 export type Homework = {
     ID: number,
     files: File,
-    CourseID: number,
+    courseId: number,
     name: string,
     description: string
     beginDate: string,
     endDate: string,
     commentEndDate: string,
-    file_paths : string[]
+    file_paths : string[],
+    content:string
 }
 
 export type commentHomework = {
@@ -54,8 +56,15 @@ export function getSubmit(id: number) {
     return get(`/v1/submit/${id}`)
 }
 
-export function getFiles(path:string){
-    return get(`/v1/file/${path}`)
+// export function getFiles(path:string) {
+    // return get(`/v1/file/${path}`)
+    // return axios.get(`/v1/file/${path}`, {
+    //     responseType: 'blob',
+    // })
+// }
+
+export function getHomeworkById(id:number){
+    return get(`/v1/homeworks/${id}/submission`)
 }
 
 export function postComment(id: number, score: number, comment: string) {
