@@ -16,6 +16,8 @@ export default function Main() {
   const [commentCompleted, setCommentCompleted] = createSignal<Homework[]>([]);
   const [homeworkCompleted, setHomeworkCompleted] = createSignal<Homework[]>([]);
   const [commentProgress, setCommentProgress] = createSignal<Homework[]>([]);
+  const [searchTeaching, setSearchTeaching] = createSignal('');
+  const [searchLeaching, setSearchLeaching] = createSignal('');
 
   onMount(async () => {
     await updateUserCourses()
@@ -35,15 +37,24 @@ export default function Main() {
             <span>教的课程</span>
             <Button variant='contained' size='small' onClick={() => navigate('/course/create')}>创建课程</Button>
           </div>
-          <TextField label="search" size='small' />
+          <TextField
+            label="search"
+            size='small'
+            value={searchTeaching()}
+            onChange={(_event, value) => {
+              setSearchTeaching(value)
+            }}
+          />
           <Show when={teachingCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={teachingCourses()}>
             {(lesson, i) => <div>
-              <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
-                {lesson.name}
-              </A>
+              <Show when = {lesson.name == searchTeaching() || searchTeaching() == ''}>
+                <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
+                  {lesson.name}
+                </A>
+              </Show>
             </div>}
           </For>
         </div>
@@ -54,19 +65,28 @@ export default function Main() {
           <div class='flex items-center justify-between'>
             <span>学的课程</span>
           </div>
-          <TextField label="search" size='small' />
+          <TextField 
+          label="search" 
+          size='small' 
+          value={searchLeaching()}
+          onChange={(_event, value) => {
+            setSearchLeaching(value)
+          }}
+          />
           <Show when={learningCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={learningCourses()}>
             {(lesson, i) => <div>
+              <Show when = {lesson.name == searchLeaching() || searchLeaching() == ''}>
               <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                 {lesson.name}
               </A>
+              </Show>
             </div>}
           </For>
         </div>
-      </aside>
+      </aside >
       <div class='flex-1 flex flex-col p-6 gap-4'>
         <div class='flex'>
           <Typography>通知</Typography>

@@ -37,12 +37,53 @@ export default function HomeworkDetail() {
   })
 
   function a() {
-    return <>
-      homework</>
+    return <Paper sx={{ padding: 4 }}>
+      <div class="mt-4">
+        <div class="font-bold text-xl">
+          互评作业：
+        </div>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>编号</TableCell>
+                <TableCell>评论</TableCell>
+                <TableCell>成绩</TableCell>
+                <TableCell>操作</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <For each={commentTasks()}>{(commentTask, i) => <TableRow>
+                <TableCell>{i() + 1}</TableCell>
+                <TableCell>
+                  <p class="text-ellipsis overflow-hidden">
+                    {commentTask.comment}
+                  </p>
+                </TableCell>
+                <TableCell>
+                  {commentTask.score}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    onClick={() => { navigate(`submissions/${commentTask.targetSubmissionId}/comment`) }}
+                  // disabled={commentTask.done}
+                  >
+                    {commentTask.done ? "已批改" : "批改"}
+                  </Button>
+                </TableCell>
+              </TableRow>}
+              </For>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    </Paper>
   }
   function submit() {
     return <>
-      students</>
+      submit</>
   }
 
   return (
@@ -88,7 +129,7 @@ export default function HomeworkDetail() {
         </div>
 
         <Show when={homework()}>
-          <Switch fallback={<>在写了在写了</>}>
+          <Switch fallback={<></>}>
             <Match when={tab() == 'a'}>
               {a()}
             </Match>
@@ -97,51 +138,6 @@ export default function HomeworkDetail() {
             </Match>
           </Switch>
         </Show>
-
-        {/* 提交作业 */}
-        <Paper sx={{ padding: 4 }}>
-          <div class="mt-4">
-            <div class="font-bold text-xl">
-              互评作业：
-            </div>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>编号</TableCell>
-                    <TableCell>评论</TableCell>
-                    <TableCell>成绩</TableCell>
-                    <TableCell>操作</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <For each={commentTasks()}>{(commentTask, i) => <TableRow>
-                    <TableCell>{i() + 1}</TableCell>
-                    <TableCell>
-                      <p class="text-ellipsis overflow-hidden">
-                        {commentTask.comment}
-                      </p>
-                    </TableCell>
-                    <TableCell>
-                      {commentTask.score}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant='contained'
-                        size='small'
-                        onClick={() => { navigate(`submissions/${commentTask.targetSubmissionId}/comment`) }}
-                      // disabled={commentTask.done}
-                      >
-                        {commentTask.done ? "已批改" : "批改"}
-                      </Button>
-                    </TableCell>
-                  </TableRow>}
-                  </For>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-        </Paper>
       </div>
     </Show>
   );
