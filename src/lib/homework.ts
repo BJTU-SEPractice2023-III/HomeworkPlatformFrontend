@@ -23,10 +23,10 @@ export type commentHomework = {
 }
 export type CommentTask = {
     commentId: number,
-    targetSubmissionId: number,
     comment: string,
     score: number,
-    done: boolean
+    done: boolean,
+    homeworkSubmissionId:number,
 }
 
 export interface StudentHomework extends Homework {

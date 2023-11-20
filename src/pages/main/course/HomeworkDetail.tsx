@@ -15,7 +15,7 @@ export default function HomeworkDetail() {
   const params = useParams();
   const homework = useRouteData<typeof HomeworkData>()
   // const  = useRouteData<typeof CourseData>()
-  const [tab, setTab] = createSignal('index');
+  const [tab, setTab] = createSignal('mutualAssessment');
 
   const navigate = useNavigate()
   // const [homework, setHomework] = createSignal<StudentHomework>();
@@ -29,14 +29,14 @@ export default function HomeworkDetail() {
       homeworksComment(parseInt(params.homeworkId)).then((res) => {
         console.log(res)
         // setHomeworkSubmission(res.homework_submission)
-        setCommentTasks(res)
+        setCommentTasks(res.comment_lists)
       }).catch((err) => {
         console.error('get commend failed: ', err)
       });
     }
   })
 
-  function a() {
+  function mutualAssessment() {
     return <Paper sx={{ padding: 4 }}>
       <div class="mt-4">
         <div class="font-bold text-xl">
@@ -67,7 +67,7 @@ export default function HomeworkDetail() {
                   <Button
                     variant='contained'
                     size='small'
-                    onClick={() => { navigate(`submissions/${commentTask.targetSubmissionId}/comment`) }}
+                    onClick={() => { navigate(`submissions/${commentTask.homeworkSubmissionId}/comment`) }}
                   // disabled={commentTask.done}
                   >
                     {commentTask.done ? "已批改" : "批改"}
@@ -82,8 +82,14 @@ export default function HomeworkDetail() {
     </Paper>
   }
   function submit() {
-    return <>
-      submit</>
+    return <Paper sx={{ padding: 4 }}>
+    <div class="mt-4">
+      <div class="font-bold text-xl">
+        提交的作业：
+      </div>
+      
+    </div>
+  </Paper>
   }
 
   return (
@@ -120,7 +126,7 @@ export default function HomeworkDetail() {
         </Paper>
 
         <div class='flex w-full gap-2 mb-2'>
-          <Button sx={{ borderBottom: tab() == 'a' ? 1 : 0 }} onClick={() => { setTab('a') }}>
+          <Button sx={{ borderBottom: tab() == 'mutualAssessment' ? 1 : 0 }} onClick={() => { setTab('mutualAssessment') }}>
             互评作业
           </Button>
           <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit') }}>
@@ -130,8 +136,8 @@ export default function HomeworkDetail() {
 
         <Show when={homework()}>
           <Switch fallback={<></>}>
-            <Match when={tab() == 'a'}>
-              {a()}
+            <Match when={tab() == 'mutualAssessment'}>
+              {mutualAssessment()}
             </Match>
             <Match when={tab() == 'submit'}>
               {submit()}
