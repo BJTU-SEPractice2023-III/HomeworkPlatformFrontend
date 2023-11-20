@@ -1,19 +1,20 @@
 import { Navigate, useParams } from '@solidjs/router';
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
-import { Show, createSignal, onMount } from 'solid-js';
+import { For, Show, createSignal, onMount } from 'solid-js';
 import { getSubmit, Homework, postComment, commentHomework } from '../../../lib/homework';
 import { useNavigate } from '@solidjs/router';
+import axios from 'axios';
 export default function CommentHomework() {
   const params = useParams();
   const [score, setScore] = createSignal(0);
   const [comments, setComments] = createSignal('');
   const [submit, setSubmit] = createSignal<commentHomework>();
   const navigate = useNavigate()
-
+  const [fileList, setfileList] = createSignal<string[]>([]);
   const handleScoreChange = (event, value) => {
     const newValue = parseInt(event.target.value, 10); // 解析输入的新值为整数
     console.log(value)
-    
+
     if (0 <= newValue && newValue <= 100) {
       setScore(newValue); // 更新状态值
     } else {
@@ -25,6 +26,7 @@ export default function CommentHomework() {
     getSubmit(parseInt(params.submissionId)).then((res) => {
       console.log(res)
       setSubmit(res)
+      setfileList(res.file_paths)
     });
   })
 
@@ -34,6 +36,31 @@ export default function CommentHomework() {
       console.log(comments())
       navigate('../../../')
     });
+  }
+  const getFilename = (path: string) => {
+    const parts = path.split('\\')
+    return parts[parts.length - 1]
+  }
+  async function getFilesList(path: string) {
+    axios.get(`http://127.0.0.1:8888/api/v1/file/${path}`, {
+      responseType: 'blob',
+      timeout: 3000,
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('jwt')}`,
+        'Content-Type': 'application/json',
+      }
+    }).then((res) => {
+      // console.log(res.data)
+      var link = document.createElement('a');
+      link.href = window.URL.createObjectURL(new Blob([res.data]));
+      //设置链接的下载属性和文件名
+      const result = path.split("\\");
+      link.download = result[result.length - 1]
+      //触发点击事件
+      link.click();
+      //释放虚拟链接
+      window.URL.revokeObjectURL(link.href);
+    })
   }
 
 
@@ -54,6 +81,16 @@ export default function CommentHomework() {
                 作业内容：{submit().content}
                 <br />
                 作业链接
+                <For each={fileList()}>
+                  {(file, i) => <div>
+                    <Button
+                      onClick={() => {
+                        getFilesList(file)
+                      }}>
+                      {getFilename(file)}
+                    </Button>
+                  </div>}
+                </For>
               </Typography>
             </CardContent>
           </Card>
@@ -83,7 +120,7 @@ export default function CommentHomework() {
             setComments(value)
           }}
           sx={{
-            height:'180px',
+            height: '180px',
             overflowY: 'auto'
           }}
         />

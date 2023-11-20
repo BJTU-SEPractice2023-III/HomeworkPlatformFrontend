@@ -25,7 +25,7 @@ export default function HomeworkDetail() {
   const [submitHomework, setSubmitHomework] = createSignal<Homework>();
   const [fileList, setfileList] = createSignal<string[]>([]);
 
-  const [fileName,setFileName] = createSignal('');
+  const [fileName, setFileName] = createSignal('');
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
@@ -69,7 +69,7 @@ export default function HomeworkDetail() {
       link.href = window.URL.createObjectURL(new Blob([res.data]));
       //设置链接的下载属性和文件名
       const result = path.split("\\");
-      link.download = result[result.length-1]
+      link.download = result[result.length - 1]
       //触发点击事件
       link.click();
       //释放虚拟链接
@@ -131,6 +131,16 @@ export default function HomeworkDetail() {
         <div>
           {submitHomework().content}
         </div>
+        <For each={submitHomework().file_paths}>
+          {(file, i) => <div>
+            <Button
+              onClick={() => {
+                getFilesList(file)
+              }}>
+              {getFilename(file)}
+            </Button>
+          </div>}
+        </For>
       </div>
     </Paper>
   }
