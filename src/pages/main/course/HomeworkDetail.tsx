@@ -1,6 +1,6 @@
 import { useParams, useRouteData } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
-import { getHomework, Homework, isEnded, notStartYet, StudentHomework, homeworksComment } from '../../../lib/homework'
+import { getHomework, Homework, isEnded, notStartYet, StudentHomework, homeworksComment, commentHomework } from '../../../lib/homework'
 import { Button, Typography, Divider, Paper, } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
@@ -14,6 +14,8 @@ import { A } from '@solidjs/router';
 // import { getFiles } from '../../../lib/homework';
 import { getHomeworkById } from '../../../lib/homework';
 import axios from 'axios';
+import { getMyComment } from '../../../lib/homework';
+import LookComment from '../../../components/LookComments';
 
 export default function HomeworkDetail() {
   const params = useParams();
@@ -23,13 +25,14 @@ export default function HomeworkDetail() {
 
   const navigate = useNavigate()
   const [submitHomework, setSubmitHomework] = createSignal<Homework>();
+  const [myComments, setMyComments] = createSignal<CommentTask[]>([]);
   const [fileList, setfileList] = createSignal<string[]>([]);
 
   const [fileName, setFileName] = createSignal('');
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
-
+  const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false)
   const getFilename = (path: string) => {
     const parts = path.split('\\')
     return parts[parts.length - 1]
@@ -53,6 +56,11 @@ export default function HomeworkDetail() {
       setSubmitHomework(res)
       console.log(res)
     })
+    getMyComment(parseInt(params.homeworkId)).then(res => {
+      setMyComments(res)
+      console.log("我的评论")
+      console.log(res)
+    })
   })
 
   async function getFilesList(path: string) {
@@ -61,18 +69,16 @@ export default function HomeworkDetail() {
       timeout: 3000,
       headers: {
         Authorization: `Bearer ${window.localStorage.getItem('jwt')}`,
-        'Content-Type': 'application/json',
       }
     }).then((res) => {
-      // console.log(res.data)
       var link = document.createElement('a');
       link.href = window.URL.createObjectURL(new Blob([res.data]));
-      //设置链接的下载属性和文件名
+      // 设置链接的下载属性和文件名
       const result = path.split("\\");
       link.download = result[result.length - 1]
-      //触发点击事件
+      // 触发点击事件
       link.click();
-      //释放虚拟链接
+      // 释放虚拟链接
       window.URL.revokeObjectURL(link.href);
     })
   }
@@ -123,34 +129,83 @@ export default function HomeworkDetail() {
     </Paper>
   }
   function submit() {
-    return <Paper sx={{ padding: 4 }}>
-      <div class="mt-4">
-        <div class="font-bold text-xl">
-          提交的作业：
-        </div>
-        <Show when={submitHomework()}>
-          <div>
-            {submitHomework().content}
+    return <div>
+      <Paper sx={{ padding: 4 }}>
+        <div class="mt-4">
+          <div class="font-bold text-xl">
+            提交的作业：
           </div>
-          <For each={submitHomework().file_paths}>
-            {(file, i) => <div>
-              <Button
-                onClick={() => {
-                  getFilesList(file)
-                }}>
-                {getFilename(file)}
-              </Button>
-            </div>}
-          </For>
-        </Show>
+          <Show when={submitHomework()}>
+            <div>
+              {submitHomework().content}
+            </div>
+            <For each={submitHomework().file_paths}>
+              {(file, i) => <div>
+                <Button
+                  onClick={() => {
+                    getFilesList(file)
+                  }}>
+                  {getFilename(file)}
+                </Button>
+              </div>}
+            </For>
+          </Show>
 
-        <Show when={!submitHomework()}>
-          <div>
-            没交作业
+          <Show when={!submitHomework()}>
+            <div>
+              没交作业
+            </div>
+          </Show>
+        </div>
+      </Paper>
+
+      <Divider />
+
+      <Paper sx={{ padding: 4 }}>
+        <div class="mt-4">
+          <div class="font-bold text-xl">
+            结果公示：
           </div>
-        </Show>
-      </div>
-    </Paper>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>分数</TableCell>
+                  <TableCell>评论</TableCell>
+                  <TableCell>查看详情</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <For each={myComments()}>{(myComment, i) => <TableRow>
+                  <TableCell>
+                    <p class="text-ellipsis overflow-hidden">
+                      {myComment.score}
+                    </p>
+                  </TableCell>
+                  <TableCell>
+                    <p class="text-ellipsis overflow-hidden">
+                      {myComment.comment}
+                    </p>
+                  </TableCell>
+                  <TableCell>
+                    <LookComment comment={() => myComment.comment} open={lookCommentsModelOpen} setOpen={setLookCommentsModelOpen} />
+                    <Button
+                      variant='contained'
+                      size='small'
+                      onClick={() => { setLookCommentsModelOpen(true) }}
+                    >
+                      查看详情
+                    </Button>
+                  </TableCell>
+                </TableRow>}
+                </For>
+              </TableBody>
+
+            </Table>
+          </TableContainer>
+        </div>
+      </Paper>
+    </div>
   }
 
   return (
@@ -197,16 +252,16 @@ export default function HomeworkDetail() {
         </Paper>
 
         <div class='flex w-full gap-2 mb-2'>
+          <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit') }}>
+            我的提交
+          </Button>
           <Button sx={{ borderBottom: tab() == 'mutualAssessment' ? 1 : 0 }} onClick={() => { setTab('mutualAssessment') }}>
             互评作业
-          </Button>
-          <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit') }}>
-            提交作业
           </Button>
         </div>
 
         <Show when={homework()}>
-          <Switch fallback={<></>}>
+          <Switch>
             <Match when={tab() == 'mutualAssessment'}>
               {mutualAssessment()}
             </Match>

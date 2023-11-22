@@ -2,10 +2,11 @@ import axios from 'axios'
 
 const host = 'http://127.0.0.1:8888/api'
 
-export function get(url: string): Promise<any> {
+export function get(url: string, options?: any): Promise<any> {
   return new Promise((resolve, reject) => {
     axios
       .get(`${host}${url}`, {
+        ...options,
         timeout: 3000,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('jwt')}`,

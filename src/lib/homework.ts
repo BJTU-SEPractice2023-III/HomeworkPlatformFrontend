@@ -67,6 +67,10 @@ export function getHomeworkById(id:number){
     return get(`/v1/homeworks/${id}/submission`)
 }
 
+export function getMyComment(id:number){
+    return get(`/v1/homeworks/${id}/mycomments`)
+}
+
 export function postComment(id: number, score: number, comment: string) {
     return post(`/v1/comment/${id}`, {
         score,
