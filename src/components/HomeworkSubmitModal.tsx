@@ -1,12 +1,12 @@
-import { Box, Button, Modal, Paper, TextField, Typography, useTheme } from "@suid/material"
-import { Accessor, Setter, Signal, createEffect, createSignal, onMount } from "solid-js"
-import { createStore } from "solid-js/store"
+import { Button, Modal, Paper, TextField, Typography } from "@suid/material"
+import { Accessor, Setter, createEffect, createSignal } from "solid-js"
+import { SetStoreFunction, createStore } from "solid-js/store"
 import { postFormData } from "../lib/axios"
 import FileUploader from "./FileUploader"
+import { StudentHomework } from "../lib/homework"
 
-export default function HomeworkSubmitModal(props: { homeworkId: Accessor<number>, open: Accessor<boolean>, setOpen: Setter<boolean> }) {
-  const { homeworkId, open, setOpen } = props
-  const theme = useTheme()
+export default function HomeworkSubmitModal(props: { homeworkId: Accessor<number>, onSubmitted: (id: number) => void, open: Accessor<boolean>, setOpen: Setter<boolean> }) {
+  const { homeworkId, onSubmitted, open, setOpen } = props
 
   const [content, setContent] = createSignal("")
   const [files, setFiles] = createStore<File[]>([])
@@ -27,7 +27,7 @@ export default function HomeworkSubmitModal(props: { homeworkId: Accessor<number
     formData.set("content", content())
 
     postFormData(`/v1/homeworks/${homeworkId()}/submits`, formData).then((res) => {
-      console.log(res)
+      onSubmitted(homeworkId())
       setOpen(false)
     }).catch((err) => {
       console.error(err)

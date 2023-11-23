@@ -63,8 +63,6 @@ export default function CommentHomework() {
     })
   }
 
-
-
   return (
     <div class='flex-1 flex w-full'>
       <div class='flex flex-col gap-2 w-full'>

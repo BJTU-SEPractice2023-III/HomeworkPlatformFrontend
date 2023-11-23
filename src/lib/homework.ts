@@ -40,7 +40,7 @@ export function getCourseHomeworks(id: number): Promise<StudentHomework[]> {
     return get(`/v1/courses/${id}/homeworks`)
 }
 
-export function getHomework(id: number): Promise<StudentHomework> {
+export function getHomework(id: number): Promise<Homework> {
     return get(`/v1/homeworks/${id}`)
 }
 

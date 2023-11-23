@@ -5,7 +5,8 @@ export type Course = {
     name: string,
     description: string
     beginDate: string,
-    endDate: string
+    endDate: string,
+    teacherID: number,
 }
 
 export type Student = {

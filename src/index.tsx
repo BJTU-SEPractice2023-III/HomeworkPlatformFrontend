@@ -1,6 +1,6 @@
 import 'uno.css';
 import { render } from 'solid-js/web';
-import { Router } from '@solidjs/router';
+import { Router, useParams } from '@solidjs/router';
 import { Routes, Route, A } from '@solidjs/router';
 import Main from './pages/main/Main';
 import Courses from './pages/main/Courses';
@@ -42,15 +42,14 @@ export function LoginData({ params, location, navigate, data }) {
 export function CourseData({ params, location, navigate, data }) {
   const { updateUserCourses } = UserCoursesStore()
   updateUserCourses()
-  const [course] = createResource(() => params.courseId, async () => (await getCourse(parseInt(params.courseId))));
-  return course
+
+  const [course, { mutate, refetch }] = createResource(() => params.courseId, async () => await getCourse(parseInt(params.courseId)));
+  return { course, mutateCourse: mutate, refetchCourse: refetch, ...data }
 }
 
-export function HomeworkData({ params, location, navigate, data}) {
-  // console.log(params.homeworkId)
-  const [homework] = createResource(() => params.homeworkId, async () => await getHomework(parseInt(params.homeworkId)))
-  // console.log("homeworkdata: ", data())
-  return homework
+export function HomeworkData({ params, location, navigate, data }) {
+  const [homework, { mutate, refetch }] = createResource(() => params.homeworkId, async () => await getHomework(parseInt(params.homeworkId)))
+  return {homework, mutateHomework: mutate, refetchHomework: refetch, ...data}
 }
 
 // TODO: add alert stack gor global usage
@@ -60,36 +59,29 @@ render(() => (
       {/* /login 和 /register 不要求登录 */}
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+
       {/* 其他路径需要登录，通过 LoginData 检验 localStorage 是否存在 jwt */}
       <Route path="/" component={MainWrapper} data={LoginData}>
         {/* 主页 */}
         <Route path="/" component={Main} />
 
-        {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
-
+        {/* 创建课程页面*/}
+        <Route path="/course/create" component={Create} />
+        {/* 课程列表页面 */}
+        <Route path="/courses" component={Courses} />
         {/* 课程页面 */}
         <Route path="/course/:courseId" component={CourseWrapper} data={CourseData}>
           <Route path="/" component={Course} />
-          <Route path="/homeworks/:homeworkId" data={HomeworkData}>
-            <Route path="/" component={HomeworkDetail} />
-            <Route path="/edit" component={HomeworkEdit}/>
-            <Route path="/submissions/:submissionId/comment" component={CommentHomework} />
-          </Route>
           <Route path="/homeworks" component={Homeworks} />
           <Route path="/homeworks/new" component={CreateHomework} />
+          <Route path="/homeworks/:homeworkId" data={HomeworkData}>
+            {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
+            <Route path="/" component={HomeworkDetail} />
+            <Route path="/edit" component={HomeworkEdit} />
+            <Route path="/submissions/:submissionId/comment" component={CommentHomework} />
+          </Route>
           <Route path="/students" component={Students} />
         </Route>
-
-        {/* 课程列表页面 */}
-        <Route path="/courses" component={Courses} />
-        {/* 具体课程页面，根据传入的 id 获取课程数据渲染 */}
-        {/* <Route path="/course/:id" component={Course} /> */}
-        {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
-        <Route path="/homework/:id" component={HomeworkDetail} />
-        {/* 创建课程页面*/}
-        <Route path="/course/create" component={Create} />
-        {/* 创建课程作业页面*/}
-        <Route path="/homework/createHomework/:id" component={CreateHomework} />
       </Route>
     </Routes>
   </Router>

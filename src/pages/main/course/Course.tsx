@@ -8,7 +8,7 @@ import { CourseData } from '../../../index';
 export default function Course() {
   const params = useParams();
 
-  const course = useRouteData<typeof CourseData>()
+  const {course, mutateCourse, refetchCourse} = useRouteData<typeof CourseData>()
 
   return (
     <Show when={course()}>

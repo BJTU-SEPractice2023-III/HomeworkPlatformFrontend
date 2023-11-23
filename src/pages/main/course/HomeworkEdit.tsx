@@ -1,12 +1,10 @@
-import { Box, Button, Divider, TextField } from '@suid/material'
-import { For, createSignal,onMount } from 'solid-js'
+import { Button, Divider, TextField } from '@suid/material'
+import { createSignal,onMount } from 'solid-js'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
-import { postFormData } from '../../../lib/axios';
-import { getHomework, isEnded, notStartYet, StudentHomework,homeworksComment } from '../../../lib/homework'
+import { getHomework } from '../../../lib/homework'
 import { createStore } from 'solid-js/store';
-import { DeleteOutline } from '@suid/icons-material';
 import FileUploader from '../../../components/FileUploader';
 import { putHomework } from '../../../lib/homework';
 
@@ -26,8 +24,6 @@ export default function HomeworkEdit() {
     },
     label: "",
   });
-
-
 
   onMount(() => {
     getHomework(parseInt(params.homeworkId)).then((res) => {

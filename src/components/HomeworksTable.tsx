@@ -5,8 +5,9 @@ import { Homework, StudentHomework, delHomework, isEnded, notStartYet } from "..
 import { formatDateTime } from "../lib/utils";
 import { useNavigate } from "@solidjs/router";
 import HomeworkSubmitModal from "./HomeworkSubmitModal";
+import { SetStoreFunction, Store } from "solid-js/store";
 
-export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>, setHomeworks: Setter<Homework[]>, isTeaching: boolean }) {
+export default function HomeworksTable(props: { homeworks: Store<Homework[]>, setHomeworks: SetStoreFunction<Homework[]>, isTeaching: boolean }) {
   const navigate = useNavigate()
 
   const { homeworks, setHomeworks, isTeaching } = props
@@ -35,7 +36,12 @@ export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>,
 
   return (
     <>
-      <HomeworkSubmitModal homeworkId={submitHomeworkId} open={open} setOpen={setOpen} />
+      <HomeworkSubmitModal homeworkId={submitHomeworkId} onSubmitted={
+        (id) => {
+          (setHomeworks as SetStoreFunction<StudentHomework[]>)(
+            homework => homework.ID == id, 'submitted', true);
+        }
+      } open={open} setOpen={setOpen} />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
@@ -51,7 +57,7 @@ export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>,
             </TableRow>
           </TableHead>
           <TableBody>
-            <For each={homeworks()}>{(homework, i) => <TableRow>
+            <For each={homeworks}>{(homework, i) => <TableRow>
               <TableCell><span class={getColor(homework)}>{homework.ID}</span></TableCell>
               <TableCell>
                 <div class="flex gap-2 items-center">
@@ -90,12 +96,6 @@ export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>,
                       </Match>
                     </Switch>
                   </TableCell>
-                  {/* <TableCell size='medium'>
-                                <Button onClick={() => { navigate(`${homework.ID}/submit`); }}>提交作业</Button>
-                            </TableCell>
-                            <TableCell size='medium'>
-                                <Button onClick={() => { navigate(`${homework.ID}/comment`); }}>批阅作业</Button>
-                            </TableCell> */}
                 </Match>
                 <Match when={isTeaching}>
                   <TableCell>
@@ -107,7 +107,6 @@ export default function HomeworksTable(props: { homeworks: Accessor<Homework[]>,
                           setHomeworks((homeworkList) => {
                             return homeworkList.filter(item => item.ID !== homework.ID)
                           });
-                          // console.log(res);
                         }).catch((err) => {
                           console.error(err)
                         });
