@@ -10,26 +10,33 @@ import { useNavigate } from '@solidjs/router';
 import { CommentTask } from '../../../lib/homework';
 import { CourseData, HomeworkData } from '../../..';
 import { Switch, Match } from 'solid-js';
+import MailIcon from "@suid/icons-material/Mail";
+import { Badge } from "@suid/material"
 import { A } from '@solidjs/router';
-// import { getFiles } from '../../../lib/homework';
 import { getHomeworkById } from '../../../lib/homework';
 import axios from 'axios';
 import { getMyComment } from '../../../lib/homework';
 import LookComment from '../../../components/LookComments';
+import { getMyGrade } from '../../../lib/homework';
+import { createStore } from 'solid-js/store';
+import { Score } from '@suid/icons-material';
 
 export default function HomeworkDetail() {
   const params = useParams();
   const homework = useRouteData<typeof HomeworkData>()
   // const  = useRouteData<typeof CourseData>HomeworkData()
-  const [tab, setTab] = createSignal('mutualAssessment');
+  const [tab, setTab] = createSignal('submit');
 
   const navigate = useNavigate()
   const [submitHomework, setSubmitHomework] = createSignal<Homework>();
   const [myComments, setMyComments] = createSignal<CommentTask[]>([]);
+  const [submitCommentId, setSubmitCommentId] = createSignal(-1)
+  // const [store, setStore] = createStore({ myComments: [] })
   const [fileList, setfileList] = createSignal<string[]>([]);
 
   const [fileName, setFileName] = createSignal('');
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
+  const [myGrade,setMyGrade] = createSignal(0)
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
   const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false)
@@ -37,6 +44,12 @@ export default function HomeworkDetail() {
     const parts = path.split('\\')
     return parts[parts.length - 1]
   }
+  // const addTodo = (text) => {
+  //   setStore("myComments", myComments => [...myComments, { id: -1, text, done: false }]);
+  // }
+  // const toggleTodo = (score) => {
+  //   setStore("myComments", myComments => myComments.id == score, "done", done => !done);
+  // }
 
   createEffect(() => {
     if (homework()) {
@@ -51,6 +64,15 @@ export default function HomeworkDetail() {
     }
   })
 
+  const[commentNumbers,setCommentNumbers] = createSignal(0)
+  let number = 0;
+  function commentNumber() {
+    for (let i = 0; i < commentTasks().length; i++) {
+      if (commentTasks()[i].score == -1) {
+        setCommentNumbers(number++)
+      }
+    }
+  }
   onMount(() => {
     getHomeworkById(parseInt(params.homeworkId)).then(res => {
       setSubmitHomework(res)
@@ -61,6 +83,13 @@ export default function HomeworkDetail() {
       console.log("我的评论")
       console.log(res)
     })
+    commentNumber()
+    getMyGrade(parseInt(params.homeworkId)).then(
+      res => {
+        console.log(res)
+        setMyGrade(res.Score)
+      }
+    )
   })
 
   async function getFilesList(path: string) {
@@ -111,14 +140,35 @@ export default function HomeworkDetail() {
                   {commentTask.score}
                 </TableCell>
                 <TableCell>
-                  <Button
-                    variant='contained'
-                    size='small'
-                    onClick={() => { navigate(`submissions/${commentTask.homeworkSubmissionId}/comment`) }}
-                  // disabled={commentTask.done}
-                  >
-                    {commentTask.done ? "已批改" : "批改"}
-                  </Button>
+                  <Show when={commentTask.score == -1}>
+                    <Button
+                      variant='contained'
+                      size='small'
+                      onClick={() => {
+                        navigate(`submissions/${commentTask.homeworkSubmissionId}/comment`);
+                        // addTodo(commentTask.commentId);
+                      }}
+                    // onchange={[toggleTodo, commentTask.score]}
+                    // disabled={commentTask.done}
+                    >
+                      {"批改"}
+                    </Button>
+                  </Show>
+
+                  <Show when={commentTask.score != -1}>
+                    <Button
+                      variant='outlined'
+                      size='small'
+                      onClick={() => {
+                        navigate(`submissions/${commentTask.homeworkSubmissionId}/comment`);
+                        // addTodo(commentTask.commentId);
+                      }}
+                    // onchange={[toggleTodo, commentTask.score]}
+                    // disabled={commentTask.done}
+                    >
+                      {"已批改,可重新批改"}
+                    </Button>
+                  </Show>
                 </TableCell>
               </TableRow>}
               </For>
@@ -203,6 +253,9 @@ export default function HomeworkDetail() {
 
             </Table>
           </TableContainer>
+          <div>
+            最终分数：{myGrade()}
+          </div>
         </div>
       </Paper>
     </div>
@@ -224,7 +277,11 @@ export default function HomeworkDetail() {
           <div class='flex flex-col gap-2'>
             <div class='flex justify-between'>
               <span style="font-size: 32px; font-weight: bold;">{homework().name}</span>
-              <Button disabled={isEnded(homework()) || notStartYet(homework())} variant='contained' onClick={() => { setSubmitModalOpen(true) }}>提交作业</Button>
+              <Button
+                disabled={isEnded(homework()) || notStartYet(homework())}
+                variant='contained' onClick={() => { setSubmitModalOpen(true) }}>
+                提交作业
+              </Button>
             </div>
             <Typography variant='caption' sx={{ color: "#999999" }}>
               {"截止时间:" + formatDateTime(homework().endDate)}
@@ -258,6 +315,9 @@ export default function HomeworkDetail() {
           <Button sx={{ borderBottom: tab() == 'mutualAssessment' ? 1 : 0 }} onClick={() => { setTab('mutualAssessment') }}>
             互评作业
           </Button>
+          <Badge badgeContent={number} color="primary">
+            <MailIcon color="action" />
+          </Badge>
         </div>
 
         <Show when={homework()}>
