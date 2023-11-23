@@ -10,16 +10,19 @@ import Register from './pages/Register';
 import MainWrapper from './pages/main/MainWrapper';
 import CourseWrapper from './pages/main/course/CourseWrapper';
 import Create from './pages/main/Create';
-import { LoginInfoStore, UserCoursesStore } from './lib/store';
+import { AlertsStore, LoginInfoStore, UserCoursesStore } from './lib/store';
 import CreateHomework from './pages/main/course/CreateHomework';
 import HomeworkDetail from './pages/main/course/HomeworkDetail';
 import Homeworks from "./pages/main/course/Homeworks";
 import Students from './pages/main/course/Students';
 import { getCourse } from './lib/course';
-import { createResource } from 'solid-js';
+import { For, createResource } from 'solid-js';
 import CommentHomework from './pages/main/course/CommentHomework';
 import HomeworkEdit from './pages/main/course/HomeworkEdit';
 import { getHomework } from './lib/homework';
+import { Alert, AlertTitle } from '@suid/material';
+import { capitalizeFirstLetter } from './lib/utils';
+import { Transition } from 'solid-transition-group';
 
 const root = document.getElementById('root');
 
@@ -49,40 +52,72 @@ export function CourseData({ params, location, navigate, data }) {
 
 export function HomeworkData({ params, location, navigate, data }) {
   const [homework, { mutate, refetch }] = createResource(() => params.homeworkId, async () => await getHomework(parseInt(params.homeworkId)))
-  return {homework, mutateHomework: mutate, refetchHomework: refetch, ...data}
+  return { homework, mutateHomework: mutate, refetchHomework: refetch, ...data }
 }
+
+const { alerts, delAlert } = AlertsStore()
 
 // TODO: add alert stack gor global usage
 render(() => (
-  <Router>
-    <Routes>
-      {/* /login 和 /register 不要求登录 */}
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
+  <>
+    {/* Alerts Container */}
+    <div class='w-full absolute z-100 top-20 flex flex-col items-center gap-4'>
+      <For each={alerts}>{(alert, index) =>
+        <Transition appear={true} onEnter={(el, done) => {
+          const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+            duration: 600
+          });
+          a.finished.then(done);
+        }} onExit={(el, done) => {
+          const a = el.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 600
+          });
+          a.finished.then(done);
+        }}>
+          <Alert
+            onClose={() => {
+              delAlert(index())
+            }}
+            severity={alert.type}
+            sx={{ minWidth: 300 }}
+          >
+            <AlertTitle>{capitalizeFirstLetter(alert.type)}</AlertTitle>
+            {alert.msg}
+          </Alert>
+        </Transition>
+      }</For>
+    </div>
 
-      {/* 其他路径需要登录，通过 LoginData 检验 localStorage 是否存在 jwt */}
-      <Route path="/" component={MainWrapper} data={LoginData}>
-        {/* 主页 */}
-        <Route path="/" component={Main} />
+    <Router>
+      <Routes>
+        {/* /login 和 /register 不要求登录 */}
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
 
-        {/* 创建课程页面*/}
-        <Route path="/course/create" component={Create} />
-        {/* 课程列表页面 */}
-        <Route path="/courses" component={Courses} />
-        {/* 课程页面 */}
-        <Route path="/course/:courseId" component={CourseWrapper} data={CourseData}>
-          <Route path="/" component={Course} />
-          <Route path="/homeworks" component={Homeworks} />
-          <Route path="/homeworks/new" component={CreateHomework} />
-          <Route path="/homeworks/:homeworkId" data={HomeworkData}>
-            {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
-            <Route path="/" component={HomeworkDetail} />
-            <Route path="/edit" component={HomeworkEdit} />
-            <Route path="/submissions/:submissionId/comment" component={CommentHomework} />
+        {/* 其他路径需要登录，通过 LoginData 检验 localStorage 是否存在 jwt */}
+        <Route path="/" component={MainWrapper} data={LoginData}>
+          {/* 主页 */}
+          <Route path="/" component={Main} />
+
+          {/* 创建课程页面*/}
+          <Route path="/course/create" component={Create} />
+          {/* 课程列表页面 */}
+          <Route path="/courses" component={Courses} />
+          {/* 课程页面 */}
+          <Route path="/course/:courseId" component={CourseWrapper} data={CourseData}>
+            <Route path="/" component={Course} />
+            <Route path="/homeworks" component={Homeworks} />
+            <Route path="/homeworks/new" component={CreateHomework} />
+            <Route path="/homeworks/:homeworkId" data={HomeworkData}>
+              {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
+              <Route path="/" component={HomeworkDetail} />
+              <Route path="/edit" component={HomeworkEdit} />
+              <Route path="/submissions/:submissionId/comment" component={CommentHomework} />
+            </Route>
+            <Route path="/students" component={Students} />
           </Route>
-          <Route path="/students" component={Students} />
         </Route>
-      </Route>
-    </Routes>
-  </Router>
+      </Routes>
+    </Router>
+  </>
 ), root!);

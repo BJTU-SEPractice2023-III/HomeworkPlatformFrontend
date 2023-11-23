@@ -5,6 +5,9 @@ import { Switch, Match, For, Show, createSignal, onMount } from 'solid-js'
 import { Homework } from '../../lib/homework'
 import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
 import { getNotifications } from '../../lib/user';
+import { formatDateTime } from '../../lib/utils'
+import { Transition } from 'solid-transition-group'
+
 export default function Main() {
   const { loginInfo } = LoginInfoStore()
 
@@ -12,7 +15,7 @@ export default function Main() {
   const navigate = useNavigate();
   const { user } = LoginInfoStore()
 
-  const [homeworkProgress, setHomeworkProgress] = createSignal<Homework[]>([]);
+  const [homeworkProgresses, setHomeworkProgresses] = createSignal<Homework[]>([]);
   const [commentCompleted, setCommentCompleted] = createSignal<Homework[]>([]);
   const [homeworkCompleted, setHomeworkCompleted] = createSignal<Homework[]>([]);
   const [commentProgress, setCommentProgress] = createSignal<Homework[]>([]);
@@ -23,7 +26,7 @@ export default function Main() {
     await updateUserCourses()
     const res = await getNotifications(user().id)
     console.log(res)
-    setHomeworkProgress(res.homeworkInProgress)
+    setHomeworkProgresses(res.homeworkInProgress)
     setHomeworkCompleted(res.homeworksToBeCompleted)
     setCommentProgress(res.commentInProgress)
     setCommentCompleted(res.commentToBeCompleted)
@@ -50,7 +53,7 @@ export default function Main() {
           </Show>
           <For each={teachingCourses()}>
             {(lesson, i) => <div>
-              <Show when = {lesson.name.includes(searchTeaching())  || searchTeaching() == ''}>
+              <Show when={lesson.name.includes(searchTeaching()) || searchTeaching() == ''}>
                 <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                   {lesson.name}
                 </A>
@@ -65,23 +68,23 @@ export default function Main() {
           <div class='flex items-center justify-between'>
             <span>学的课程</span>
           </div>
-          <TextField 
-          label="search" 
-          size='small' 
-          value={searchLeaching()}
-          onChange={(_event, value) => {
-            setSearchLeaching(value)
-          }}
+          <TextField
+            label="search"
+            size='small'
+            value={searchLeaching()}
+            onChange={(_event, value) => {
+              setSearchLeaching(value)
+            }}
           />
           <Show when={learningCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={learningCourses()}>
             {(lesson, i) => <div>
-              <Show when = {lesson.name.includes(searchLeaching()) || searchLeaching() == ''}>
-              <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
-                {lesson.name}
-              </A>
+              <Show when={lesson.name.includes(searchLeaching()) || searchLeaching() == ''}>
+                <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
+                  {lesson.name}
+                </A>
               </Show>
             </div>}
           </For>
@@ -91,52 +94,70 @@ export default function Main() {
         <div class='flex'>
           <Typography>通知</Typography>
         </div>
-        <For each={homeworkProgress()}>{(homeworkProgresses, i) => <Card>
-          <CardContent>
-            <Typography>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                进行中的作业
-              </Typography>
-              <Typography variant="h5" component="div">
-                <A href={`/course/${homeworkProgresses.courseId}/homeworks/${homeworkProgresses.ID}`} class='text-black no-underline hover:underline'>
-                  {homeworkProgresses.name}
-                </A>
-              </Typography>
-              <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                {homeworkProgresses.description}
-              </Typography>
-              <Typography variant="body2">
-                开始日期：{homeworkProgresses.beginDate}
-                <br />
-                结束日期：{homeworkProgresses.endDate}
-              </Typography>
-            </Typography>
-          </CardContent>
+        <For each={homeworkProgresses()}>{(homeworkProgress, i) => <Card>
+          <Transition appear={true} onEnter={(el, done) => {
+            const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+              duration: 200 + i() * 400
+            });
+            a.finished.then(done);
+          }}>
+            <Show when={homeworkProgress}>
+              <CardContent>
+                <Typography>
+                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                    进行中的作业
+                  </Typography>
+                  <Typography variant="h5" component="div">
+                    <A href={`/course/${homeworkProgress.courseId}/homeworks/${homeworkProgress.ID}`} class='text-black no-underline hover:underline'>
+                      {homeworkProgress.name}
+                    </A>
+                  </Typography>
+                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                    {homeworkProgress.description}
+                  </Typography>
+                  <Typography variant="body2">
+                    开始日期：{formatDateTime(homeworkProgress.beginDate)}
+                    <br />
+                    结束日期：{formatDateTime(homeworkProgress.endDate)}
+                  </Typography>
+                </Typography>
+              </CardContent>
+            </Show>
+          </Transition>
         </Card>
         }
         </For>
-        <For each={homeworkCompleted()}>{(homeworkCompleteds, i) => <Card>
-          <CardContent>
-            <Typography>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                结束的作业
-              </Typography>
-              <Typography variant="h5" component="div">
-                <A href={`/course/${homeworkCompleteds.courseId}/homeworks/${homeworkCompleteds.ID}`} class='text-black no-underline hover:underline'>
-                  {homeworkCompleteds.name}
-                </A>
-              </Typography>
-              <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                {homeworkCompleteds.description}
-              </Typography>
-              <Typography variant="body2">
-                开始日期：{homeworkCompleteds.beginDate}
-                <br />
-                结束日期：{homeworkCompleteds.endDate}
-              </Typography>
-            </Typography>
-          </CardContent>
-        </Card>
+        <For each={homeworkCompleted()}>{(homeworkCompleteds, i) =>
+          <Transition appear={true} onEnter={(el, done) => {
+            const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+              duration: 400
+            });
+
+            a.finished.then(done);
+          }}>
+            <Card>
+              <CardContent>
+                <Typography>
+                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                    结束的作业
+                  </Typography>
+                  <Typography variant="h5" component="div">
+                    <A href={`/course/${homeworkCompleteds.courseId}/homeworks/${homeworkCompleteds.ID}`} class='text-black no-underline hover:underline'>
+                      {homeworkCompleteds.name}
+                    </A>
+                  </Typography>
+                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                    {homeworkCompleteds.description}
+                  </Typography>
+                  <Typography variant="body2">
+                    开始日期：{formatDateTime(homeworkCompleteds.beginDate)}
+                    <br />
+                    结束日期：{formatDateTime(homeworkCompleteds.endDate)}
+                  </Typography>
+                </Typography>
+              </CardContent>
+            </Card>
+          </Transition>
         }
         </For>
 
@@ -155,9 +176,9 @@ export default function Main() {
                 {commentProgresses.description}
               </Typography>
               <Typography variant="body2">
-                互评开始日期：{commentProgresses.endDate}
+                互评开始日期：{formatDateTime(commentProgresses.endDate)}
                 <br />
-                互评结束日期：{commentProgresses.commentEndDate}
+                互评结束日期：{formatDateTime(commentProgresses.commentEndDate)}
               </Typography>
             </Typography>
           </CardContent>

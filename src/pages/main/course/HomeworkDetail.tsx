@@ -70,10 +70,10 @@ export default function HomeworkDetail() {
     }
   }
   onMount(() => {
-    getHomeworkById(parseInt(params.homeworkId)).then(res => {
-      setSubmitHomework(res);
+    // getHomeworkById(parseInt(params.homeworkId)).then(res => {
+      // setSubmitHomework(res);
       // console.log(res)
-    });
+    // });
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
       console.log("我的评论");
