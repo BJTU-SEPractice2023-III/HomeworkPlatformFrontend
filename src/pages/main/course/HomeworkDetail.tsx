@@ -1,10 +1,11 @@
 import { useParams, useRouteData } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
-import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework } from '../../../lib/homework'
-import { Button, Typography, Divider, Paper, } from '@suid/material';
+import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework } from '../../../lib/homework';
+import { Button, Typography, Divider, Paper, Badge } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { formatDateTime } from '../../../lib/utils';
+import { Mail } from '@suid/icons-material';
 import HomeworkSubmitModal from '../../../components/HomeworkSubmitModal';
 import { useNavigate } from '@solidjs/router';
 import { CommentTask } from '../../../lib/homework';
@@ -14,52 +15,78 @@ import { getHomeworkById } from '../../../lib/homework';
 import axios from 'axios';
 import { getMyComment } from '../../../lib/homework';
 import LookComment from '../../../components/LookComments';
+import { getMyGrade } from '../../../lib/homework';
 import { LoginInfoStore } from '../../../lib/store';
 
+
 export default function HomeworkDetail() {
-  const { user } = LoginInfoStore()
+  const { user } = LoginInfoStore();
   const params = useParams();
-  const { course, homework, mutateHomework, refetchHomework } = useRouteData<typeof HomeworkData>()
+  const { course, homework, mutateHomework, refetchHomework } = useRouteData<typeof HomeworkData>();
 
-  const [tab, setTab] = createSignal('mutualAssessment');
+  const [tab, setTab] = createSignal('submit');
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [submitHomework, setSubmitHomework] = createSignal<Homework>();
   const [myComments, setMyComments] = createSignal<CommentTask[]>([]);
+  const [submitCommentId, setSubmitCommentId] = createSignal(-1);
+  // const [store, setStore] = createStore({ myComments: [] })
   const [fileList, setfileList] = createSignal<string[]>([]);
 
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
+  const [myGrade, setMyGrade] = createSignal(0);
 
-  const [submitModalOpen, setSubmitModalOpen] = createSignal(false)
-  const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false)
+  const [submitModalOpen, setSubmitModalOpen] = createSignal(false);
+  const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false);
   const getFilename = (path: string) => {
-    const parts = path.split('\\')
-    return parts[parts.length - 1]
-  }
-
+    const parts = path.split('\\');
+    return parts[parts.length - 1];
+  };
+  // const addTodo = (text) => {
+  //   setStore("myComments", myComments => [...myComments, { id: -1, text, done: false }]);
+  // }
+  // const toggleTodo = (score) => {
+  //   setStore("myComments", myComments => myComments.id == score, "done", done => !done);
+  // }
   createEffect(() => {
     if (homework()) {
       homeworksComment(parseInt(params.homeworkId)).then((res) => {
-        console.log(res)
-        setCommentTasks(res.comment_lists)
-        setfileList(homework().file_paths)
+        console.log(res);
+        setCommentTasks(res.comment_lists);
+        setfileList(homework().file_paths);
       }).catch((err) => {
-        console.error('get commend failed: ', err)
+        console.error('get commend failed: ', err);
       });
     }
-  })
+  });
 
+  const [commentNumbers, setCommentNumbers] = createSignal(0);
+  let number = 0;
+  function commentNumber() {
+    for (let i = 0; i < commentTasks().length; i++) {
+      if (commentTasks()[i].score == -1) {
+        setCommentNumbers(number++);
+      }
+    }
+  }
   onMount(() => {
     getHomeworkById(parseInt(params.homeworkId)).then(res => {
-      setSubmitHomework(res)
+      setSubmitHomework(res);
       // console.log(res)
-    })
+    });
     getMyComment(parseInt(params.homeworkId)).then(res => {
-      setMyComments(res)
-      console.log("我的评论")
-      console.log(res)
-    })
-  })
+      setMyComments(res);
+      console.log("我的评论");
+      console.log(res);
+    });
+    commentNumber();
+    getMyGrade(parseInt(params.homeworkId)).then(
+      res => {
+        console.log(res);
+        setMyGrade(res.Score);
+      }
+    );
+  });
 
   async function getFilesList(path: string) {
     axios.get(`http://127.0.0.1:8888/api/v1/file/${path}`, {
@@ -73,12 +100,12 @@ export default function HomeworkDetail() {
       link.href = window.URL.createObjectURL(new Blob([res.data]));
       // 设置链接的下载属性和文件名
       const result = path.split("\\");
-      link.download = result[result.length - 1]
+      link.download = result[result.length - 1];
       // 触发点击事件
       link.click();
       // 释放虚拟链接
       window.URL.revokeObjectURL(link.href);
-    })
+    });
   }
 
   function mutualAssessment() {
@@ -109,13 +136,31 @@ export default function HomeworkDetail() {
                   {commentTask.score}
                 </TableCell>
                 <TableCell>
-                  <Button
-                    variant='contained'
-                    size='small'
-                    onClick={() => { navigate(`submissions/${commentTask.homeworkSubmissionId}/comment`) }}
-                  >
-                    {commentTask.done ? "已批改" : "批改"}
-                  </Button>
+                  <Show when={commentTask.score == -1}>
+                    <Button
+                      variant='contained'
+                      size='small'
+                      onClick={() => {
+                        navigate(`submissions/${commentTask.homeworkSubmissionId}/comment`);
+                        // addTodo(commentTask.commentId);
+                      }}
+                    >
+                      {"批改"}
+                    </Button>
+                  </Show>
+
+                  <Show when={commentTask.score != -1}>
+                    <Button
+                      variant='outlined'
+                      size='small'
+                      onClick={() => {
+                        navigate(`submissions/${commentTask.homeworkSubmissionId}/comment`);
+                        // addTodo(commentTask.commentId);
+                      }}
+                    >
+                      {"已批改,可重新批改"}
+                    </Button>
+                  </Show>
                 </TableCell>
               </TableRow>}
               </For>
@@ -123,7 +168,7 @@ export default function HomeworkDetail() {
           </Table>
         </TableContainer>
       </div>
-    </Paper>
+    </Paper>;
   }
   function submit() {
     return <div>
@@ -140,7 +185,7 @@ export default function HomeworkDetail() {
               {(file, i) => <div>
                 <Button
                   onClick={() => {
-                    getFilesList(file)
+                    getFilesList(file);
                   }}>
                   {getFilename(file)}
                 </Button>
@@ -189,7 +234,7 @@ export default function HomeworkDetail() {
                     <Button
                       variant='contained'
                       size='small'
-                      onClick={() => { setLookCommentsModelOpen(true) }}
+                      onClick={() => { setLookCommentsModelOpen(true); }}
                     >
                       查看详情
                     </Button>
@@ -200,15 +245,18 @@ export default function HomeworkDetail() {
 
             </Table>
           </TableContainer>
+          <div>
+            最终分数：{myGrade()}
+          </div>
         </div>
       </Paper>
-    </div>
+    </div>;
   }
 
   return (
     <Show when={homework && homework()}>
       <HomeworkSubmitModal homeworkId={() => homework().ID} open={submitModalOpen} setOpen={setSubmitModalOpen} onSubmitted={() => {
-        refetchHomework()
+        refetchHomework();
       }} />
       <div class='flex-1 flex flex-col gap-4 w-100% max-w-[80%]'>
 
@@ -228,8 +276,10 @@ export default function HomeworkDetail() {
 
                 </Match>
                 <Match when={!(course().teacherID == user().id)}>
-                  <Button disabled={isEnded(homework()) || notStartYet(homework())} variant={homework().submitted ? 'outlined' : 'contained'} onClick={() => { setSubmitModalOpen(true) }}>
-                    {(homework() as StudentHomework).submitted ? '已提交，重新提交' : '提交作业'}
+                  <Button
+                    disabled={isEnded(homework()) || notStartYet(homework())}
+                    variant={homework().submitted ? 'outlined' : 'contained'} onClick={() => { setSubmitModalOpen(true); }}>
+                    {(homework() as StudentHomework).submitted ? '已提交，重新提交' : "提交作业"}
                   </Button>
                 </Match>
 
@@ -251,7 +301,7 @@ export default function HomeworkDetail() {
               {(file, i) => <div>
                 <Button
                   onClick={() => {
-                    getFilesList(file)
+                    getFilesList(file);
                   }}>
                   {getFilename(file)}
                 </Button>
@@ -261,11 +311,13 @@ export default function HomeworkDetail() {
         </Paper>
 
         <div class='flex w-full gap-2 mb-2'>
-          <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit') }}>
+          <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit'); }}>
             我的提交
           </Button>
-          <Button sx={{ borderBottom: tab() == 'mutualAssessment' ? 1 : 0 }} onClick={() => { setTab('mutualAssessment') }}>
-            互评作业
+          <Button sx={{ borderBottom: tab() == 'mutualAssessment' ? 1 : 0 }} onClick={() => { setTab('mutualAssessment'); }}>
+            <Badge badgeContent={number} color="primary">
+              互评作业
+            </Badge>
           </Button>
         </div>
 

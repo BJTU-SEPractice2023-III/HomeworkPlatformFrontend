@@ -56,6 +56,10 @@ export function getSubmit(id: number) {
     return get(`/v1/submit/${id}`)
 }
 
+export function getMyGrade(id:number){
+    return get(`/v1/grade/${id}`)
+}
+
 // export function getFiles(path:string) {
     // return get(`/v1/file/${path}`)
     // return axios.get(`/v1/file/${path}`, {
