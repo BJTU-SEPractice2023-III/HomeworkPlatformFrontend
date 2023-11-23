@@ -29,7 +29,7 @@ export default function HomeworkDetail() {
   const navigate = useNavigate();
   const [submitHomework, setSubmitHomework] = createSignal<Homework>();
   const [myComments, setMyComments] = createSignal<CommentTask[]>([]);
-  const [submitCommentId, setSubmitCommentId] = createSignal(-1);
+  // const [submitCommentId, setSubmitCommentId] = createSignal(-1);
   // const [store, setStore] = createStore({ myComments: [] })
   const [fileList, setfileList] = createSignal<string[]>([]);
 
@@ -50,30 +50,26 @@ export default function HomeworkDetail() {
   // }
   createEffect(() => {
     if (homework()) {
-      homeworksComment(parseInt(params.homeworkId)).then((res) => {
-        console.log(res);
-        setCommentTasks(res.comment_lists);
-        setfileList(homework().file_paths);
-      }).catch((err) => {
-        console.error('get commend failed: ', err);
-      });
+      console.log('homework: ', homework() as StudentHomework)
+      setfileList(homework().file_paths);
+      console.log(fileList())
     }
   });
 
-  const [commentNumbers, setCommentNumbers] = createSignal(0);
-  let number = 0;
-  function commentNumber() {
-    for (let i = 0; i < commentTasks().length; i++) {
-      if (commentTasks()[i].score == -1) {
-        setCommentNumbers(number++);
-      }
-    }
-  }
   onMount(() => {
-    // getHomeworkById(parseInt(params.homeworkId)).then(res => {
-      // setSubmitHomework(res);
-      // console.log(res)
-    // });
+    homeworksComment(parseInt(params.homeworkId)).then((res) => {
+      console.log(res);
+      setCommentTasks(res.comment_lists);
+    }).catch((err) => {
+      console.error('get commend failed: ', err);
+    });
+    getHomeworkById(parseInt(params.homeworkId)).then((res) => {
+      console.log("提交的作业");
+      console.log(res);
+      setSubmitHomework(res);
+    }).catch((err) =>{
+      console.error('获得自己的作业错误')
+    })
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
       console.log("我的评论");
@@ -86,8 +82,18 @@ export default function HomeworkDetail() {
         setMyGrade(res.Score);
       }
     );
-  });
+    console.log(myGrade())
+  })
 
+  const [commentNumbers, setCommentNumbers] = createSignal(0);
+  let number = 0;
+  function commentNumber() {
+    for (let i = 0; i < commentTasks().length; i++) {
+      if (commentTasks()[i].score == -1) {
+        setCommentNumbers(number++);
+      }
+    }
+  }
   async function getFilesList(path: string) {
     axios.get(`http://127.0.0.1:8888/api/v1/file/${path}`, {
       responseType: 'blob',
@@ -193,7 +199,7 @@ export default function HomeworkDetail() {
             </For>
           </Show>
 
-          <Show when={!submitHomework()}>
+          <Show when={!homework}>
             <div>
               没交作业
             </div>
@@ -245,12 +251,19 @@ export default function HomeworkDetail() {
 
             </Table>
           </TableContainer>
-          <div>
-            最终分数：{myGrade()}
-          </div>
+          <Show when={myGrade() != -1}>
+            <div>
+              最终分数：{myGrade()}
+            </div>
+          </Show>
+          <Show when={myGrade() == -1}>
+            <div>
+              最终分数：***
+            </div>
+          </Show>
         </div>
-      </Paper>
-    </div>;
+      </Paper >
+    </div >;
   }
 
   return (
