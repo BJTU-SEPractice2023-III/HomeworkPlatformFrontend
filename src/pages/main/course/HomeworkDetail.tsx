@@ -53,13 +53,13 @@ export default function HomeworkDetail() {
     }).catch((err) => {
       console.error('get commend failed: ', err);
     });
-    getHomeworkById(parseInt(params.homeworkId)).then((res) => {
-      console.log("提交的作业");
-      console.log(res);
-      setSubmitHomework(res);
-    }).catch((err) =>{
-      console.error('获得自己的作业错误')
-    })
+    // getHomeworkById(parseInt(params.homeworkId)).then((res) => {
+    //   console.log("提交的作业");
+    //   console.log(res);
+    //   setSubmitHomework(res);
+    // }).catch((err) =>{
+    //   console.error('获得自己的作业错误')
+    // })
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
       console.log("我的评论");
