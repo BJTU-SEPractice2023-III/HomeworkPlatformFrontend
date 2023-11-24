@@ -1,5 +1,5 @@
 import { Button, useTheme } from "@suid/material";
-import { Show, createSignal, onMount } from "solid-js";
+import { Show, onMount } from "solid-js";
 import { UserCoursesStore } from "../../../lib/store";
 import { useNavigate, useParams, useRouteData } from "@solidjs/router";
 import { Homework, getCourseHomeworks, isEnded, notStartYet } from '../../../lib/homework';

@@ -1,7 +1,7 @@
-import { Navigate, useParams } from '@solidjs/router';
+import { useParams } from '@solidjs/router';
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js';
-import { getSubmit, Homework, postComment, commentHomework } from '../../../lib/homework';
+import { getSubmit, postComment, commentHomework } from '../../../lib/homework';
 import { useNavigate } from '@solidjs/router';
 import axios from 'axios';
 export default function CommentHomework() {

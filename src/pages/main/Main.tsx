@@ -1,7 +1,6 @@
-import { Route, Outlet, useNavigate, A } from '@solidjs/router'
-import Courses from "./Courses"
+import { useNavigate, A } from '@solidjs/router'
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
-import { Switch, Match, For, Show, createSignal, onMount } from 'solid-js'
+import { For, Show, createSignal, onMount } from 'solid-js'
 import { Homework } from '../../lib/homework'
 import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
 import { getNotifications } from '../../lib/user';
@@ -11,7 +10,7 @@ import { Transition } from 'solid-transition-group'
 export default function Main() {
   const { loginInfo } = LoginInfoStore()
 
-  const { updateUserCourses, learningCourses, teachingCourses, userCourses } = UserCoursesStore()
+  const { updateUserCourses, learningCourses, teachingCourses } = UserCoursesStore()
   const navigate = useNavigate();
   const { user } = LoginInfoStore()
 
@@ -52,7 +51,7 @@ export default function Main() {
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={teachingCourses()}>
-            {(lesson, i) => <div>
+            {(lesson) => <div>
               <Show when={lesson.name.includes(searchTeaching()) || searchTeaching() == ''}>
                 <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                   {lesson.name}
@@ -80,7 +79,7 @@ export default function Main() {
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={learningCourses()}>
-            {(lesson, i) => <div>
+            {(lesson) => <div>
               <Show when={lesson.name.includes(searchLeaching()) || searchLeaching() == ''}>
                 <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
                   {lesson.name}
@@ -127,7 +126,7 @@ export default function Main() {
         </Card>
         }
         </For>
-        <For each={homeworkCompleted()}>{(homeworkCompleteds, i) =>
+        <For each={homeworkCompleted()}>{(homeworkCompleteds) =>
           <Transition appear={true} onEnter={(el, done) => {
             const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
               duration: 400
@@ -161,7 +160,7 @@ export default function Main() {
         }
         </For>
 
-        <For each={commentProgress()}>{(commentProgresses, i) => <Card>
+        <For each={commentProgress()}>{(commentProgresses) => <Card>
           <CardContent>
             <Typography>
               <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -187,7 +186,7 @@ export default function Main() {
         </For>
 
 
-        <For each={commentCompleted()}>{(commentCompleteds, i) => <Card>
+        <For each={commentCompleted()}>{(commentCompleteds) => <Card>
           <CardContent>
             <Typography>
               <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>

@@ -5,13 +5,11 @@ import { Button, Typography, Divider, Paper, Badge } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { formatDateTime } from '../../../lib/utils';
-import { Mail } from '@suid/icons-material';
 import HomeworkSubmitModal from '../../../components/HomeworkSubmitModal';
 import { useNavigate } from '@solidjs/router';
 import { CommentTask } from '../../../lib/homework';
 import { HomeworkData } from '../../..';
 import { Switch, Match } from 'solid-js';
-import { getHomeworkById } from '../../../lib/homework';
 import axios from 'axios';
 import { getMyComment } from '../../../lib/homework';
 import LookComment from '../../../components/LookComments';
@@ -29,8 +27,6 @@ export default function HomeworkDetail() {
   const navigate = useNavigate();
   const [submitHomework, setSubmitHomework] = createSignal<Homework>();
   const [myComments, setMyComments] = createSignal<CommentTask[]>([]);
-  const [submitCommentId, setSubmitCommentId] = createSignal(-1);
-  // const [store, setStore] = createStore({ myComments: [] })
   const [fileList, setfileList] = createSignal<string[]>([]);
 
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
@@ -42,12 +38,6 @@ export default function HomeworkDetail() {
     const parts = path.split('\\');
     return parts[parts.length - 1];
   };
-  // const addTodo = (text) => {
-  //   setStore("myComments", myComments => [...myComments, { id: -1, text, done: false }]);
-  // }
-  // const toggleTodo = (score) => {
-  //   setStore("myComments", myComments => myComments.id == score, "done", done => !done);
-  // }
   createEffect(() => {
     if (homework()) {
       homeworksComment(parseInt(params.homeworkId)).then((res) => {
@@ -70,10 +60,6 @@ export default function HomeworkDetail() {
     }
   }
   onMount(() => {
-    // getHomeworkById(parseInt(params.homeworkId)).then(res => {
-      // setSubmitHomework(res);
-      // console.log(res)
-    // });
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
       console.log("我的评论");
