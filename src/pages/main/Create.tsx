@@ -3,6 +3,7 @@ import { createSignal, onMount } from 'solid-js'
 import { create } from '../../lib/course'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
+import { AlertsStore } from '../../lib/store';
 
 
 export default function Create() {
@@ -20,6 +21,7 @@ export default function Create() {
   })
 
   const navigate = useNavigate()
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   function createCourse() {
     let beginDate = new Date(dateRange().value.start)
@@ -27,9 +29,11 @@ export default function Create() {
     console.log("createCourse", beginDate, endDate)
 
     create(courseName(), description(), beginDate, endDate).then((res) => {
+      newSuccessAlert('成功创建课程');
       const id = res.data
       navigate(`/course/${id}`)
     }).catch((err) => {
+      newWarningAlert('课程创建失败')
       console.error(err)
     })
   }
@@ -111,6 +115,8 @@ export default function Create() {
             onClick={() => {
               if (courseName() && description() && dateRange().value.start && dateRange().value.end) {
                 createCourse()
+              }else{
+                newErrorAlert('请填写全部课程信息')
               }
             }}>
             创建课程

@@ -16,7 +16,7 @@ import axios from 'axios';
 import { getMyComment } from '../../../lib/homework';
 import LookComment from '../../../components/LookComments';
 import { getMyGrade } from '../../../lib/homework';
-import { LoginInfoStore } from '../../../lib/store';
+import { AlertsStore, LoginInfoStore } from '../../../lib/store';
 
 
 export default function HomeworkDetail() {

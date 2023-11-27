@@ -8,6 +8,7 @@ import { createStore } from 'solid-js/store';
 import { createCourseHomework } from '../../../lib/course';
 import { DeleteOutline } from '@suid/icons-material';
 import FileUploader from '../../../components/FileUploader';
+import { AlertsStore } from '../../../lib/store';
 
 export default function CreateHomework() {
   const params = useParams();
@@ -29,12 +30,14 @@ export default function CreateHomework() {
   const [name, setHomeworkName] = createSignal('name')
   const [description, setDescription] = createSignal('desc')
   const [files, setFiles] = createStore<File[]>([])
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   const navigate = useNavigate()
 
   function createHomework() {
     // TODO: Make a toast
     if (!name() || !description() || !dateRange().value.start || !dateRange().value.end || !commentDateEnd().value.selected) {
+      newWarningAlert('请填写作业全部信息')
       return
     }
 
@@ -44,8 +47,10 @@ export default function CreateHomework() {
 
     createCourseHomework(parseInt(params.courseId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
       console.log('Created homework: ', res)
+      newSuccessAlert('作业创建成功')
       navigate('../')
     }).catch((err) => {
+      newErrorAlert('作业创建失败')
       console.error('Create homework failed: ', err)
     })
   }

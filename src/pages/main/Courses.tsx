@@ -2,7 +2,7 @@ import { useNavigate } from '@solidjs/router';
 import { For, Match, Switch, createSignal, onMount } from 'solid-js';
 import { Course, getCourses, selectCourse } from '../../lib/course';
 import { Button, ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
-import { UserCoursesStore } from '../../lib/store';
+import { AlertsStore, UserCoursesStore } from '../../lib/store';
 // import { isLearing, isTeaching, updateCourses } from '../../lib/store';
 
 export default function Courses() {
@@ -10,6 +10,7 @@ export default function Courses() {
 
   const {updateUserCourses, isLearning, isTeaching} = UserCoursesStore()
   const [courses, setCourses] = createSignal<Course[]>([])
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   onMount(async () => {
     await updateUserCourses()
@@ -53,6 +54,7 @@ export default function Courses() {
                         // TODO: 选课
                         selectCourse(course.ID).then((res) => {
                           console.log(`选课成功`)
+                          newSuccessAlert('选课成功')
                           updateUserCourses()
                           // TODO: 直接更改全局状态，添加入 leaningCourses
                         })

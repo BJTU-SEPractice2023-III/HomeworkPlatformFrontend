@@ -7,9 +7,12 @@ import { getHomework } from '../../../lib/homework'
 import { createStore } from 'solid-js/store';
 import FileUploader from '../../../components/FileUploader';
 import { putHomework } from '../../../lib/homework';
+import { AlertsStore } from '../../../lib/store';
 
 export default function HomeworkEdit() {
   const params = useParams();
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
+  
   const [dateRange, setDateRange] = createSignal<PickerValue>({
     value: {
       start: (new Date()).toString(),
@@ -53,6 +56,7 @@ export default function HomeworkEdit() {
 
     putHomework(parseInt(params.homeworkId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
       console.log('Modify homework: ', res)
+      newSuccessAlert('修改成功')
       navigate('../')
     }).catch((err) => {
       console.error('Create homework failed: ', err)
