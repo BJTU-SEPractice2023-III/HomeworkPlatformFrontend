@@ -34,7 +34,8 @@ export default function CourseWrapper() {
       <div class='w-full h-full flex overflow-x-hidden'>
         <Box
           sx={{
-            width: "100%",
+            flexShrink: 0,
+            width: 300,
             maxWidth: 260,
             bgcolor: theme.palette.background.paper,
           }}

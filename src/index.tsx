@@ -1,7 +1,20 @@
 import 'uno.css';
 import { render } from 'solid-js/web';
-import { Router, useParams } from '@solidjs/router';
-import { Routes, Route, A } from '@solidjs/router';
+import { Router } from '@solidjs/router';
+import { Routes, Route } from '@solidjs/router';
+import { LoginInfoStore, UserCoursesStore } from './lib/store';
+import { getCourse } from './lib/course';
+import { createResource } from 'solid-js';
+import { getHomework } from './lib/homework';
+import AlertList from './components/AlertList';
+
+// Pages
+import CreateHomework from './pages/main/course/CreateHomework';
+import HomeworkDetail from './pages/main/course/HomeworkDetail';
+import Homeworks from "./pages/main/course/Homeworks";
+import Students from './pages/main/course/Students';
+import CommentHomework from './pages/main/course/CommentHomework';
+import HomeworkEdit from './pages/main/course/HomeworkEdit';
 import Main from './pages/main/Main';
 import Courses from './pages/main/Courses';
 import Course from './pages/main/course/Course';
@@ -10,19 +23,6 @@ import Register from './pages/Register';
 import MainWrapper from './pages/main/MainWrapper';
 import CourseWrapper from './pages/main/course/CourseWrapper';
 import Create from './pages/main/Create';
-import { AlertsStore, LoginInfoStore, UserCoursesStore } from './lib/store';
-import CreateHomework from './pages/main/course/CreateHomework';
-import HomeworkDetail from './pages/main/course/HomeworkDetail';
-import Homeworks from "./pages/main/course/Homeworks";
-import Students from './pages/main/course/Students';
-import { getCourse } from './lib/course';
-import { For, createResource } from 'solid-js';
-import CommentHomework from './pages/main/course/CommentHomework';
-import HomeworkEdit from './pages/main/course/HomeworkEdit';
-import { getHomework } from './lib/homework';
-import { Alert, AlertTitle } from '@suid/material';
-import { capitalizeFirstLetter } from './lib/utils';
-import { Transition } from 'solid-transition-group';
 
 const root = document.getElementById('root');
 
@@ -36,7 +36,6 @@ const { jwt } = LoginInfoStore()
 
 // 检验登录，若 localStorage 中无 jwt 则跳转到 login
 export function LoginData({ params, location, navigate, data }) {
-  // console.log("[loginData]:", jwt())
   if (!jwt()) {
     navigate('/login')
   }
@@ -55,39 +54,10 @@ export function HomeworkData({ params, location, navigate, data }) {
   return { homework, mutateHomework: mutate, refetchHomework: refetch, ...data }
 }
 
-const { alerts, delAlert } = AlertsStore()
 
-// TODO: add alert stack gor global usage
 render(() => (
   <>
-    {/* Alerts Container */}
-    <div class='w-full absolute z-100 top-20 flex flex-col items-center gap-4'>
-      <For each={alerts}>{(alert, index) =>
-        <Transition appear={true} onEnter={(el, done) => {
-          const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
-            duration: 600
-          });
-          a.finished.then(done);
-        }} onExit={(el, done) => {
-          const a = el.animate([{ opacity: 1 }, { opacity: 0 }], {
-            duration: 600
-          });
-          a.finished.then(done);
-        }}>
-          <Alert
-            onClose={() => {
-              delAlert(index())
-            }}
-            severity={alert.type}
-            sx={{ minWidth: 300 }}
-          >
-            <AlertTitle>{capitalizeFirstLetter(alert.type)}</AlertTitle>
-            {alert.msg}
-          </Alert>
-        </Transition>
-      }</For>
-    </div>
-
+    <AlertList />
     <Router>
       <Routes>
         {/* /login 和 /register 不要求登录 */}
@@ -103,18 +73,22 @@ render(() => (
           <Route path="/course/create" component={Create} />
           {/* 课程列表页面 */}
           <Route path="/courses" component={Courses} />
+
           {/* 课程页面 */}
           <Route path="/course/:courseId" component={CourseWrapper} data={CourseData}>
             <Route path="/" component={Course} />
+            {/* 作业列表 */}
             <Route path="/homeworks" component={Homeworks} />
+            {/* 学生列表 */}
+            <Route path="/students" component={Students} />
+
+            {/* 创建作业 */}
             <Route path="/homeworks/new" component={CreateHomework} />
             <Route path="/homeworks/:homeworkId" data={HomeworkData}>
-              {/* 具体作业页面，根据传入的 id 获取课程数据渲染 */}
               <Route path="/" component={HomeworkDetail} />
               <Route path="/edit" component={HomeworkEdit} />
               <Route path="/submissions/:submissionId/comment" component={CommentHomework} />
             </Route>
-            <Route path="/students" component={Students} />
           </Route>
         </Route>
       </Routes>

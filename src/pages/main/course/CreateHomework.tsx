@@ -1,12 +1,10 @@
-import { Box, Button, Divider, TextField } from '@suid/material'
-import { For, createSignal } from 'solid-js'
+import { Button, Divider, TextField } from '@suid/material'
+import { createSignal } from 'solid-js'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
-import { postFormData } from '../../../lib/axios';
 import { createStore } from 'solid-js/store';
 import { createCourseHomework } from '../../../lib/course';
-import { DeleteOutline } from '@suid/icons-material';
 import FileUploader from '../../../components/FileUploader';
 import { AlertsStore } from '../../../lib/store';
 

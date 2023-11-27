@@ -1,10 +1,7 @@
 import { Outlet, useNavigate } from '@solidjs/router';
-import { Alert, AlertTitle, AppBar, Button, IconButton, Toolbar, Typography } from '@suid/material';
+import { AppBar, Button, IconButton, Toolbar, Typography } from '@suid/material';
 import HomeIcon from "@suid/icons-material/Home";
-import { AlertsStore, LoginInfoStore } from '../../lib/store';
-import { For } from 'solid-js';
-import { capitalizeFirstLetter } from '../../lib/utils';
-import { AlertColor } from '@suid/material/Alert';
+import { LoginInfoStore } from '../../lib/store';
 import { Transition } from 'solid-transition-group';
 
 
