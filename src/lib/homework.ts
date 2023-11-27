@@ -67,7 +67,7 @@ export function getMyGrade(id:number){
     // })
 // }
 
-export function getHomeworkById(id:number){
+export function getSubmissionById(id:number){
     return get(`/v1/homeworks/${id}/submission`)
 }
 
