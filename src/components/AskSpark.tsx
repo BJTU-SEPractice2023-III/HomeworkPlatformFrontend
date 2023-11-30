@@ -1,11 +1,5 @@
 import { Button, Modal, Paper, TextField, Typography } from "@suid/material"
 import { Accessor, Setter, createEffect, createSignal } from "solid-js"
-import { SetStoreFunction, createStore } from "solid-js/store"
-import { postFormData } from "../lib/axios"
-import FileUploader from "./FileUploader"
-import { StudentHomework } from "../lib/homework"
-import { AlertsStore } from "../lib/store"
-import { askPicture } from "../lib/homework"
 import { askQuestion } from "../lib/homework"
 
 export default function AskSpark(props: { open: Accessor<boolean>, setOpen: Setter<boolean> }) {
@@ -13,23 +7,6 @@ export default function AskSpark(props: { open: Accessor<boolean>, setOpen: Sett
 
   const [content, setContent] = createSignal("")
   const [answer, setAnswer] = createSignal("")
-  const [files, setFiles] = createStore<File[]>([])
-
-  //   function submitPicture() {
-  //     const formData = new FormData()
-  //     files.forEach((file) => {
-  //       formData.append("files", file)
-  //     })
-
-  //     postFormData(`/v1/ai/spark/image`, formData).then((res) => {
-  //         console.log(res.data)
-  //         setOpen(false)
-  //         newSuccessAlert('提交成功')
-  //       }).catch((err) => {
-  //         console.error(err)
-  //       })
-
-  //   }
 
 
 
@@ -58,7 +35,7 @@ export default function AskSpark(props: { open: Accessor<boolean>, setOpen: Sett
         }}
       >
         <Typography id="modal-modal-title" variant="h5" component="h2">
-          提交作业
+          询问问题
         </Typography>
 
         <span class='text-sm'>内容</span>
@@ -95,7 +72,6 @@ export default function AskSpark(props: { open: Accessor<boolean>, setOpen: Sett
           }}>询问</Button>
           <Button variant="outlined" onClick={() => { setOpen(false) }}>取消</Button>
         </div>
-
       </Paper>
     </Modal>
   </>
