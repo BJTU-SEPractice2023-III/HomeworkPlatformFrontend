@@ -96,6 +96,20 @@ export function putHomework(id: number, name: string, description: string, begin
     return putFormData(`/v1/homeworks/${id}`, formData);
 }
 
+export function askPicture( files: File[]) {
+    const formData = new FormData();
+    files.forEach((file) => {
+        formData.append("files", file);
+    })
+    return putFormData(`/v1/ai/spark/image`, formData);
+}
+
+export function askQuestion(context: string) {
+    return post(`/v1/ai/spark`, {
+        context
+    })
+}
+
 export function submit(files: File, answers: string) {
     return post(`/v1/submit`, {
         files,
