@@ -40,15 +40,15 @@ export default function HomeworkDetail() {
   };
   createEffect(() => {
     if (homework()) {
-      console.log('homework: ', homework() as StudentHomework)
+      // console.log('homework: ', homework() as StudentHomework)
       setfileList(homework().file_paths);
-      console.log(fileList())
+      // console.log(fileList())
     }
   });
 
   onMount(() => {
     homeworksComment(parseInt(params.homeworkId)).then((res) => {
-      console.log(res);
+      // console.log(res);
       setCommentTasks(res.comment_lists);
     }).catch((err) => {
       console.error('get commend failed: ', err);
@@ -62,17 +62,17 @@ export default function HomeworkDetail() {
     // })
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
-      console.log("我的评论");
-      console.log(res);
+      // console.log("我的评论");
+      // console.log(res);
     });
     commentNumber();
     getMyGrade(parseInt(params.homeworkId)).then(
       res => {
-        console.log(res);
+        // console.log(res);
         setMyGrade(res.Score);
       }
     );
-    console.log(myGrade())
+    // console.log(myGrade())
   })
 
   const [commentNumbers, setCommentNumbers] = createSignal(0);
