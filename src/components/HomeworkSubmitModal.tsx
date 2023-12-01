@@ -4,12 +4,14 @@ import { SetStoreFunction, createStore } from "solid-js/store"
 import { postFormData } from "../lib/axios"
 import FileUploader from "./FileUploader"
 import { StudentHomework } from "../lib/homework"
+import { AlertsStore } from "../lib/store"
 
 export default function HomeworkSubmitModal(props: { homeworkId: Accessor<number>, onSubmitted: (id: number) => void, open: Accessor<boolean>, setOpen: Setter<boolean> }) {
   const { homeworkId, onSubmitted, open, setOpen } = props
 
   const [content, setContent] = createSignal("")
   const [files, setFiles] = createStore<File[]>([])
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   createEffect(() => {
     homeworkId()
@@ -29,6 +31,7 @@ export default function HomeworkSubmitModal(props: { homeworkId: Accessor<number
     postFormData(`/v1/homeworks/${homeworkId()}/submits`, formData).then((res) => {
       onSubmitted(homeworkId())
       setOpen(false)
+      newSuccessAlert('提交成功')
     }).catch((err) => {
       console.error(err)
     })

@@ -1,6 +1,6 @@
 import { Button, useTheme } from "@suid/material";
-import { Show, onMount } from "solid-js";
-import { UserCoursesStore } from "../../../lib/store";
+import { Show, createSignal, onMount } from "solid-js";
+import { AlertsStore, UserCoursesStore } from "../../../lib/store";
 import { useNavigate, useParams, useRouteData } from "@solidjs/router";
 import { Homework, getCourseHomeworks, isEnded, notStartYet } from '../../../lib/homework';
 import { CourseData } from "../../../index";
@@ -12,8 +12,9 @@ export default function Homeworks() {
   const params = useParams();
   const navigate = useNavigate();
   const { isTeaching, isLearning } = UserCoursesStore();
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
-  const {course, mutateCourse, refetchCourse} = useRouteData<typeof CourseData>();
+  const { course, mutateCourse, refetchCourse } = useRouteData<typeof CourseData>();
   const [homeworks, setHomeworks] = createStore<Homework[]>([]);
   onMount(async () => {
     getCourseHomeworks(parseInt(params.courseId)).then((res) => {
@@ -53,7 +54,7 @@ export default function Homeworks() {
   return (
     <Show when={course()}>
       <Show when={isTeaching(course())}>
-        <Button variant="contained" onClick={() => { navigate('new'); }}>创建作业</Button>
+        <Button variant="contained" onClick={() => { navigate('new');newSuccessAlert('布置成功'); }}>创建作业</Button>
       </Show>
 
       {/* <CreateHomeworkModal open={_open}/> */}

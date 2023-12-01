@@ -4,11 +4,13 @@ import { For, Show, createSignal, onMount } from 'solid-js';
 import { getSubmit, postComment, commentHomework } from '../../../lib/homework';
 import { useNavigate } from '@solidjs/router';
 import axios from 'axios';
+import { AlertsStore } from '../../../lib/store';
 export default function CommentHomework() {
   const params = useParams();
   const [score, setScore] = createSignal(0);
   const [comments, setComments] = createSignal('');
   const [submit, setSubmit] = createSignal<commentHomework>();
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
   const navigate = useNavigate()
   const [fileList, setfileList] = createSignal<string[]>([]);
   const handleScoreChange = (event, value) => {
@@ -34,6 +36,7 @@ export default function CommentHomework() {
     postComment(parseInt(params.submissionId), score(), comments()).then((res) => {
       console.log(score())
       console.log(comments())
+      newSuccessAlert('批改成功')
       navigate('../../../')
     });
   }

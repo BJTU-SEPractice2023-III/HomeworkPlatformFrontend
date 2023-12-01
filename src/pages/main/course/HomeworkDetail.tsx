@@ -1,6 +1,6 @@
 import { useParams, useRouteData } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
-import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework } from '../../../lib/homework';
+import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework, getSubmissionById } from '../../../lib/homework';
 import { Button, Typography, Divider, Paper, Badge } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
@@ -14,7 +14,7 @@ import axios from 'axios';
 import { getMyComment } from '../../../lib/homework';
 import LookComment from '../../../components/LookComments';
 import { getMyGrade } from '../../../lib/homework';
-import { LoginInfoStore } from '../../../lib/store';
+import { AlertsStore, LoginInfoStore } from '../../../lib/store';
 
 
 export default function HomeworkDetail() {
@@ -53,13 +53,13 @@ export default function HomeworkDetail() {
     }).catch((err) => {
       console.error('get commend failed: ', err);
     });
-    // getHomeworkById(parseInt(params.homeworkId)).then((res) => {
-    //   console.log("提交的作业");
-    //   console.log(res);
-    //   setSubmitHomework(res);
-    // }).catch((err) =>{
-    //   console.error('获得自己的作业错误')
-    // })
+    getSubmissionById(parseInt(params.homeworkId)).then((res) => {
+      console.log("提交的作业");
+      console.log(res);
+      setSubmitHomework(res);
+    }).catch((err) =>{
+      console.error('获得自己的作业错误')
+    })
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
       // console.log("我的评论");

@@ -67,7 +67,7 @@ export function getMyGrade(id:number){
     // })
 // }
 
-export function getHomeworkById(id:number){
+export function getSubmissionById(id:number){
     return get(`/v1/homeworks/${id}/submission`)
 }
 
@@ -94,6 +94,20 @@ export function putHomework(id: number, name: string, description: string, begin
     formData.set("commentEndDate", commentEndDate.toISOString());
 
     return putFormData(`/v1/homeworks/${id}`, formData);
+}
+
+export function askPicture( files: File[]) {
+    const formData = new FormData();
+    files.forEach((file) => {
+        formData.append("files", file);
+    })
+    return putFormData(`/v1/ai/spark/image`, formData);
+}
+
+export function askQuestion(context: string) {
+    return post(`/v1/ai/spark`, {
+        context
+    })
 }
 
 export function submit(files: File, answers: string) {

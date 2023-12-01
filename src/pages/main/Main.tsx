@@ -19,7 +19,8 @@ export default function Main() {
   const [homeworkCompleted, setHomeworkCompleted] = createSignal<Homework[]>([]);
   const [commentProgress, setCommentProgress] = createSignal<Homework[]>([]);
   const [searchTeaching, setSearchTeaching] = createSignal('');
-  const [searchLeaching, setSearchLeaching] = createSignal('');
+  const [searchLeaching, setSearchLeaching] = createSignal('');   
+
 
   onMount(async () => {
     await updateUserCourses()
