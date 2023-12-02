@@ -3,13 +3,12 @@ import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid
 import { For, Show, createSignal, onMount } from 'solid-js'
 import { Homework } from '../../lib/homework'
 import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
-import { getNotifications } from '../../lib/user';
+import { Notification, NotificationType, getNotifications } from '../../lib/user';
 import { formatDateTime } from '../../lib/utils'
 import { Transition } from 'solid-transition-group'
+import NotificationCard from '../../components/NotificationCard';
 
 export default function Main() {
-  const { loginInfo } = LoginInfoStore()
-
   const { updateUserCourses, learningCourses, teachingCourses } = UserCoursesStore()
   const navigate = useNavigate();
   const { user } = LoginInfoStore()
@@ -19,17 +18,20 @@ export default function Main() {
   const [homeworkCompleted, setHomeworkCompleted] = createSignal<Homework[]>([]);
   const [commentProgress, setCommentProgress] = createSignal<Homework[]>([]);
   const [searchTeaching, setSearchTeaching] = createSignal('');
-  const [searchLeaching, setSearchLeaching] = createSignal('');   
+  const [searchLeaching, setSearchLeaching] = createSignal('');
+
+  const [notifications, setNotifications] = createSignal<Notification[]>([]);
 
 
   onMount(async () => {
     await updateUserCourses()
-    const res = await getNotifications(user().id)
-    console.log(res)
-    setHomeworkProgresses(res.homeworkInProgress)
-    setHomeworkCompleted(res.homeworksToBeCompleted)
-    setCommentProgress(res.commentInProgress)
-    setCommentCompleted(res.commentToBeCompleted)
+    const res = await getNotifications()
+    setNotifications(res)
+    // console.log(res[0].notificationType == NotificationType.LearningHomeworkInProgressNotification)
+    // setHomeworkProgresses(res.homeworkInProgress)
+    // setHomeworkCompleted(res.homeworksToBeCompleted)
+    // setCommentProgress(res.commentInProgress)
+    // setCommentCompleted(res.commentToBeCompleted)
   });
 
   return (
@@ -54,7 +56,7 @@ export default function Main() {
           <For each={teachingCourses()}>
             {(lesson) => <div>
               <Show when={lesson.name.includes(searchTeaching()) || searchTeaching() == ''}>
-                <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
+                <A href={`/course/${lesson.id}`} class='text-black no-underline hover:underline'>
                   {lesson.name}
                 </A>
               </Show>
@@ -82,7 +84,7 @@ export default function Main() {
           <For each={learningCourses()}>
             {(lesson) => <div>
               <Show when={lesson.name.includes(searchLeaching()) || searchLeaching() == ''}>
-                <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
+                <A href={`/course/${lesson.id}`} class='text-black no-underline hover:underline'>
                   {lesson.name}
                 </A>
               </Show>
@@ -90,127 +92,23 @@ export default function Main() {
           </For>
         </div>
       </aside >
+
       <div class='flex-1 flex flex-col p-6 gap-4'>
         <div class='flex'>
           <Typography>通知</Typography>
         </div>
-        <For each={homeworkProgresses()}>{(homeworkProgress, i) => <Card>
-          <Transition appear={true} onEnter={(el, done) => {
-            const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
-              duration: 200 + i() * 400
-            });
-            a.finished.then(done);
-          }}>
-            <Show when={homeworkProgress}>
-              <CardContent>
-                <Typography>
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    进行中的作业
-                  </Typography>
-                  <Typography variant="h5" component="div">
-                    <A href={`/course/${homeworkProgress.courseId}/homeworks/${homeworkProgress.ID}`} class='text-black no-underline hover:underline'>
-                      {homeworkProgress.name}
-                    </A>
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {homeworkProgress.description}
-                  </Typography>
-                  <Typography variant="body2">
-                    开始日期：{formatDateTime(homeworkProgress.beginDate)}
-                    <br />
-                    结束日期：{formatDateTime(homeworkProgress.endDate)}
-                  </Typography>
-                </Typography>
-              </CardContent>
-            </Show>
-          </Transition>
-        </Card>
-        }
-        </For>
-        <For each={homeworkCompleted()}>{(homeworkCompleteds) =>
-          <Transition appear={true} onEnter={(el, done) => {
-            const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
-              duration: 400
-            });
-
-            a.finished.then(done);
-          }}>
-            <Card>
-              <CardContent>
-                <Typography>
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    结束的作业
-                  </Typography>
-                  <Typography variant="h5" component="div">
-                    <A href={`/course/${homeworkCompleteds.courseId}/homeworks/${homeworkCompleteds.ID}`} class='text-black no-underline hover:underline'>
-                      {homeworkCompleteds.name}
-                    </A>
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {homeworkCompleteds.description}
-                  </Typography>
-                  <Typography variant="body2">
-                    开始日期：{formatDateTime(homeworkCompleteds.beginDate)}
-                    <br />
-                    结束日期：{formatDateTime(homeworkCompleteds.endDate)}
-                  </Typography>
-                </Typography>
-              </CardContent>
-            </Card>
-          </Transition>
-        }
-        </For>
-
-        <For each={commentProgress()}>{(commentProgresses) => <Card>
-          <CardContent>
-            <Typography>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                进行中的互评
-              </Typography>
-              <Typography variant="h5" component="div">
-                <A href={`/course/${commentProgresses.courseId}/homeworks/${commentProgresses.ID}`} class='text-black no-underline hover:underline'>
-                  {commentProgresses.name}
-                </A>
-              </Typography>
-              <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                {commentProgresses.description}
-              </Typography>
-              <Typography variant="body2">
-                互评开始日期：{formatDateTime(commentProgresses.endDate)}
-                <br />
-                互评结束日期：{formatDateTime(commentProgresses.commentEndDate)}
-              </Typography>
-            </Typography>
-          </CardContent>
-        </Card>
-        }
-        </For>
-
-
-        <For each={commentCompleted()}>{(commentCompleteds) => <Card>
-          <CardContent>
-            <Typography>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                结束的互评
-              </Typography>
-              <Typography variant="h5" component="div">
-                <A href={`/course/${commentCompleteds.courseId}/homeworks/${commentCompleteds.ID}`} class='text-black no-underline hover:underline'>
-                  {commentCompleteds.name}
-                </A>
-              </Typography>
-              <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                {commentCompleteds.description}
-              </Typography>
-              <Typography variant="body2">
-                互评开始日期：{commentCompleteds.endDate}
-                <br />
-                互评结束日期：{commentCompleteds.commentEndDate}
-              </Typography>
-            </Typography>
-          </CardContent>
-        </Card>
-        }
-        </For>
+        <For each={notifications()}>{(notification, i) =>
+          <Card>
+            <Transition appear={true} onEnter={(el, done) => {
+              const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+                duration: 200 + i() * 400
+              });
+              a.finished.then(done);
+            }}>
+              <NotificationCard notification={notification} />
+            </Transition>
+          </Card>
+        }</For>
       </div>
     </div >
   )

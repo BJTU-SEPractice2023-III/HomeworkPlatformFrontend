@@ -1,7 +1,7 @@
 import { get, post, postFormData } from "./axios"
 
 export type Course = {
-    ID: number,
+    id: number,
     name: string,
     description: string
     beginDate: string,

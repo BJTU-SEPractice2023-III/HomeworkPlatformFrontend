@@ -36,17 +36,17 @@ export default function Courses() {
           <TableBody>
             <For each={courses()}>{(course, i) =>
               <TableRow>
-                <TableCell>{course.ID}</TableCell>
+                <TableCell>{course.id}</TableCell>
                 <TableCell>{course.name}</TableCell>
                 <TableCell>{course.description}</TableCell>
                 <TableCell>{formatDateTime(course.beginDate)}</TableCell>
                 <TableCell>{formatDateTime(course.endDate)}</TableCell>
                 <TableCell size='medium'>
                   <ButtonGroup aria-label="outlined primary button group" sx={{ width: 200 }}>
-                    <Button onClick={() => { navigate(`/course/${course.ID}`) }}>详情</Button>
+                    <Button onClick={() => { navigate(`/course/${course.id}`) }}>详情</Button>
                     <Switch fallback={
                       <Button onClick={() => {
-                        selectCourse(course.ID).then((res) => {
+                        selectCourse(course.id).then((res) => {
                           console.log(`选课成功`)
                           newSuccessAlert('选课成功')
                           updateUserCourses()
