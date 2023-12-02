@@ -11,12 +11,7 @@ import NotificationCard from '../../components/NotificationCard';
 export default function Main() {
   const { updateUserCourses, learningCourses, teachingCourses } = UserCoursesStore()
   const navigate = useNavigate();
-  const { user } = LoginInfoStore()
 
-  const [homeworkProgresses, setHomeworkProgresses] = createSignal<Homework[]>([]);
-  const [commentCompleted, setCommentCompleted] = createSignal<Homework[]>([]);
-  const [homeworkCompleted, setHomeworkCompleted] = createSignal<Homework[]>([]);
-  const [commentProgress, setCommentProgress] = createSignal<Homework[]>([]);
   const [searchTeaching, setSearchTeaching] = createSignal('');
   const [searchLeaching, setSearchLeaching] = createSignal('');
 
@@ -27,11 +22,6 @@ export default function Main() {
     await updateUserCourses()
     const res = await getNotifications()
     setNotifications(res)
-    // console.log(res[0].notificationType == NotificationType.LearningHomeworkInProgressNotification)
-    // setHomeworkProgresses(res.homeworkInProgress)
-    // setHomeworkCompleted(res.homeworksToBeCompleted)
-    // setCommentProgress(res.commentInProgress)
-    // setCommentCompleted(res.commentToBeCompleted)
   });
 
   return (
@@ -94,14 +84,12 @@ export default function Main() {
       </aside >
 
       <div class='flex-1 flex flex-col p-6 gap-4'>
-        <div class='flex'>
-          <Typography>通知</Typography>
-        </div>
+        <Typography>通知</Typography>
         <For each={notifications()}>{(notification, i) =>
           <Card>
             <Transition appear={true} onEnter={(el, done) => {
               const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
-                duration: 200 + i() * 400
+                duration: 400 + i() * 400
               });
               a.finished.then(done);
             }}>

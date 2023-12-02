@@ -16,10 +16,6 @@ export default function Course() {
     return res
   })
 
-  createEffect(() => {
-    console.log(course().description)
-  })
-
   return (
     <Show when={course()}>
       <Card sx={{ width: "100%", minWidth: 275 }}>

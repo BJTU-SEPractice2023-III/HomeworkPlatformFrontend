@@ -61,31 +61,29 @@ export default function NotificationCard(props: { notification: Notification }) 
   return (
     <Card>
       <CardContent>
-        <Typography>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            {title()}
-          </Typography>
-          <Typography variant="h5" component="div">
-            <A href={link()} class='text-black no-underline hover:underline'>
-              {linkText()}
-            </A>
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {description()}
-          </Typography>
-          <Switch>
-            <Match when={isHomework()}>
-              <Typography variant="body2">
-                开始日期：{formatDateTime(notification.notificationData.beginDate)}
-                <br />
-                结束日期：{formatDateTime(notification.notificationData.endDate)}
-              </Typography>
-            </Match>
-            <Match when={!isHomework()}>
-
-            </Match>
-          </Switch>
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          {title()}
         </Typography>
+        <Typography variant="h5" component="div">
+          <A href={link()} class='text-black no-underline hover:underline'>
+            {linkText()}
+          </A>
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          {description()}
+        </Typography>
+        <Switch>
+          <Match when={isHomework()}>
+            <Typography variant="body2">
+              开始日期：{formatDateTime(notification.notificationData.beginDate)}
+              <br />
+              结束日期：{formatDateTime(notification.notificationData.endDate)}
+            </Typography>
+          </Match>
+          <Match when={!isHomework()}>
+
+          </Match>
+        </Switch>
       </CardContent>
     </Card>
   )

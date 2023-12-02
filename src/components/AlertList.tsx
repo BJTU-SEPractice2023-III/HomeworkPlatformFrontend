@@ -1,8 +1,31 @@
 import { Alert, AlertTitle } from '@suid/material';
 import { capitalizeFirstLetter } from '../lib/utils';
 import { Transition } from 'solid-transition-group';
-import { For } from 'solid-js';
-import { AlertsStore } from '../lib/store';
+import { Accessor, For, Signal, onMount } from 'solid-js';
+import { AlertsStore, Alert as AlertT } from '../lib/store';
+
+function AlertCard(props: { alert: AlertT, index: Accessor<number> }) {
+  const { alerts, delAlert } = AlertsStore()
+
+  const { alert, index } = props
+
+  onMount(() => {
+    setTimeout(() => {
+      delAlert(index())
+    }, 1500)
+  })
+
+  return <Alert
+    onClose={() => {
+      delAlert(index())
+    }}
+    severity={alert.type}
+    sx={{ minWidth: 300 }}
+  >
+    <AlertTitle>{capitalizeFirstLetter(alert.type)}</AlertTitle>
+    {alert.msg}
+  </Alert>
+}
 
 // Alerts Container
 export default function AlertList() {
@@ -22,16 +45,7 @@ export default function AlertList() {
           });
           a.finished.then(done);
         }}>
-          <Alert
-            onClose={() => {
-              delAlert(index())
-            }}
-            severity={alert.type}
-            sx={{ minWidth: 300 }}
-          >
-            <AlertTitle>{capitalizeFirstLetter(alert.type)}</AlertTitle>
-            {alert.msg}
-          </Alert>
+          <AlertCard alert={alert} index={index} />
         </Transition>
       }</For>
     </div>

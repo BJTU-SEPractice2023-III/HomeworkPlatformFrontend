@@ -2,20 +2,19 @@ import axios from "axios"
 import { get, post, del, put, putFormData } from "./axios"
 export type Homework = {
     ID: number,
-    files: File,
     courseId: number,
     name: string,
     description: string
     beginDate: string,
     endDate: string,
     commentEndDate: string,
-    file_paths : string[],
+    files: any[],
     content:string
 }
 
 export type commentHomework = {
     ID: number,
-    files: File,
+    files: any[],
     homeworkId: number,
     CreatedAt: string,
     DeletedAt: string,
