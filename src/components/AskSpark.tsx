@@ -1,14 +1,41 @@
 import { Button, Modal, Paper, TextField, Typography } from "@suid/material"
-import { Accessor, Setter, createEffect, createSignal } from "solid-js"
+import { Accessor, Match, Setter, Switch, createEffect, createSignal, onMount } from "solid-js"
 import { askQuestion } from "../lib/homework"
 
 export default function AskSpark(props: { open: Accessor<boolean>, setOpen: Setter<boolean> }) {
   const { open, setOpen } = props
 
+  const [status, setStatus] = createSignal("close")
   const [content, setContent] = createSignal("")
   const [answer, setAnswer] = createSignal("")
 
+  function connect() {
+    let url = `http://` + window.location.hostname.replace("http://", "").replace("https://", "") + `:8888/api/v1/ai/spark?token=` +
+      localStorage.getItem('jwt')
+    console.log(url)
+    let es = new EventSource(url);
 
+    setStatus("connecting")
+    es.onopen = () => {
+      console.log("opened")
+      setStatus("open")
+      setAnswer("")
+    }
+
+    es.onmessage = (e) => {
+      // console.log(e)
+      setAnswer((ans) => ans + e.data)
+    }
+
+    es.onerror = (err) => {
+      console.log(err)
+      setStatus("close")
+    }
+  }
+
+  onMount(() => {
+    connect()
+  })
 
   return <>
     <Modal
@@ -37,6 +64,12 @@ export default function AskSpark(props: { open: Accessor<boolean>, setOpen: Sett
         <Typography id="modal-modal-title" variant="h5" component="h2">
           询问问题
         </Typography>
+        {status()}
+        {/* <Switch>
+          <Match when={status}>
+
+          </Match>
+        </Switch> */}
 
         <span class='text-sm'>内容</span>
         <TextField
@@ -63,9 +96,9 @@ export default function AskSpark(props: { open: Accessor<boolean>, setOpen: Sett
 
         <div class="flex gap-2">
           <Button variant="contained" onClick={() => {
+            setAnswer("")
             askQuestion(content()).then((res) => {
-              console.log(res.data)
-              setAnswer(res.data)
+              // console.log(res.data)
             }).catch((err) => {
               console.error(err)
             })
@@ -75,8 +108,4 @@ export default function AskSpark(props: { open: Accessor<boolean>, setOpen: Sett
       </Paper>
     </Modal>
   </>
-}
-
-function newSuccessAlert(arg0: string) {
-  throw new Error("Function not implemented.")
 }
