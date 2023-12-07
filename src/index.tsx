@@ -23,6 +23,7 @@ import Register from './pages/Register';
 import MainWrapper from './pages/main/MainWrapper';
 import CourseWrapper from './pages/main/course/CourseWrapper';
 import Create from './pages/main/Create';
+import User from './pages/main/User';
 
 const root = document.getElementById('root');
 
@@ -68,6 +69,9 @@ render(() => (
         <Route path="/" component={MainWrapper} data={LoginData}>
           {/* 主页 */}
           <Route path="/" component={Main} />
+
+          {/* 用户界面 */}
+          <Route path="/user/:userId" component={User} />
 
           {/* 创建课程页面*/}
           <Route path="/course/create" component={Create} />

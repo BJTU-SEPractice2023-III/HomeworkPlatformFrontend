@@ -19,7 +19,6 @@ export default function Login() {
     login(username(), password()).then((res) => {
       console.log("[Login]: login success")
       const data = res.data
-
       newSuccessAlert('登录成功')
       setLoginInfo(data.token, data.user)
       setTimeout(() => {

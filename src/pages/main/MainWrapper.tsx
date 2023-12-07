@@ -11,6 +11,7 @@ export default function MainWrapper() {
   const navigate = useNavigate();
   const { loginInfo } = LoginInfoStore()
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false);
+  const { user } = LoginInfoStore()
 
   return (
     <Transition appear={true} onEnter={(el, done) => {
@@ -40,6 +41,10 @@ export default function MainWrapper() {
 
             <Button color='inherit'  onClick={() => { setSubmitModalOpen(true); }}>
               询问
+            </Button>
+
+            <Button color='inherit' onClick={() => navigate(`/user/${user().id}`)}>
+              个人主页
             </Button>
 
             <Button color='inherit' onClick={() => navigate('/courses')}>

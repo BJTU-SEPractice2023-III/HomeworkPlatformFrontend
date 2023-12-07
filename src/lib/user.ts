@@ -21,3 +21,8 @@ export function getUserCourses(id: number) {
 export function getNotifications(id: number) {
   return get(`/v1/users/${id}/notifications`)
 }
+
+
+export function getUserById(id: number) {
+  return get(`/v1/users/${id}`)
+}
