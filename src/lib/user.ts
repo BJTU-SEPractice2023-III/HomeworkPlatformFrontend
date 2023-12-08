@@ -1,4 +1,4 @@
-import { get, post } from './axios'
+import { get, post, put } from './axios'
 
 export function login(username: string, password: string) {
   return post(`/v1/user/login`, {
@@ -25,4 +25,10 @@ export function getNotifications(id: number) {
 
 export function getUserById(id: number) {
   return get(`/v1/users/${id}`)
+}
+ 
+export function editSignature(signature: string) {
+  return put(`/v1/users/signature`, {
+    signature
+  })
 }

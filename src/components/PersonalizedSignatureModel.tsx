@@ -1,10 +1,18 @@
 import { Button, Modal, Paper, TextField, Typography } from "@suid/material"
-import { Accessor, Setter, createEffect, createSignal } from "solid-js"
+import { Accessor, Setter, createSignal } from "solid-js"
+import { editSignature } from "../lib/user"
 
 export default function PersonalizedSignatureModel(props: { open: Accessor<boolean>, setOpen: Setter<boolean> }) {
   const { open, setOpen } = props
 
   const [content, setContent] = createSignal("")
+  function writeSignature(){
+    editSignature(content()).then((res)=>{
+      console.log(res)
+      setOpen(false)
+      window.location.reload(); 
+    })
+  } 
   return <>
     <Modal
       open={open()}
@@ -46,7 +54,7 @@ export default function PersonalizedSignatureModel(props: { open: Accessor<boole
         />
 
         <div class="flex gap-2">
-          <Button variant="contained" >修改</Button>
+          <Button variant="contained" onClick={()=>{writeSignature()}}>修改</Button>
           <Button variant="outlined" onClick={() => { setOpen(false) }}>取消</Button>
         </div>
 

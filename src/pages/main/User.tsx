@@ -17,16 +17,20 @@ export default function User() {
   const [searchTeaching, setSearchTeaching] = createSignal('');
   const [searchLeaching, setSearchLeaching] = createSignal('');
   const [username, setUsername] = createSignal('');
+  const [signature, setSignature] = createSignal('');
   onMount(async () => {
     await updateUserCourses()
-    await getUserById(parseInt(params.userId)).then((res)=>{
+    await getUserById(parseInt(params.userId)).then((res) => {
+      console.log(res)
       setUsername(res.username)
+      setSignature(res.signature)
     })
   });
+
   return (
     <div class='flex-1 flex w-full'>
       {/* <personalizedSignatureModel open={userModalOpen} setOpen={setUserModalOpen} /> */}
-      <PersonalizedSignatureModel  open={userModalOpen} setOpen={setUserModalOpen}/>
+      <PersonalizedSignatureModel open={userModalOpen} setOpen={setUserModalOpen} />
       <aside class='min-w-[250px] border-0 border-r border-solid border-slate-200 p-6 flex flex-col gap-4'>
         <div class='flex flex-col gap-2'>
           <Stack direction="row" spacing={2}>
@@ -40,6 +44,9 @@ export default function User() {
             </Avatar>
           </Stack>
           {username()}
+          <div>
+            {"[" + signature() + "]"}
+          </div>
           <Show when={user().id == parseInt(params.userId)}>
             <Button variant="outlined" onClick={() => { setUserModalOpen(true) }}>
               修改个性签名
