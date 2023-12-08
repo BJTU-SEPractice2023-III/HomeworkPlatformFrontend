@@ -1,12 +1,14 @@
 import { useParams } from "@solidjs/router";
 import { useNavigate, A } from '@solidjs/router'
-import { Avatar, Button, Divider, Stack, TextField } from '@suid/material'
+import { Avatar, Button, Card, CardContent, Divider, Stack, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
 import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
 import { deepOrange } from "@suid/material/colors";
 import PersonalizedSignatureModel from "../../components/PersonalizedSignatureModel";
 import { getUserById } from "../../lib/user";
-
+import { Course } from "../../lib/course";
+import { Transition } from "solid-transition-group";
+import { formatDateTime } from "../../lib/utils";
 export default function User() {
   const params = useParams();
 
@@ -14,8 +16,8 @@ export default function User() {
   const [userModalOpen, setUserModalOpen] = createSignal(false);
   const navigate = useNavigate();
   const { user } = LoginInfoStore()
-  const [searchTeaching, setSearchTeaching] = createSignal('');
-  const [searchLeaching, setSearchLeaching] = createSignal('');
+  const [teaching, setTeaching] = createSignal<Course[]>([]);
+  const [learning, setLearning] = createSignal<Course[]>([]);
   const [username, setUsername] = createSignal('');
   const [signature, setSignature] = createSignal('');
   onMount(async () => {
@@ -24,6 +26,8 @@ export default function User() {
       console.log(res)
       setUsername(res.username)
       setSignature(res.signature)
+      setTeaching(res.teachingCourses)
+      setLearning(res.learningCourses)
     })
   });
 
@@ -56,60 +60,75 @@ export default function User() {
 
 
         <div class='flex flex-col gap-1'>
-          <div class='flex items-center justify-between'>
-            <span>教的课程</span>
-          </div>
-          <TextField
-            label="search"
-            size='small'
-            value={searchTeaching()}
-            onChange={(_event, value) => {
-              setSearchTeaching(value)
-            }}
-          />
-          <Show when={teachingCourses().length == 0}>
-            <span class='text-gray'>没有课程</span>
-          </Show>
-          <For each={teachingCourses()}>
-            {(lesson) => <div>
-              <Show when={lesson.name.includes(searchTeaching()) || searchTeaching() == ''}>
-                <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
-                  {lesson.name}
-                </A>
-              </Show>
-            </div>}
-          </For>
+          教的课程有{teaching().length}门
         </div>
-
-        <Divider />
 
         <div class='flex flex-col gap-1'>
-          <div class='flex items-center justify-between'>
-            <span>学的课程</span>
-          </div>
-          <TextField
-            label="search"
-            size='small'
-            value={searchLeaching()}
-            onChange={(_event, value) => {
-              setSearchLeaching(value)
-            }}
-          />
-          <Show when={learningCourses().length == 0}>
-            <span class='text-gray'>没有课程</span>
-          </Show>
-          <For each={learningCourses()}>
-            {(lesson) => <div>
-              <Show when={lesson.name.includes(searchLeaching()) || searchLeaching() == ''}>
-                <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
-                  {lesson.name}
-                </A>
-              </Show>
-            </div>}
-          </For>
+          学的课程有{learning().length}门
         </div>
       </aside >
-
+      <div class='flex-1 flex flex-col p-6 gap-4'>
+        <div>教的课程</div>
+        <For each={teaching()}>{(teachingCourse, i) => <Card>
+          <Transition appear={true} onEnter={(el, done) => {
+            const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+              duration: 200 + i() * 400
+            });
+            a.finished.then(done);
+          }}>
+            <CardContent>
+              <Typography>
+                <Typography variant="h5" component="div">
+                  <A href={`/course/${teachingCourse.id}`} class='text-black no-underline hover:underline'>
+                    {teachingCourse.name}
+                  </A>
+                </Typography>
+                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                  {teachingCourse.description}
+                </Typography>
+                <Typography variant="body2">
+                  开始日期：{formatDateTime(teachingCourse.beginDate)}
+                  <br />
+                  结束日期：{formatDateTime(teachingCourse.endDate)}
+                </Typography>
+              </Typography>
+            </CardContent>
+          </Transition>
+        </Card>
+        }
+        </For>
+        <div>学的课程</div>
+        <For each={learning()}>{(learningCourse, i) => <Card>
+          <Transition appear={true} onEnter={(el, done) => {
+            const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+              duration: 200 + i() * 400
+            });
+            a.finished.then(done);
+          }}>
+            <Show when={learningCourse}>
+              <CardContent>
+                <Typography>
+                  <Typography variant="h5" component="div">
+                    <A href={`/course/${learningCourse.id}`} class='text-black no-underline hover:underline'>
+                      {learningCourse.name}
+                    </A>
+                  </Typography>
+                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                    {learningCourse.description}
+                  </Typography>
+                  <Typography variant="body2">
+                    开始日期：{formatDateTime(learningCourse.beginDate)}
+                    <br />
+                    结束日期：{formatDateTime(learningCourse.endDate)}
+                  </Typography>
+                </Typography>
+              </CardContent>
+            </Show>
+          </Transition>
+        </Card>
+        }
+        </For>
+      </div>
     </div>
   )
 }
