@@ -3,6 +3,7 @@ import { A, useNavigate, useParams } from '@solidjs/router';
 import { Box, Button, TextField } from '@suid/material';
 import { register } from '../lib/user';
 import { createSignal } from 'solid-js';
+import { AlertsStore } from '../lib/store';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -10,11 +11,13 @@ export default function Register() {
   const [username, setUsername] = createSignal('')
   const [password, setPassword] = createSignal('')
   const [repeatPassword, setRepeatPassword] = createSignal('')
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   function onRegister() {
     console.log("[Register]: onRegister")
     register(username(), password()).then((res) => {
       console.log("[Register]: register success")
+      newSuccessAlert('注册成功')
       navigate('/login')
     }).catch((err) => {
       console.error(err)

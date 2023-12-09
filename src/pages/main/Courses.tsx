@@ -2,14 +2,15 @@ import { useNavigate } from '@solidjs/router';
 import { For, Match, Switch, createSignal, onMount } from 'solid-js';
 import { Course, getCourses, selectCourse } from '../../lib/course';
 import { Button, ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@suid/material';
-import { UserCoursesStore } from '../../lib/store';
-// import { isLearing, isTeaching, updateCourses } from '../../lib/store';
+import { formatDateTime } from '../../lib/utils';
+import { AlertsStore, UserCoursesStore } from '../../lib/store';
 
 export default function Courses() {
   const navigate = useNavigate()
 
-  const {updateUserCourses, isLearning, isTeaching} = UserCoursesStore()
+  const { updateUserCourses, isLearning, isTeaching } = UserCoursesStore()
   const [courses, setCourses] = createSignal<Course[]>([])
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   onMount(async () => {
     await updateUserCourses()
@@ -18,12 +19,8 @@ export default function Courses() {
     })
   })
 
-  // TODO: list | card
-
   return (
     <>
-      {/* TODO: add link to course detail page */}
-      {/* TODO: add join button */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
@@ -39,20 +36,19 @@ export default function Courses() {
           <TableBody>
             <For each={courses()}>{(course, i) =>
               <TableRow>
-                <TableCell>{course.ID}</TableCell>
+                <TableCell>{course.id}</TableCell>
                 <TableCell>{course.name}</TableCell>
                 <TableCell>{course.description}</TableCell>
-                {/* TODO: parse the date */}
-                <TableCell>{course.beginDate}</TableCell>
-                <TableCell>{course.endDate}</TableCell>
+                <TableCell>{formatDateTime(course.beginDate)}</TableCell>
+                <TableCell>{formatDateTime(course.endDate)}</TableCell>
                 <TableCell size='medium'>
-                  <ButtonGroup aria-label="outlined primary button group" sx={{width: 200}}>
-                    <Button onClick={() => { navigate(`/course/${course.ID}`) }}>详情</Button>
+                  <ButtonGroup aria-label="outlined primary button group" sx={{ width: 200 }}>
+                    <Button onClick={() => { navigate(`/course/${course.id}`) }}>详情</Button>
                     <Switch fallback={
                       <Button onClick={() => {
-                        // TODO: 选课
-                        selectCourse(course.ID).then((res) => {
+                        selectCourse(course.id).then((res) => {
                           console.log(`选课成功`)
+                          newSuccessAlert('选课成功')
                           updateUserCourses()
                           // TODO: 直接更改全局状态，添加入 leaningCourses
                         })

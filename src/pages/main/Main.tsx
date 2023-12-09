@@ -1,21 +1,27 @@
-import { Route, Outlet, useNavigate, A } from '@solidjs/router'
-import Courses from "./Courses"
+import { useNavigate, A } from '@solidjs/router'
 import { Button, Card, CardContent, Divider, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
-
+import { Homework } from '../../lib/homework'
 import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
-import { getNotifications } from '../../lib/user';
-export default function Main() {
-  const {loginInfo} = LoginInfoStore()
+import { Notification, NotificationType, getNotifications } from '../../lib/user';
+import { formatDateTime } from '../../lib/utils'
+import { Transition } from 'solid-transition-group'
+import NotificationCard from '../../components/NotificationCard';
 
-  const {updateUserCourses, learningCourses, teachingCourses, userCourses } = UserCoursesStore()
+export default function Main() {
+  const { updateUserCourses, learningCourses, teachingCourses } = UserCoursesStore()
   const navigate = useNavigate();
-  const { user } = LoginInfoStore()
+
+  const [searchTeaching, setSearchTeaching] = createSignal('');
+  const [searchLeaching, setSearchLeaching] = createSignal('');
+
+  const [notifications, setNotifications] = createSignal<Notification[]>([]);
+
 
   onMount(async () => {
     await updateUserCourses()
-    const res = await getNotifications(user().id)
-    console.log(res)
+    const res = await getNotifications()
+    setNotifications(res)
   });
 
   return (
@@ -26,15 +32,24 @@ export default function Main() {
             <span>教的课程</span>
             <Button variant='contained' size='small' onClick={() => navigate('/course/create')}>创建课程</Button>
           </div>
-          <TextField label="search" size='small' />
+          <TextField
+            label="search"
+            size='small'
+            value={searchTeaching()}
+            onChange={(_event, value) => {
+              setSearchTeaching(value)
+            }}
+          />
           <Show when={teachingCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={teachingCourses()}>
-            {(lesson, i) => <div>
-              <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
-                {lesson.name}
-              </A>
+            {(lesson) => <div>
+              <Show when={lesson.name.includes(searchTeaching()) || searchTeaching() == ''}>
+                <A href={`/course/${lesson.id}`} class='text-black no-underline hover:underline'>
+                  {lesson.name}
+                </A>
+              </Show>
             </div>}
           </For>
         </div>
@@ -45,61 +60,44 @@ export default function Main() {
           <div class='flex items-center justify-between'>
             <span>学的课程</span>
           </div>
-          <TextField label="search" size='small' />
+          <TextField
+            label="search"
+            size='small'
+            value={searchLeaching()}
+            onChange={(_event, value) => {
+              setSearchLeaching(value)
+            }}
+          />
           <Show when={learningCourses().length == 0}>
             <span class='text-gray'>没有课程</span>
           </Show>
           <For each={learningCourses()}>
-            {(lesson, i) => <div>
-              <A href={`/course/${lesson.ID}`} class='text-black no-underline hover:underline'>
-                {lesson.name}
-              </A>
+            {(lesson) => <div>
+              <Show when={lesson.name.includes(searchLeaching()) || searchLeaching() == ''}>
+                <A href={`/course/${lesson.id}`} class='text-black no-underline hover:underline'>
+                  {lesson.name}
+                </A>
+              </Show>
             </div>}
           </For>
         </div>
-      </aside>
-      <div class='flex-1 flex flex-col p-6 gap-4'>
-        <div class='flex'>
-          <Typography>Home</Typography>
-        </div>
-        <Card>
-          <CardContent>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-              Course Name
-            </Typography>
-            <Typography variant="h5" component="div">
-              Message Title
-            </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              message type(homework/notice)
-            </Typography>
-            <Typography variant="body2">
-              content content content
-              <br />
-              content content
-            </Typography>
-          </CardContent>
-        </Card>
+      </aside >
 
-        <Card>
-          <CardContent>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-              Course Name
-            </Typography>
-            <Typography variant="h5" component="div">
-              Message Title
-            </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              message type(homework/notice)
-            </Typography>
-            <Typography variant="body2">
-              content content content
-              <br />
-              content content
-            </Typography>
-          </CardContent>
-        </Card>
+      <div class='flex-1 flex flex-col p-6 gap-4'>
+        <Typography>通知</Typography>
+        <For each={notifications()}>{(notification, i) =>
+          <Card>
+            <Transition appear={true} onEnter={(el, done) => {
+              const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+                duration: 400 + i() * 400
+              });
+              a.finished.then(done);
+            }}>
+              <NotificationCard notification={notification} />
+            </Transition>
+          </Card>
+        }</For>
       </div>
-    </div>
+    </div >
   )
 }

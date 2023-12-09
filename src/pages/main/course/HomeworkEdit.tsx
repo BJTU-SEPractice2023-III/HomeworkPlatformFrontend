@@ -1,15 +1,18 @@
 import { Button, Divider, TextField } from '@suid/material'
-import { createSignal } from 'solid-js'
+import { createSignal,onMount } from 'solid-js'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
+import { getHomework } from '../../../lib/homework'
 import { createStore } from 'solid-js/store';
-import { createCourseHomework } from '../../../lib/course';
 import FileUploader from '../../../components/FileUploader';
+import { putHomework } from '../../../lib/homework';
 import { AlertsStore } from '../../../lib/store';
 
-export default function CreateHomework() {
+export default function HomeworkEdit() {
   const params = useParams();
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
+  
   const [dateRange, setDateRange] = createSignal<PickerValue>({
     value: {
       start: (new Date()).toString(),
@@ -25,17 +28,25 @@ export default function CreateHomework() {
     label: "",
   });
 
-  const [name, setHomeworkName] = createSignal('name')
-  const [description, setDescription] = createSignal('desc')
+  onMount(() => {
+    getHomework(parseInt(params.homeworkId)).then((res) => {
+        setHomeworkName(res.name)
+        setDescription(res.description)
+        dateRange().value.start = res.beginDate
+        dateRange().value.end = res.endDate
+        commentDateEnd().value.selected = res.commentEndDate
+    });
+  })
+
+  const [name, setHomeworkName] = createSignal('')
+  const [description, setDescription] = createSignal('')
   const [files, setFiles] = createStore<File[]>([])
-  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   const navigate = useNavigate()
 
-  function createHomework() {
+  function modifyHomework() {
     // TODO: Make a toast
     if (!name() || !description() || !dateRange().value.start || !dateRange().value.end || !commentDateEnd().value.selected) {
-      newWarningAlert('请填写作业全部信息')
       return
     }
 
@@ -43,12 +54,11 @@ export default function CreateHomework() {
     let endDate = new Date(dateRange().value.end)
     let commentEndDate = new Date(commentDateEnd().value.selected)
 
-    createCourseHomework(parseInt(params.courseId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
-      console.log('Created homework: ', res)
-      newSuccessAlert('作业创建成功')
+    putHomework(parseInt(params.homeworkId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
+      console.log('Modify homework: ', res)
+      newSuccessAlert('修改成功')
       navigate('../')
     }).catch((err) => {
-      newErrorAlert('作业创建失败')
       console.error('Create homework failed: ', err)
     })
   }
@@ -120,8 +130,8 @@ export default function CreateHomework() {
         <Button
           variant='contained'
           size='small'
-          onClick={createHomework}>
-          布置作业
+          onClick={modifyHomework}>
+          修改作业
         </Button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { createStore } from 'solid-js/store'
 import { Course, UserCourses, getLearningCourses, getTeachingCourses, getUserCourses } from './course'
 import { onMount } from 'solid-js';
+import { AlertColor } from '@suid/material/Alert';
 
 interface User {
   id: number,
@@ -67,11 +68,11 @@ export const UserCoursesStore = () => {
   //   return c != undefined
   // }
   const isLearning = (course: Course) => {
-    const c = userCourses.learningCourses.find((c) => c.ID == course.ID)
+    const c = userCourses.learningCourses.find((c) => c.id == course.id)
     return c != undefined
   }
   const isTeaching = (course: Course) => {
-    const c = userCourses.teachingCourses.find((c) => c.ID == course.ID)
+    const c = userCourses.teachingCourses.find((c) => c.id == course.id)
     return c != undefined
   }
 
@@ -86,4 +87,35 @@ export const UserCoursesStore = () => {
   }
 
   return { userCourses, setUserCourses, updateUserCourses, learningCourses, teachingCourses, isLearning, isTeaching }
+}
+
+export type Alert = {
+  type: AlertColor,
+  msg: string
+}
+
+const alertsStore = createStore<Alert[]>([])
+export const AlertsStore = () => {
+  const [alerts, setAlerts] = alertsStore;
+
+  const addAlert = (alert: Alert) => {
+    setAlerts([...alerts, alert])
+  }
+  const delAlert = (index: number) => {
+    setAlerts(alerts.filter((alert, i) => i != index))
+  }
+
+  const newErrorAlert = (msg: string) => {
+    addAlert({ type: 'error', msg })
+  }
+  const newWarningAlert = (msg: string) => {
+    addAlert({ type: 'warning', msg })
+  }
+  const newInfoAlert = (msg: string) => {
+    addAlert({ type: 'info', msg })
+  }
+  const newSuccessAlert = (msg: string) => {
+    addAlert({ type: 'success', msg })
+  }
+  return { alerts, addAlert, delAlert, newErrorAlert, newWarningAlert, newInfoAlert, newSuccessAlert }
 }

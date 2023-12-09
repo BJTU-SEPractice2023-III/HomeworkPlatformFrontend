@@ -3,12 +3,13 @@ import { A, useNavigate, useParams } from '@solidjs/router';
 import { Box, Button, TextField } from '@suid/material';
 import { login } from '../lib/user';
 import { createSignal } from 'solid-js';
-import { LoginInfoStore } from '../lib/store';
+import { AlertsStore, LoginInfoStore } from '../lib/store';
 
 export default function Login() {
   const navigate = useNavigate();
 
   const { setLoginInfo } = LoginInfoStore()
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   const [username, setUsername] = createSignal('')
   const [password, setPassword] = createSignal('')
@@ -19,9 +20,12 @@ export default function Login() {
       console.log("[Login]: login success")
       const data = res.data
 
-      console.log(data)
+      newSuccessAlert('登录成功')
       setLoginInfo(data.token, data.user)
-      navigate('/')
+      setTimeout(() => {
+        navigate('/')
+      }, 100)
+
     }).catch((err) => {
       console.error(err)
     })

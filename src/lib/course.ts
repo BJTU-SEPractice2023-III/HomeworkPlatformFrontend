@@ -1,11 +1,12 @@
 import { get, post, postFormData } from "./axios"
 
 export type Course = {
-    ID: number,
+    id: number,
     name: string,
     description: string
     beginDate: string,
-    endDate: string
+    endDate: string,
+    teacherID: number,
 }
 
 export type Student = {

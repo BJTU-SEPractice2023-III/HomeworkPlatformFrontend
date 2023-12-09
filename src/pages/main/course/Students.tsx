@@ -22,7 +22,6 @@ export default function Students() {
           <TableRow>
             <TableCell>ID</TableCell>
             <TableCell>姓名</TableCell>
-            <TableCell>成绩</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

@@ -1,26 +1,23 @@
 import { Button, useTheme } from "@suid/material";
 import { Show, createSignal, onMount } from "solid-js";
-import { UserCoursesStore } from "../../../lib/store";
+import { AlertsStore, UserCoursesStore } from "../../../lib/store";
 import { useNavigate, useParams, useRouteData } from "@solidjs/router";
 import { Homework, getCourseHomeworks, isEnded, notStartYet } from '../../../lib/homework';
 import { CourseData } from "../../../index";
 import HomeworksTable from "../../../components/HomeworksTable";
+import { createStore } from "solid-js/store";
 
 
 export default function Homeworks() {
   const params = useParams();
   const navigate = useNavigate();
   const { isTeaching, isLearning } = UserCoursesStore();
+  const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
-  const course = useRouteData<typeof CourseData>();
-  const [homeworks, setHomeworks] = createSignal<Homework[]>([]);
+  const { course, mutateCourse, refetchCourse } = useRouteData<typeof CourseData>();
+  const [homeworks, setHomeworks] = createStore<Homework[]>([]);
   onMount(async () => {
     getCourseHomeworks(parseInt(params.courseId)).then((res) => {
-      res;
-      console.log(res);
-      res.sort((a, b) => {
-        return b.ID - a.ID
-      })
       setHomeworks(res.toSorted((a, b) => {
         console.log(a.ID, b.ID, notStartYet(a), notStartYet(b))
         if (!notStartYet(a) && notStartYet(b)) {
@@ -48,7 +45,7 @@ export default function Homeworks() {
         return 0;
       }));
       // setHomeworks(res);
-      console.log("homeworks: ", homeworks());
+      // console.log("homeworks: ", homeworks);
     });
   });
 
@@ -57,7 +54,7 @@ export default function Homeworks() {
   return (
     <Show when={course()}>
       <Show when={isTeaching(course())}>
-        <Button variant="contained" onClick={() => { navigate('new'); }}>创建作业</Button>
+        <Button variant="contained" onClick={() => { navigate('new');newSuccessAlert('布置成功'); }}>创建作业</Button>
       </Show>
 
       {/* <CreateHomeworkModal open={_open}/> */}
