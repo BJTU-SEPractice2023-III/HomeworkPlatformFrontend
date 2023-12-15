@@ -68,11 +68,11 @@ export const UserCoursesStore = () => {
   //   return c != undefined
   // }
   const isLearning = (course: Course) => {
-    const c = userCourses.learningCourses.find((c) => c.ID == course.ID)
+    const c = userCourses.learningCourses.find((c) => c.id == course.id)
     return c != undefined
   }
   const isTeaching = (course: Course) => {
-    const c = userCourses.teachingCourses.find((c) => c.ID == course.ID)
+    const c = userCourses.teachingCourses.find((c) => c.id == course.id)
     return c != undefined
   }
 

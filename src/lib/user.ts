@@ -14,10 +14,15 @@ export function register(username: string, password: string) {
   })
 }
 
+export function getUserInfo(id: number) {
+  return get(`/v1/users/${id}`)
+}
+
 export function getUserCourses(id: number) {
   return get(`/v1/users/${id}/courses`)
 }
 
+<<<<<<< HEAD
 export function getNotifications(id: number) {
   return get(`/v1/users/${id}/notifications`)
 }
@@ -31,4 +36,22 @@ export function editSignature(signature: string) {
   return put(`/v1/users/signature`, {
     signature
   })
+=======
+export enum NotificationType {
+  TeachingHomeworkInProgressNotification = 0,
+  TeachingHomeworkCommentInProgressNotification = 1,
+  LearningHomeworkInProgressNotification = 2,
+  LearningHomeworkCommentInProgressNotification = 3,
+  ComplaintToBeSolvedNotification = 4,
+  ComplaintInProgressNotification = 5,
+}
+
+export interface Notification {
+  notificationType: NotificationType
+  notificationData: any
+}
+
+export function getNotifications(): Promise<Notification[]> {
+  return get(`/v2/notifications`)
+>>>>>>> main
 }

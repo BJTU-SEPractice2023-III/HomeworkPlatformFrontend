@@ -1,6 +1,6 @@
 import { useParams, useRouteData } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
-import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework, getSubmissionById } from '../../../lib/homework';
+import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework, getSubmissionById as getHomeworkUserSubmission, getHomework } from '../../../lib/homework';
 import { Button, Typography, Divider, Paper, Badge } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
@@ -15,6 +15,7 @@ import { getMyComment } from '../../../lib/homework';
 import LookComment from '../../../components/LookComments';
 import { getMyGrade } from '../../../lib/homework';
 import { AlertsStore, LoginInfoStore } from '../../../lib/store';
+import { HomeWork } from '@suid/icons-material';
 
 
 export default function HomeworkDetail() {
@@ -25,54 +26,32 @@ export default function HomeworkDetail() {
   const [tab, setTab] = createSignal('submit');
 
   const navigate = useNavigate();
-  const [submitHomework, setSubmitHomework] = createSignal<Homework>();
+  const [submission, setSubmission] = createSignal<Homework>();
   const [myComments, setMyComments] = createSignal<CommentTask[]>([]);
-  const [fileList, setfileList] = createSignal<string[]>([]);
 
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
   const [myGrade, setMyGrade] = createSignal(0);
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false);
   const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false);
-  const getFilename = (path: string) => {
-    const parts = path.split('\\');
-    return parts[parts.length - 1];
-  };
-  createEffect(() => {
-    if (homework()) {
-      // console.log('homework: ', homework() as StudentHomework)
-      setfileList(homework().file_paths);
-      // console.log(fileList())
-    }
-  });
 
   onMount(() => {
     homeworksComment(parseInt(params.homeworkId)).then((res) => {
-      // console.log(res);
       setCommentTasks(res.comment_lists);
-    }).catch((err) => {
-      console.error('get commend failed: ', err);
-    });
-    getSubmissionById(parseInt(params.homeworkId)).then((res) => {
-      console.log("提交的作业");
-      console.log(res);
-      setSubmitHomework(res);
-    }).catch((err) =>{
-      console.error('获得自己的作业错误')
+    })
+    getHomeworkUserSubmission(parseInt(params.homeworkId)).then((res) => {
+      console.log(res)
+      setSubmission(res);
     })
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
-      // console.log("我的评论");
-      // console.log(res);
     });
     commentNumber();
     getMyGrade(parseInt(params.homeworkId)).then(
       res => {
-        // console.log(res);
         setMyGrade(res.Score);
       }
     );
-    // console.log(myGrade())
   })
 
   const [commentNumbers, setCommentNumbers] = createSignal(0);
@@ -84,8 +63,8 @@ export default function HomeworkDetail() {
       }
     }
   }
-  async function getFilesList(path: string) {
-    axios.get(`http://127.0.0.1:8888/api/v1/file/${path}`, {
+  function downloadFile(id: number, name: string) {
+    axios.get(`http://127.0.0.1:8888/api/v2/file/${id}`, {
       responseType: 'blob',
       timeout: 3000,
       headers: {
@@ -93,10 +72,10 @@ export default function HomeworkDetail() {
       }
     }).then((res) => {
       var link = document.createElement('a');
+      console.log(res.data)
       link.href = window.URL.createObjectURL(new Blob([res.data]));
       // 设置链接的下载属性和文件名
-      const result = path.split("\\");
-      link.download = result[result.length - 1];
+      link.download = name;
       // 触发点击事件
       link.click();
       // 释放虚拟链接
@@ -173,17 +152,17 @@ export default function HomeworkDetail() {
           <div class="font-bold text-xl">
             提交的作业：
           </div>
-          <Show when={submitHomework()}>
+          <Show when={submission()}>
             <div>
-              {submitHomework().content}
+              {submission().content}
             </div>
-            <For each={submitHomework().file_paths}>
+            <For each={submission().files}>
               {(file, i) => <div>
                 <Button
                   onClick={() => {
-                    getFilesList(file);
+                    downloadFile(file.id, file.name);
                   }}>
-                  {getFilename(file)}
+                  {file.name}
                 </Button>
               </div>}
             </For>
@@ -273,10 +252,12 @@ export default function HomeworkDetail() {
         }}>
           <div class='flex flex-col gap-2'>
             <div class='flex justify-between'>
-              <span style="font-size: 32px; font-weight: bold;">{homework().name}</span>
+              <Typography variant='h4' component='div'>
+                {homework().name}
+              </Typography>
               <Switch>
                 <Match when={course().teacherID == user().id}>
-
+                  {/* TODO: teacher UI */}
                 </Match>
                 <Match when={!(course().teacherID == user().id)}>
                   <Button
@@ -285,7 +266,6 @@ export default function HomeworkDetail() {
                     {(homework() as StudentHomework).submitted ? '已提交，重新提交' : "提交作业"}
                   </Button>
                 </Match>
-
               </Switch>
             </div>
             <Typography variant='caption' sx={{ color: "#999999" }}>
@@ -294,19 +274,20 @@ export default function HomeworkDetail() {
 
             <Divider />
 
-            <div class="font-bold text-xl">
+            <Typography variant='h5' component='div'>
               作业内容：
-            </div>
-            <div class="content">
+            </Typography>
+            <Typography component='div' sx={{ whiteSpace: 'pre-line', wordWrap: 'break-word' }}>
               {homework().description}
-            </div>
-            <For each={fileList()}>
+            </Typography>
+
+            <For each={homework().files}>
               {(file, i) => <div>
                 <Button
                   onClick={() => {
-                    getFilesList(file);
+                    downloadFile(file.id, file.name);
                   }}>
-                  {getFilename(file)}
+                  {file.name}
                 </Button>
               </div>}
             </For>
