@@ -24,10 +24,23 @@ export default function CreateHomework() {
     },
     label: "",
   });
+  const commentHourOptions = [
+    '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'
+  ];
+
+  const commentMinuteOptions = [
+    '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60'
+  ];
+
+  const commentSecondOptions = [
+    '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60'
+  ];
+
 
   const [name, setHomeworkName] = createSignal('name')
   const [description, setDescription] = createSignal('desc')
   const [files, setFiles] = createStore<File[]>([])
+  const [selectedTime, setSelectedTime] = createSignal('00:00');
   const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   const navigate = useNavigate()
@@ -57,7 +70,6 @@ export default function CreateHomework() {
   return (
     <div class='flex flex-col gap-4 w-full max-w-[80%]'>
       <span style="font-size: 24px; font-weight: bold;">布置作业</span>
-
       <Divider />
 
       <div class="flex gap-4">
@@ -97,6 +109,64 @@ export default function CreateHomework() {
                 console.log(data.startDate, data.endDate);
               }
             }} />
+          <div>
+            <span class='text-sm'>开始时</span>
+            <select
+              class='rounded border-[#00000045]'
+              value={selectedTime()}
+              onChange={(event) => setSelectedTime(event.target.value)}>
+              {commentHourOptions.map((time) => (
+                <option value={time}>{time}</option>
+              ))}
+            </select>
+            <span class='text-sm'>分</span>
+            <select
+              class='rounded border-[#00000045]'
+              value={selectedTime()}
+              onChange={(event) => setSelectedTime(event.target.value)}>
+              {commentMinuteOptions.map((time) => (
+                <option value={time}>{time}</option>
+              ))}
+            </select>
+            <span class='text-sm'>秒</span>
+            <select
+              class='rounded border-[#00000045]'
+              value={selectedTime()}
+              onChange={(event) => setSelectedTime(event.target.value)}>
+              {commentSecondOptions.map((time) => (
+                <option value={time}>{time}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <span class='text-sm'>结束时</span>
+            <select
+              class='rounded border-[#00000045]'
+              value={selectedTime()}
+              onChange={(event) => setSelectedTime(event.target.value)}>
+              {commentHourOptions.map((time) => (
+                <option value={time}>{time}</option>
+              ))}
+            </select>
+            <span class='text-sm'>分</span>
+            <select
+              class='rounded border-[#00000045]'
+              value={selectedTime()}
+              onChange={(event) => setSelectedTime(event.target.value)}>
+              {commentMinuteOptions.map((time) => (
+                <option value={time}>{time}</option>
+              ))}
+            </select>
+            <span class='text-sm'>秒</span>
+            <select
+              class='rounded border-[#00000045]'
+              value={selectedTime()}
+              onChange={(event) => setSelectedTime(event.target.value)}>
+              {commentSecondOptions.map((time) => (
+                <option value={time}>{time}</option>
+              ))}
+            </select>
+          </div>
 
           <span class='text-sm'>评论截止日期</span>
           <DatePicker
@@ -109,6 +179,34 @@ export default function CreateHomework() {
                 console.log(data);
               }
             }} />
+
+          <span class='text-sm'>时</span>
+          <select
+            class='rounded border-[#00000045]'
+            value={selectedTime()}
+            onChange={(event) => setSelectedTime(event.target.value)}>
+            {commentHourOptions.map((time) => (
+              <option value={time}>{time}</option>
+            ))}
+          </select>
+          <span class='text-sm'>分</span>
+          <select
+            class='rounded border-[#00000045]'
+            value={selectedTime()}
+            onChange={(event) => setSelectedTime(event.target.value)}>
+            {commentMinuteOptions.map((time) => (
+              <option value={time}>{time}</option>
+            ))}
+          </select>
+          <span class='text-sm'>秒</span>
+          <select
+            class='rounded border-[#00000045]'
+            value={selectedTime()}
+            onChange={(event) => setSelectedTime(event.target.value)}>
+            {commentSecondOptions.map((time) => (
+              <option value={time}>{time}</option>
+            ))}
+          </select>
 
         </div>
 
