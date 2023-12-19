@@ -1,4 +1,4 @@
-import { get, post, put } from './axios'
+import { get, post, put, putFormData } from './axios'
 
 export function login(username: string, password: string) {
   return post(`/v1/user/login`, {
@@ -22,21 +22,26 @@ export function getUserCourses(id: number) {
   return get(`/v1/users/${id}/courses`)
 }
 
-<<<<<<< HEAD
-export function getNotifications(id: number) {
-  return get(`/v1/users/${id}/notifications`)
-}
-
 
 export function getUserById(id: number) {
   return get(`/v1/users/${id}`)
+}
+
+export function getUserAvatarById(id: number) {
+  return get(`/v1/users/${id}/avatar`)
 }
  
 export function editSignature(signature: string) {
   return put(`/v1/users/signature`, {
     signature
   })
-=======
+}
+
+export function headerPicture(picture: File) {
+  const formData = new FormData();
+  formData.append('avatar', picture);
+  return putFormData(`/v1/users/avatar`, formData);
+}
 export enum NotificationType {
   TeachingHomeworkInProgressNotification = 0,
   TeachingHomeworkCommentInProgressNotification = 1,
@@ -53,5 +58,4 @@ export interface Notification {
 
 export function getNotifications(): Promise<Notification[]> {
   return get(`/v2/notifications`)
->>>>>>> main
 }

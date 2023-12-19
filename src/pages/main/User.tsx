@@ -1,33 +1,42 @@
 import { useParams } from "@solidjs/router";
 import { useNavigate, A } from '@solidjs/router'
-import { Avatar, Button, Card, CardContent, Divider, Stack, TextField, Typography } from '@suid/material'
+import { Avatar, Button, Card, CardContent, Divider, Fab, Stack, TextField, Typography } from '@suid/material'
 import { For, Show, createSignal, onMount } from 'solid-js'
 import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
 import { deepOrange } from "@suid/material/colors";
 import PersonalizedSignatureModel from "../../components/PersonalizedSignatureModel";
 import { getUserById } from "../../lib/user";
 import { Course } from "../../lib/course";
+import EditIcon from "@suid/icons-material/Edit";
 import { Transition } from "solid-transition-group";
 import { formatDateTime } from "../../lib/utils";
+import { getUserAvatarById } from "../../lib/user";
+import PictureUp from "../../components/PictureUp";
 export default function User() {
   const params = useParams();
 
   const { updateUserCourses, learningCourses, teachingCourses } = UserCoursesStore()
   const [userModalOpen, setUserModalOpen] = createSignal(false);
+  const [pictureModalOpen, setPictureModalOpen] = createSignal(false);
   const navigate = useNavigate();
   const { user } = LoginInfoStore()
   const [teaching, setTeaching] = createSignal<Course[]>([]);
   const [learning, setLearning] = createSignal<Course[]>([]);
   const [username, setUsername] = createSignal('');
   const [signature, setSignature] = createSignal('');
-  onMount(async () => {
-    await updateUserCourses()
-    await getUserById(parseInt(params.userId)).then((res) => {
-      console.log(res)
+  const [pictureBase64, setPictureBase64] = createSignal('');
+  onMount(() => {
+    updateUserCourses()
+    getUserById(parseInt(params.userId)).then((res) => {
+      // console.log(res)
       setUsername(res.username)
       setSignature(res.signature)
       setTeaching(res.teachingCourses)
       setLearning(res.learningCourses)
+    })
+    getUserAvatarById(parseInt(params.userId)).then((res) => {
+      // console.log("base64:" + res)
+      setPictureBase64(res)
     })
   });
 
@@ -35,10 +44,12 @@ export default function User() {
     <div class='flex-1 flex w-full'>
       {/* <personalizedSignatureModel open={userModalOpen} setOpen={setUserModalOpen} /> */}
       <PersonalizedSignatureModel open={userModalOpen} setOpen={setUserModalOpen} />
+      <PictureUp open={pictureModalOpen} setOpen={setPictureModalOpen} />
       <aside class='min-w-[250px] border-0 border-r border-solid border-slate-200 p-6 flex flex-col gap-4'>
         <div class='flex flex-col gap-2'>
           <Stack direction="row" spacing={2}>
             <Avatar
+              src={`data:image/jpg;base64,${pictureBase64()}`}
               sx={{
                 bgcolor: deepOrange[500],
                 width: 224,
@@ -46,6 +57,11 @@ export default function User() {
               }}
             >
             </Avatar>
+            <Show when={user().id == parseInt(params.userId)}>
+              <Fab color="secondary" aria-label="edit" onClick={() => { setPictureModalOpen(true) }}>
+                <EditIcon />
+              </Fab>
+            </Show>
           </Stack>
           {username()}
           <div>
