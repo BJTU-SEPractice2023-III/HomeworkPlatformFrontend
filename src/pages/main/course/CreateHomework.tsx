@@ -139,7 +139,7 @@ export default function CreateHomework() {
             </select>
           </div>
           <div>
-            <span class='text-sm'>结束时</span>
+            <span class='text-sm'>结束 时</span>
             <select
               class='rounded border-[#00000045]'
               value={selectedTime()}

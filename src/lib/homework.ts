@@ -123,3 +123,7 @@ export function notStartYet(homework: Homework) {
 export function isEnded(homework: Homework) {
     return new Date(homework.endDate) < new Date()
 }
+
+export function isCommentEnded(homework: Homework) {
+    return new Date(homework.commentEndDate) < new Date()
+}

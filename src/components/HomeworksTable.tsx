@@ -1,7 +1,7 @@
 import { ManageSearch, Edit, Delete, HomeWork, Tab } from "@suid/icons-material";
 import { Button, ButtonGroup, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { Switch, Match, For, Signal, createSignal, createEffect, Setter, Accessor, Show } from "solid-js";
-import { Homework, StudentHomework, delHomework, isEnded, notStartYet } from "../lib/homework";
+import { Homework, StudentHomework, delHomework, isEnded, notStartYet, isCommentEnded } from "../lib/homework";
 import { formatDateTime } from "../lib/utils";
 import { useNavigate } from "@solidjs/router";
 import HomeworkSubmitModal from "./HomeworkSubmitModal";
@@ -19,8 +19,11 @@ export default function HomeworksTable(props: { homeworks: Store<Homework[]>, se
     if (notStartYet(homework)) {
       return 'text-gray'
     }
-    if (isEnded(homework)) {
+    if (isCommentEnded(homework)) {
       return 'text-red'
+    }
+    if (isEnded(homework)) {
+      return 'text-blue'
     }
     return ''
   }
@@ -65,8 +68,11 @@ export default function HomeworksTable(props: { homeworks: Store<Homework[]>, se
                   <Show when={new Date(homework.beginDate) > new Date()}>
                     <Chip label="未开始" variant="outlined" size="small" sx={{ color: 'gray' }} />
                   </Show>
-                  <Show when={new Date(homework.endDate) < new Date()}>
-                    <Chip label="已过期" variant="outlined" color="error" size="small" />
+                  <Show when={new Date(homework.endDate) < new Date() && new Date() < new Date(homework.commentEndDate)}>
+                    <Chip label="作业已过期" variant="outlined" size="small" />
+                  </Show>
+                  <Show when={new Date(homework.commentEndDate) < new Date()}>
+                    <Chip label="互评已过期" variant="outlined" color="error" size="small" />
                   </Show>
                 </div>
               </TableCell>
