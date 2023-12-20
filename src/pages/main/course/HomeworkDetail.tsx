@@ -1,6 +1,6 @@
 import { useParams, useRouteData } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
-import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework, getSubmissionById as getHomeworkUserSubmission, getHomework } from '../../../lib/homework';
+import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework, getSubmissionById as getHomeworkUserSubmission, getHomework, isCommentEnded } from '../../../lib/homework';
 import { Button, Typography, Divider, Paper, Badge } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
@@ -308,7 +308,12 @@ export default function HomeworkDetail() {
         <Show when={homework()}>
           <Switch>
             <Match when={tab() == 'mutualAssessment'}>
-              {mutualAssessment()}
+            <Show when={new Date(homework().commentEndDate) > new Date()}>
+                {mutualAssessment()}
+              </Show>
+              <Show when={new Date(homework().commentEndDate) < new Date()}>
+                现在没有互评任务
+              </Show>
             </Match>
             <Match when={tab() == 'submit'}>
               {submit()}
