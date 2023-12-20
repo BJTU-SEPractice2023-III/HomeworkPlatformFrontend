@@ -36,11 +36,22 @@ export default function CreateHomework() {
     '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60'
   ];
 
+  const [beginDateHour, setBeginDateHour] = createSignal(0)
+  const [beginDateMinute, setBeginDateMinute] = createSignal(0)
+  const [beginDateSecond, setBeginDateSecond] = createSignal(0)
+
+  const [endDateHour, setEndDateHour] = createSignal(0)
+  const [endDateMinute, setEndDateMinute] = createSignal(0)
+  const [endDateSecond, setEndDateSecond] = createSignal(0)
+
+  const [commentEndDateHour, setCommentEndDateHour] = createSignal(0)
+  const [commentEndDateMinute, setCommentEndDateMinute] = createSignal(0)
+  const [commentEndDateSecond, setCommentEndDateSecond] = createSignal(0)
+
 
   const [name, setHomeworkName] = createSignal('name')
   const [description, setDescription] = createSignal('desc')
   const [files, setFiles] = createStore<File[]>([])
-  const [selectedTime, setSelectedTime] = createSignal('00:00');
   const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
 
   const navigate = useNavigate()
@@ -53,11 +64,14 @@ export default function CreateHomework() {
     }
 
     let beginDate = new Date(dateRange().value.start)
+    beginDate.setHours(beginDateHour(), beginDateMinute(), beginDateSecond())
+    console.log('beginDate: ', beginDate)
     let endDate = new Date(dateRange().value.end)
+    endDate.setHours(endDateHour(),endDateMinute(),endDateSecond())
     let commentEndDate = new Date(commentDateEnd().value.selected)
+    commentEndDate.setHours(commentEndDateHour(),commentEndDateMinute(),commentEndDateSecond())
 
     createCourseHomework(parseInt(params.courseId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
-      console.log('Created homework: ', res)
       newSuccessAlert('作业创建成功')
       navigate('../')
     }).catch((err) => {
@@ -110,40 +124,48 @@ export default function CreateHomework() {
               }
             }} />
           <div>
-            <span class='text-sm'>开始时</span>
+
+            <span class='text-sm'>开始 时</span>
             <select
               class='rounded border-[#00000045]'
-              value={selectedTime()}
-              onChange={(event) => setSelectedTime(event.target.value)}>
+              value={beginDateHour()}
+              onChange={(event) => setBeginDateHour(parseInt(event.target.value))}
+            >
               {commentHourOptions.map((time) => (
-                <option value={time}>{time}</option>
+                <option value={time}>
+                  {time}
+                </option>
               ))}
             </select>
+
             <span class='text-sm'>分</span>
             <select
               class='rounded border-[#00000045]'
-              value={selectedTime()}
-              onChange={(event) => setSelectedTime(event.target.value)}>
+              value={beginDateMinute()}
+              onChange={(event) => setBeginDateMinute(parseInt(event.target.value))}
+              >
               {commentMinuteOptions.map((time) => (
                 <option value={time}>{time}</option>
               ))}
             </select>
+
             <span class='text-sm'>秒</span>
             <select
               class='rounded border-[#00000045]'
-              value={selectedTime()}
-              onChange={(event) => setSelectedTime(event.target.value)}>
+              value={beginDateSecond()}
+              onChange={(event) => setBeginDateSecond(parseInt(event.target.value))}>
               {commentSecondOptions.map((time) => (
                 <option value={time}>{time}</option>
               ))}
             </select>
           </div>
+
           <div>
             <span class='text-sm'>结束 时</span>
             <select
               class='rounded border-[#00000045]'
-              value={selectedTime()}
-              onChange={(event) => setSelectedTime(event.target.value)}>
+              value={endDateHour()}
+              onChange={(event) => setEndDateHour(parseInt(event.target.value))}>
               {commentHourOptions.map((time) => (
                 <option value={time}>{time}</option>
               ))}
@@ -151,8 +173,8 @@ export default function CreateHomework() {
             <span class='text-sm'>分</span>
             <select
               class='rounded border-[#00000045]'
-              value={selectedTime()}
-              onChange={(event) => setSelectedTime(event.target.value)}>
+              value={endDateMinute()}
+              onChange={(event) => setEndDateMinute(parseInt(event.target.value))}>
               {commentMinuteOptions.map((time) => (
                 <option value={time}>{time}</option>
               ))}
@@ -160,8 +182,8 @@ export default function CreateHomework() {
             <span class='text-sm'>秒</span>
             <select
               class='rounded border-[#00000045]'
-              value={selectedTime()}
-              onChange={(event) => setSelectedTime(event.target.value)}>
+              value={endDateSecond()}
+              onChange={(event) => setEndDateSecond(parseInt(event.target.value))}>
               {commentSecondOptions.map((time) => (
                 <option value={time}>{time}</option>
               ))}
@@ -183,8 +205,8 @@ export default function CreateHomework() {
           <span class='text-sm'>时</span>
           <select
             class='rounded border-[#00000045]'
-            value={selectedTime()}
-            onChange={(event) => setSelectedTime(event.target.value)}>
+            value={commentEndDateHour()}
+            onChange={(event) => setCommentEndDateHour(parseInt(event.target.value))}>
             {commentHourOptions.map((time) => (
               <option value={time}>{time}</option>
             ))}
@@ -192,8 +214,8 @@ export default function CreateHomework() {
           <span class='text-sm'>分</span>
           <select
             class='rounded border-[#00000045]'
-            value={selectedTime()}
-            onChange={(event) => setSelectedTime(event.target.value)}>
+            value={commentEndDateMinute()}
+            onChange={(event) => setCommentEndDateMinute(parseInt(event.target.value))}>
             {commentMinuteOptions.map((time) => (
               <option value={time}>{time}</option>
             ))}
@@ -201,8 +223,8 @@ export default function CreateHomework() {
           <span class='text-sm'>秒</span>
           <select
             class='rounded border-[#00000045]'
-            value={selectedTime()}
-            onChange={(event) => setSelectedTime(event.target.value)}>
+            value={commentEndDateSecond()}
+            onChange={(event) => setCommentEndDateSecond(parseInt(event.target.value))}>
             {commentSecondOptions.map((time) => (
               <option value={time}>{time}</option>
             ))}
