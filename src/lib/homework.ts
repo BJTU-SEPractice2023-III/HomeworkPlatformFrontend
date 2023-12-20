@@ -25,6 +25,7 @@ export type commentHomework = {
 }
 export type CommentTask = {
     commentId: number,
+    userId: number,
     comment: string,
     score: number,
     done: boolean,

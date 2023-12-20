@@ -28,7 +28,6 @@ export default function HomeworkDetail() {
   const navigate = useNavigate();
   const [submission, setSubmission] = createSignal<Homework>();
   const [myComments, setMyComments] = createSignal<CommentTask[]>([]);
-
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
   const [myGrade, setMyGrade] = createSignal(0);
 
@@ -45,6 +44,7 @@ export default function HomeworkDetail() {
     })
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
+      // console.log(res);
     });
     commentNumber();
     getMyGrade(parseInt(params.homeworkId)).then(
@@ -144,6 +144,30 @@ export default function HomeworkDetail() {
         </TableContainer>
       </div>
     </Paper>;
+  }
+  function studentsScores() {
+    return <Paper elevation={3}>
+      <div class="font-bold text-xl text-center mb-6">
+        学生成绩列表
+      </div>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>分数</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <For each={myComments()}>{(studentList, i) => <TableRow>
+              <TableCell>{studentList.userId}</TableCell>
+              <TableCell>{studentList.score}</TableCell>
+            </TableRow>}
+            </For>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   }
   function submit() {
     return <div>
@@ -294,7 +318,7 @@ export default function HomeworkDetail() {
         <div class='flex w-full gap-2 mb-2'>
           <Switch>
             <Match when={course().teacherID == user().id}>
-              学生成绩列表
+              {studentsScores()}
             </Match>
             <Match when={course().teacherID != user().id}>
               <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit'); }}>
