@@ -256,9 +256,6 @@ export default function HomeworkDetail() {
                 {homework().name}
               </Typography>
               <Switch>
-                <Match when={course().teacherID == user().id}>
-                  {/* TODO: teacher UI */}
-                </Match>
                 <Match when={!(course().teacherID == user().id)}>
                   <Button
                     disabled={isEnded(homework()) || notStartYet(homework())}
@@ -295,20 +292,27 @@ export default function HomeworkDetail() {
         </Paper>
 
         <div class='flex w-full gap-2 mb-2'>
-          <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit'); }}>
-            我的提交
-          </Button>
-          <Button sx={{ borderBottom: tab() == 'mutualAssessment' ? 1 : 0 }} onClick={() => { setTab('mutualAssessment'); }}>
-            <Badge badgeContent={number} color="primary">
-              互评作业
-            </Badge>
-          </Button>
+          <Switch>
+            <Match when={course().teacherID == user().id}>
+              学生成绩列表
+            </Match>
+            <Match when={course().teacherID != user().id}>
+              <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit'); }}>
+                我的提交
+              </Button>
+              <Button sx={{ borderBottom: tab() == 'mutualAssessment' ? 1 : 0 }} onClick={() => { setTab('mutualAssessment'); }}>
+                <Badge badgeContent={number} color="primary">
+                  互评作业
+                </Badge>
+              </Button>
+            </Match>
+          </Switch>
         </div>
 
-        <Show when={homework()}>
+        <Show when={homework() && (course().teacherID != user().id)}>
           <Switch>
             <Match when={tab() == 'mutualAssessment'}>
-            <Show when={new Date(homework().commentEndDate) > new Date()}>
+              <Show when={new Date(homework().commentEndDate) > new Date()}>
                 {mutualAssessment()}
               </Show>
               <Show when={new Date(homework().commentEndDate) < new Date()}>
