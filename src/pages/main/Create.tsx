@@ -3,7 +3,8 @@ import { createSignal, onMount } from 'solid-js'
 import { create } from '../../lib/course'
 import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
-import { AlertsStore } from '../../lib/store';
+import { AlertsStore, LoginInfoStore } from '../../lib/store';
+import { getUserAvatarById } from '../../lib/user';
 
 
 export default function Create() {
@@ -15,9 +16,15 @@ export default function Create() {
   const [courseName, setCourseName] = createSignal('')
   const [description, setDescription] = createSignal('')
   const [username, setUsername] = createSignal('')
+  const [pictureBase64, setPictureBase64] = createSignal('');
+  const { user } = LoginInfoStore()
 
   onMount(() => {
-    setUsername(localStorage.getItem('homework-platform-username'))
+    setUsername(localStorage.getItem('homework-platform-username'));
+    getUserAvatarById(user().id).then((res) => {
+      // console.log("base64:" + res)
+      setPictureBase64(res)
+    })
   })
 
   const navigate = useNavigate()
@@ -55,7 +62,13 @@ export default function Create() {
             <div class='flex flex-col gap-2 h-full'>
               <span>创建者</span>
               <div class='flex flex-1 items-center gap-2'>
-                <Avatar sx={{ width: 30, height: 30 }}>{username()?.at(0)}</Avatar>
+                <Avatar 
+                src={`data:image/jpg;base64,${pictureBase64()}`}
+                sx={{ 
+                  width: 30, 
+                  height: 30 
+                }}>
+                  {username()?.at(0)}</Avatar>
                 <span>
                   {username()}
                 </span>
