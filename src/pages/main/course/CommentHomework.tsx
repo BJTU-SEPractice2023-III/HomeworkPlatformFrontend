@@ -38,6 +38,8 @@ export default function CommentHomework() {
       console.log(comments())
       newSuccessAlert('批改成功')
       navigate('../../../')
+    }).catch(()=>{
+      newErrorAlert('批改错误')
     });
   }
   const getFilename = (path: string) => {

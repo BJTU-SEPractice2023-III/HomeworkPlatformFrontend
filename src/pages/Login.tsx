@@ -27,6 +27,7 @@ export default function Login() {
 
     }).catch((err) => {
       console.error(err)
+      newErrorAlert(err.response.data.error);
     })
   }
 
