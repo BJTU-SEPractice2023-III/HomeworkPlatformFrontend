@@ -17,6 +17,7 @@ import LookComment from '../../../components/LookComments';
 import { getMyGrade } from '../../../lib/homework';
 import { AlertsStore, LoginInfoStore } from '../../../lib/store';
 import { HomeWork } from '@suid/icons-material';
+import TeacherLookModel from '../../../components/TeacherLookModel';
 
 
 export default function HomeworkDetail() {
@@ -34,13 +35,7 @@ export default function HomeworkDetail() {
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false);
   const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false);
-
-  // const [theFirstFraction,setTheFirstFraction] = createSignal(0);
-  // const [theSecondFraction,setTheSecondFraction] = createSignal(0);
-  // const [theThirdFraction,setTheThirdFraction] = createSignal(0);
-  // const [theFourthFraction,setTheFourthFraction] = createSignal(0);
-  // const [thefifthFraction,setTheFifthFraction] = createSignal(0);
-
+  const [teacherLookModelOpen, setTeacherLookModelOpen] = createSignal(false);
   let theFirstFraction = 0;
   let theSecondFraction = 0;
   let theThirdFraction = 0;
@@ -58,7 +53,7 @@ export default function HomeworkDetail() {
     })
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
-      // console.log(res);
+      console.log(res);
     });
     commentNumber();
     getMyGrade(parseInt(params.homeworkId)).then(
@@ -229,18 +224,18 @@ export default function HomeworkDetail() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <For each={myComments()}>{(studentList, i) => <TableRow>
-                  <TableCell>{studentList.userId}</TableCell>
-                  <TableCell>{studentList.score}</TableCell>
-                  <TableCell>
-                    <Button onClick={() => {
-
-                    }
-                    }>查看详情</Button>
-                  </TableCell>
-                </TableRow>
-                }
-                </For>
+                <For each={myComments()}>{(studentList, i) =>
+                  <TableRow>
+                    <TableCell>{studentList.userId}</TableCell>
+                    <TableCell>{studentList.score}</TableCell>
+                    <TableCell>
+                      <TeacherLookModel student={studentList} open={teacherLookModelOpen} setOpen={setTeacherLookModelOpen} />
+                      <Button onClick={() => { setTeacherLookModelOpen(true); }}>
+                        查看详情
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                }</For>
               </TableBody>
             </Table>
           </TableContainer>
