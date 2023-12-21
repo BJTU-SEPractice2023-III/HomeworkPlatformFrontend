@@ -48,7 +48,7 @@ export function delHomework(homeworkId: number) {
     return del(`/v1/homeworks/${homeworkId}`, {})
 }
 
-export function homeworksComment(id: number) {
+export function getHomeworkComments(id: number) {
     return get(`/v1/homeworks/${id}/comments`)
 }
 

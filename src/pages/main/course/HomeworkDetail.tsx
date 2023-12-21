@@ -1,6 +1,6 @@
 import { useParams, useRouteData } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
-import { Homework, isEnded, notStartYet, homeworksComment, StudentHomework, getSubmissionById as getHomeworkUserSubmission, getHomework, isCommentEnded } from '../../../lib/homework';
+import { Homework, isEnded, notStartYet, getHomeworkComments, StudentHomework, getSubmissionById as getHomeworkUserSubmission, getHomework, isCommentEnded } from '../../../lib/homework';
 import { Button, Typography, Divider, Paper, Badge } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
@@ -35,11 +35,12 @@ export default function HomeworkDetail() {
   const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false);
 
   onMount(() => {
-    homeworksComment(parseInt(params.homeworkId)).then((res) => {
+    getHomeworkComments(parseInt(params.homeworkId)).then((res) => {
+      console.log(`homework comments: `, res.comment_lists)
       setCommentTasks(res.comment_lists);
     })
     getHomeworkUserSubmission(parseInt(params.homeworkId)).then((res) => {
-      console.log(res)
+      console.log(`userSubmission: `, res)
       setSubmission(res);
     })
     getMyComment(parseInt(params.homeworkId)).then(res => {

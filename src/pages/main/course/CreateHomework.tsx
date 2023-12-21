@@ -7,6 +7,7 @@ import { createStore } from 'solid-js/store';
 import { createCourseHomework } from '../../../lib/course';
 import FileUploader from '../../../components/FileUploader';
 import { AlertsStore } from '../../../lib/store';
+import DateTimePicker from '../../../components/DateTimePicker';
 
 export default function CreateHomework() {
   const params = useParams();
@@ -24,30 +25,9 @@ export default function CreateHomework() {
     },
     label: "",
   });
-  const commentHourOptions = [
-    '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'
-  ];
-
-  const commentMinuteOptions = [
-    '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60'
-  ];
-
-  const commentSecondOptions = [
-    '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60'
-  ];
-
-  const [beginDateHour, setBeginDateHour] = createSignal(0)
-  const [beginDateMinute, setBeginDateMinute] = createSignal(0)
-  const [beginDateSecond, setBeginDateSecond] = createSignal(0)
-
-  const [endDateHour, setEndDateHour] = createSignal(0)
-  const [endDateMinute, setEndDateMinute] = createSignal(0)
-  const [endDateSecond, setEndDateSecond] = createSignal(0)
-
-  const [commentEndDateHour, setCommentEndDateHour] = createSignal(0)
-  const [commentEndDateMinute, setCommentEndDateMinute] = createSignal(0)
-  const [commentEndDateSecond, setCommentEndDateSecond] = createSignal(0)
-
+  const [beginTime, setBeginTime] = createSignal(new Date())
+  const [endTime, setEndTime] = createSignal(new Date())
+  const [commentEndTime, setCommentEndTime] = createSignal(new Date())
 
   const [name, setHomeworkName] = createSignal('name')
   const [description, setDescription] = createSignal('desc')
@@ -63,13 +43,9 @@ export default function CreateHomework() {
       return
     }
 
-    let beginDate = new Date(dateRange().value.start)
-    beginDate.setHours(beginDateHour(), beginDateMinute(), beginDateSecond())
-    console.log('beginDate: ', beginDate)
-    let endDate = new Date(dateRange().value.end)
-    endDate.setHours(endDateHour(), endDateMinute(), endDateSecond())
-    let commentEndDate = new Date(commentDateEnd().value.selected)
-    commentEndDate.setHours(commentEndDateHour(), commentEndDateMinute(), commentEndDateSecond())
+    let beginDate = beginTime()
+    let endDate = endTime()
+    let commentEndDate = commentEndTime()
 
     createCourseHomework(parseInt(params.courseId), name(), description(), beginDate, endDate, commentEndDate, files).then((res) => {
       newSuccessAlert('作业创建成功')
@@ -79,7 +55,6 @@ export default function CreateHomework() {
       console.error('Create homework failed: ', err)
     })
   }
-
 
   return (
     <div class='flex flex-col gap-4 w-full max-w-[80%]'>
@@ -107,129 +82,23 @@ export default function CreateHomework() {
             }}
           />
 
-
           <span>附件</span>
           <FileUploader files={files} setFiles={setFiles} />
-        </div>
-        <div class='flex-col gap-10'>
           <span class='text-sm'>作业起止日期</span>
-          <DatePicker
-            inputClass='rounded border-[#00000045] border-1 h-5.5 p-2 text-[#777777] mt-2'
-            value={dateRange}
-            setValue={setDateRange}
-            type='range'
-            onChange={(data) => {
-              if (data.type === "range") {
-                console.log(data.startDate, data.endDate);
-              }
-            }} />
-          <div>
 
-            <span class='text-sm'>开始 时</span>
-            <select
-              class='rounded border-[#00000045]'
-              value={beginDateHour()}
-              onChange={(event) => setBeginDateHour(parseInt(event.target.value))}
-            >
-              {commentMinuteOptions.map((time) => (
-                <option value={parseInt(time)}>{time}</option>
-              ))}
-            </select>
-
-            <span class='text-sm'>分</span>
-            <select
-              class='rounded border-[#00000045]'
-              value={beginDateMinute()}
-              onChange={(event) => setBeginDateMinute(parseInt(event.target.value))}
-            >
-              {commentMinuteOptions.map((time) => (
-                <option value={parseInt(time)}>{time}</option>
-              ))}
-            </select>
-
-            <span class='text-sm'>秒</span>
-            <select
-              class='rounded border-[#00000045]'
-              value={beginDateSecond()}
-              onChange={(event) => setBeginDateSecond(parseInt(event.target.value))}>
-              {commentMinuteOptions.map((time) => (
-                <option value={parseInt(time)}>{time}</option>
-              ))}
-            </select>
+          <div class='flex items-center gap-2'>
+            <span>开始时间</span>
+            <DateTimePicker onDateTimeChanged={(date: Date) => { setBeginTime(date) }} error={() => beginTime() >= endTime()} errorInfo='开始时间不能晚于截止时间' />
           </div>
-
-          <div>
-            <span class='text-sm'>结束 时</span>
-            <select
-              class='rounded border-[#00000045]'
-              value={endDateHour()}
-              onChange={(event) => setEndDateHour(parseInt(event.target.value))}>
-              {commentMinuteOptions.map((time) => (
-                <option value={parseInt(time)}>{time}</option>
-              ))}
-            </select>
-            <span class='text-sm'>分</span>
-            <select
-              class='rounded border-[#00000045]'
-              value={endDateMinute()}
-              onChange={(event) => setEndDateMinute(parseInt(event.target.value))}>
-              {commentMinuteOptions.map((time) => (
-                <option value={parseInt(time)}>{time}</option>
-              ))}
-            </select>
-            <span class='text-sm'>秒</span>
-            <select
-              class='rounded border-[#00000045]'
-              value={endDateSecond()}
-              onChange={(event) => setEndDateSecond(parseInt(event.target.value))}>
-              {commentMinuteOptions.map((time) => (
-                <option value={parseInt(time)}>{time}</option>
-              ))}
-            </select>
+          <div class='flex items-center gap-2'>
+            <span>截止时间</span>
+            <DateTimePicker onDateTimeChanged={(date: Date) => { setEndTime(date) }} error={() => beginTime() >= endTime()} errorInfo='截止时间不能早于开始时间'  />
           </div>
-
-          <span class='text-sm'>评论截止日期</span>
-          <DatePicker
-            inputClass='rounded border-[#00000045] border-1 h-5.5 p-2 text-[#777777] mt-2'
-            value={commentDateEnd}
-            setValue={setcommentdateend}
-            type='single'
-            onChange={(data) => {
-              if (data.type === "single") {
-                console.log(data);
-              }
-            }} />
-
-          <span class='text-sm'>时</span>
-          <select
-            class='rounded border-[#00000045]'
-            value={commentEndDateHour()}
-            onChange={(event) => setCommentEndDateHour(parseInt(event.target.value))}>
-            {commentMinuteOptions.map((time) => (
-              <option value={parseInt(time)}>{time}</option>
-            ))}
-          </select>
-          <span class='text-sm'>分</span>
-          <select
-            class='rounded border-[#00000045]'
-            value={commentEndDateMinute()}
-            onChange={(event) => setCommentEndDateMinute(parseInt(event.target.value))}>
-            {commentMinuteOptions.map((time) => (
-              <option value={parseInt(time)}>{time}</option>
-            ))}
-          </select>
-          <span class='text-sm'>秒</span>
-          <select
-            class='rounded border-[#00000045]'
-            value={commentEndDateSecond()}
-            onChange={(event) => setCommentEndDateSecond(parseInt(event.target.value))}>
-            {commentMinuteOptions.map((time) => (
-              <option value={parseInt(time)}>{time}</option>
-            ))}
-          </select>
-
+          <div class='flex items-center gap-2'>
+            <span>评论截止时间</span>
+            <DateTimePicker onDateTimeChanged={(date: Date) => { setCommentEndTime(date) }} error={() => endTime() >= commentEndTime()} errorInfo='评论截止时间时间不能早于截止时间'  />
+          </div>
         </div>
-
       </div>
       <Divider />
 

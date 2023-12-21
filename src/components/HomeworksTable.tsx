@@ -7,7 +7,7 @@ import { useNavigate } from "@solidjs/router";
 import HomeworkSubmitModal from "./HomeworkSubmitModal";
 import { SetStoreFunction, Store } from "solid-js/store";
 
-export default function HomeworksTable(props: { homeworks: Store<Homework[]>, setHomeworks: SetStoreFunction<Homework[]>, isTeaching: boolean }) {
+export default function HomeworksTable(props: { homeworks: Store<Homework[]>, setHomeworks: SetStoreFunction<Homework[]>, isTeaching: Accessor<boolean> }) {
   const navigate = useNavigate()
 
   const { homeworks, setHomeworks, isTeaching } = props
@@ -53,7 +53,7 @@ export default function HomeworksTable(props: { homeworks: Store<Homework[]>, se
               <TableCell>作业名</TableCell>
               <TableCell>起始时间</TableCell>
               <TableCell>结束时间</TableCell>
-              <Show when={!isTeaching}>
+              <Show when={!isTeaching()}>
                 <TableCell>分数</TableCell>
               </Show>
               <TableCell size='medium'>操作</TableCell>
@@ -78,11 +78,11 @@ export default function HomeworksTable(props: { homeworks: Store<Homework[]>, se
               </TableCell>
               <TableCell><span class={getColor(homework)}>{formatDateTime(homework.beginDate)}</span></TableCell>
               <TableCell><span class={getColor(homework)}>{formatDateTime(homework.endDate)}</span></TableCell>
-              <Show when={!isTeaching}>
+              <Show when={!isTeaching()}>
                 <TableCell><span class={getColor(homework)}>{getScoreStr(homework as StudentHomework)}</span></TableCell>
               </Show>
               <Switch>
-                <Match when={!isTeaching}>
+                <Match when={!isTeaching()}>
                   <TableCell size="medium">
                     <Button disabled={notStartYet(homework)} onClick={() => {
                       navigate(`${homework.ID}`);
@@ -103,7 +103,7 @@ export default function HomeworksTable(props: { homeworks: Store<Homework[]>, se
                     </Switch>
                   </TableCell>
                 </Match>
-                <Match when={isTeaching}>
+                <Match when={isTeaching()}>
                   <TableCell>
                     <ButtonGroup aria-label="outlined primary button group" sx={{ width: 300 }}>
                       <Button onClick={() => { navigate(`${homework.ID}`) }}><ManageSearch /></Button>

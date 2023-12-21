@@ -59,7 +59,7 @@ export default function Homeworks() {
 
       {/* <CreateHomeworkModal open={_open}/> */}
 
-      <HomeworksTable homeworks={homeworks} setHomeworks={setHomeworks} isTeaching={isTeaching(course())} />
+      <HomeworksTable homeworks={homeworks} setHomeworks={setHomeworks} isTeaching={() => isTeaching(course())} />
     </Show>
   );
 }
