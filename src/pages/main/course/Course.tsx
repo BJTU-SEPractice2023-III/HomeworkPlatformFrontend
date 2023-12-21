@@ -25,7 +25,7 @@ export default function Course() {
           </Typography>
           {/* TODO: Add teacher name, and a link to teacher's profile */}
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            授课老师：<A href='' class='text-blue'>{teacher() && teacher().username}</A>
+            授课老师：<A href={`../../user/${course().teacherID}`} class='text-blue'>{teacher() && teacher().username}</A>
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
             {formatDateTime(course().beginDate)}～{formatDateTime(course().endDate)}
