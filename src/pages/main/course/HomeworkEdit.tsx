@@ -1,6 +1,5 @@
 import { Button, Divider, TextField } from '@suid/material'
 import { createSignal, onMount } from 'solid-js'
-import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
 import { getHomework } from '../../../lib/homework'

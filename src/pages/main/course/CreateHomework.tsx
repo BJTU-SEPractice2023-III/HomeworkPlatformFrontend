@@ -1,6 +1,5 @@
 import { Button, Divider, TextField } from '@suid/material'
 import { createSignal } from 'solid-js'
-import DatePicker, { PickerValue } from "@rnwonder/solid-date-picker";
 import { useNavigate } from '@solidjs/router';
 import { useParams } from '@solidjs/router';
 import { createStore } from 'solid-js/store';
@@ -11,20 +10,6 @@ import DateTimePicker from '../../../components/DateTimePicker';
 
 export default function CreateHomework() {
   const params = useParams();
-  const [dateRange, setDateRange] = createSignal<PickerValue>({
-    value: {
-      start: (new Date()).toString(),
-      end: (new Date()).toString()
-    },
-    label: "",
-  });
-
-  const [commentDateEnd, setcommentdateend] = createSignal<PickerValue>({
-    value: {
-      selected: (new Date()).toString()
-    },
-    label: "",
-  });
   const [beginTime, setBeginTime] = createSignal(new Date())
   const [endTime, setEndTime] = createSignal(new Date())
   const [commentEndTime, setCommentEndTime] = createSignal(new Date())
@@ -38,7 +23,7 @@ export default function CreateHomework() {
 
   function createHomework() {
     // TODO: Make a toast
-    if (!name() || !description() || !dateRange().value.start || !dateRange().value.end || !commentDateEnd().value.selected) {
+    if (!name() || !description() || !beginTime() || !endTime()|| !commentEndTime()) {
       newWarningAlert('请填写作业全部信息')
       return
     }

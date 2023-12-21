@@ -10,6 +10,7 @@ import { useNavigate } from '@solidjs/router';
 import { CommentTask } from '../../../lib/homework';
 import { HomeworkData } from '../../..';
 import { Switch, Match } from 'solid-js';
+import * as echarts from 'echarts';
 import axios from 'axios';
 import { getMyComment } from '../../../lib/homework';
 import LookComment from '../../../components/LookComments';
@@ -33,6 +34,18 @@ export default function HomeworkDetail() {
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false);
   const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false);
+
+  // const [theFirstFraction,setTheFirstFraction] = createSignal(0);
+  // const [theSecondFraction,setTheSecondFraction] = createSignal(0);
+  // const [theThirdFraction,setTheThirdFraction] = createSignal(0);
+  // const [theFourthFraction,setTheFourthFraction] = createSignal(0);
+  // const [thefifthFraction,setTheFifthFraction] = createSignal(0);
+
+  let theFirstFraction = 0;
+  let theSecondFraction = 0;
+  let theThirdFraction = 0;
+  let theFourthFraction = 0;
+  let theFifthFraction = 0;
 
   onMount(() => {
     getHomeworkComments(parseInt(params.homeworkId)).then((res) => {
@@ -81,6 +94,54 @@ export default function HomeworkDetail() {
       link.click();
       // 释放虚拟链接
       window.URL.revokeObjectURL(link.href);
+    });
+  }
+  createEffect(() => {
+    countTheScoreSegment();
+    drawMyCharts(); // Move the drawing of the chart inside the effect
+  });
+
+
+  function countTheScoreSegment() {
+    for (let i = 0; i < myComments().length; i++) {
+      const score = myComments()[i].score;
+      if (score <= 60) {
+        theFirstFraction++;
+      }
+      else if (score > 60 && score <= 70) {
+        theSecondFraction++;
+      }
+      else if (score > 70 && score <= 80) {
+        theThirdFraction++;
+      }
+      else if (score > 80 && score <= 90) {
+        theFourthFraction++;
+      }
+      else if (score > 90 && score <= 100) {
+        theFifthFraction++;
+      }
+    }
+  }
+
+  function drawMyCharts() {
+    var myChart = echarts.init(document.getElementById('main'));
+    // 绘制图表
+    myChart.setOption({
+      title: {
+        text: '学生成绩汇总'
+      },
+      tooltip: {},
+      xAxis: {
+        data: ['0-60', '61-70', '71-80', '81-90', '91-100']
+      },
+      yAxis: {},
+      series: [
+        {
+          name: '人数',
+          type: 'bar',
+          data: [theFirstFraction, theSecondFraction, theThirdFraction, theFourthFraction, theFifthFraction]
+        }
+      ]
     });
   }
 
@@ -147,27 +208,44 @@ export default function HomeworkDetail() {
     </Paper>;
   }
   function studentsScores() {
-    return <Paper elevation={3}>
-      <div class="font-bold text-xl text-center mb-6">
-        学生成绩列表
+    return <Paper sx={{
+      padding: 4,
+    }}>
+      <div class="flex" >
+        <div id='main' class='flex-1' style="width: 400px;height:400px;"></div>
+
+        <div class='flex flex-col'>
+          <div class="font-bold text-xl mb-6">
+            学生成绩列表
+          </div>
+
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 400 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>分数</TableCell>
+                  <TableCell>查看</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <For each={myComments()}>{(studentList, i) => <TableRow>
+                  <TableCell>{studentList.userId}</TableCell>
+                  <TableCell>{studentList.score}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => {
+
+                    }
+                    }>查看详情</Button>
+                  </TableCell>
+                </TableRow>
+                }
+                </For>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
       </div>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>分数</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <For each={myComments()}>{(studentList, i) => <TableRow>
-              <TableCell>{studentList.userId}</TableCell>
-              <TableCell>{studentList.score}</TableCell>
-            </TableRow>}
-            </For>
-          </TableBody>
-        </Table>
-      </TableContainer>
     </Paper>
   }
   function submit() {
@@ -273,6 +351,7 @@ export default function HomeworkDetail() {
             textIndent: 32,
             // overflowWrap: "break-word",
             wordBreak: "break-all",
+            width: 600
           }
         }}>
           <div class='flex flex-col gap-2'>
@@ -316,12 +395,12 @@ export default function HomeworkDetail() {
           </div>
         </Paper>
 
-        <div class='flex w-full gap-2 mb-2'>
-          <Switch>
-            <Match when={course().teacherID == user().id}>
-              {studentsScores()}
-            </Match>
-            <Match when={course().teacherID != user().id}>
+        <Switch>
+          <Match when={course().teacherID == user().id}>
+            {studentsScores()}
+          </Match>
+          <Match when={course().teacherID != user().id}>
+            <div class='flex w-full gap-2 mb-2'>
               <Button sx={{ borderBottom: tab() == 'submit' ? 1 : 0 }} onClick={() => { setTab('submit'); }}>
                 我的提交
               </Button>
@@ -330,9 +409,9 @@ export default function HomeworkDetail() {
                   互评作业
                 </Badge>
               </Button>
-            </Match>
-          </Switch>
-        </div>
+            </div>
+          </Match>
+        </Switch>
 
         <Show when={homework() && (course().teacherID != user().id)}>
           <Switch>
