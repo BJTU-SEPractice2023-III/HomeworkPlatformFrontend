@@ -50,8 +50,8 @@ export function create(name: string, description: string, beginDate: Date, endDa
 }
 
 export function selectCourse(courseId: number) {
-    return post(`/course/select`, {
-        courseId
+    return post(`/v1/courses/${courseId}/students`, {
+
     })
 }
 
