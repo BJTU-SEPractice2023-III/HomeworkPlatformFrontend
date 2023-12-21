@@ -1,8 +1,9 @@
 import { Modal, Paper, TextField, Typography } from "@suid/material"
 import { Accessor, Setter, Signal } from "solid-js"
 import { For } from "solid-js/web"
-export default function TeacherLookModel(props: { student: Signal<any[]> ,open: Signal<any[]>, setOpen: Setter<boolean> }) {
-  const { student,open,setOpen } = props;
+import { CommentTask } from "../lib/homework";
+export default function TeacherLookModel(props: { studentId: Accessor<number> ,student: Accessor<CommentTask[]>, open: Accessor<any[]>, setOpen: Setter<boolean> }) {
+  const { studentId,student,open,setOpen } = props;
 
   return (<>
     <Modal
@@ -18,9 +19,6 @@ export default function TeacherLookModel(props: { student: Signal<any[]> ,open: 
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: "60%",
-          maxWidth: "1000px",
-          maxHeight: "80%",
-          overflowY: "auto",
           boxShadow: "24px",
           p: 4,
           display: "flex",
@@ -33,7 +31,6 @@ export default function TeacherLookModel(props: { student: Signal<any[]> ,open: 
           <TextField
             size='small'
             minRows={2}
-            value={student.content}
             multiline
             sx={{
               overflowY: 'auto'
@@ -42,7 +39,7 @@ export default function TeacherLookModel(props: { student: Signal<any[]> ,open: 
 
 
         <span class='text-sm'>评论</span>
-        <For each={student.Comments}>{(comments, i) =>
+        <For each={student()[studentId()].Comments}>{(comments, i) =>
           <TextField
             size='small'
             minRows={2}

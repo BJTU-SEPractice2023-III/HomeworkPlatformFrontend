@@ -29,6 +29,7 @@ export type CommentTask = {
     comment: string,
     score: number,
     done: boolean,
+    content: string;
     homeworkSubmissionId:number,
 }
 
@@ -73,6 +74,10 @@ export function getSubmissionById(id:number){
 
 export function getMyComment(id:number){
     return get(`/v1/homeworks/${id}/mycomments`)
+}
+
+export function getHomeworkSubmissions(id: number) {
+    return get(`/v1/homeworks/${id}/submissions`)
 }
 
 export function postComment(id: number, score: number, comment: string) {

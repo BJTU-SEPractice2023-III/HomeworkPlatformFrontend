@@ -1,7 +1,7 @@
 import { useParams, useRouteData } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
-import { Homework, isEnded, notStartYet, getHomeworkComments, StudentHomework, getSubmissionById as getHomeworkUserSubmission, getHomework, isCommentEnded } from '../../../lib/homework';
-import { Button, Typography, Divider, Paper, Badge } from '@suid/material';
+import { Homework, isEnded, notStartYet, getHomeworkComments, StudentHomework, getSubmissionById as getHomeworkUserSubmission, getHomework, isCommentEnded, getHomeworkSubmissions } from '../../../lib/homework';
+import { Button, Typography, Divider, Paper, Badge, Modal } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { formatDateTime } from '../../../lib/utils';
@@ -18,6 +18,7 @@ import { getMyGrade } from '../../../lib/homework';
 import { AlertsStore, LoginInfoStore } from '../../../lib/store';
 import { HomeWork } from '@suid/icons-material';
 import TeacherLookModel from '../../../components/TeacherLookModel';
+import SubmissionDetailCard from '../../../components/SubmissionDetailCard';
 
 
 export default function HomeworkDetail() {
@@ -31,6 +32,7 @@ export default function HomeworkDetail() {
   const [submission, setSubmission] = createSignal<Homework>();
   const [myComments, setMyComments] = createSignal<CommentTask[]>([]);
   const [commentTasks, setCommentTasks] = createSignal<CommentTask[]>([]);
+  const [studentListId, setStudentListId] = createSignal(0)
   const [myGrade, setMyGrade] = createSignal(0);
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false);
@@ -53,7 +55,7 @@ export default function HomeworkDetail() {
     })
     getMyComment(parseInt(params.homeworkId)).then(res => {
       setMyComments(res);
-      console.log(res);
+      console.log(`myComments: `, res);
     });
     commentNumber();
     getMyGrade(parseInt(params.homeworkId)).then(
@@ -93,7 +95,7 @@ export default function HomeworkDetail() {
   }
   createEffect(() => {
     countTheScoreSegment();
-    drawMyCharts(); // Move the drawing of the chart inside the effect
+    if (document.getElementById('main')) drawMyCharts(); // Move the drawing of the chart inside the effect
   });
 
 
@@ -202,7 +204,39 @@ export default function HomeworkDetail() {
       </div>
     </Paper>;
   }
+
   function studentsScores() {
+    const [submissions, setSubmissions] = createSignal([])
+
+    onMount(() => {
+      getHomeworkSubmissions(parseInt(params.homeworkId)).then((res) => {
+        // console.log(`[studentsScores]: homeworkSubmissions: `, res)
+        setSubmissions(res)
+      })
+    })
+
+    function checkDetail(submission: any) {
+      const [open, setOpen] = createSignal(false)
+
+      return (
+        <>
+          <Modal
+            open={open()}
+            onClose={() => { setOpen(false) }}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <SubmissionDetailCard submission={() => submission} />
+          </Modal>
+          <Button onClick={() => {
+            setOpen(true)
+          }}>
+            查看详情
+          </Button>
+        </>
+      )
+    }
+
     return <Paper sx={{
       padding: 4,
     }}>
@@ -224,15 +258,12 @@ export default function HomeworkDetail() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <For each={myComments()}>{(studentList, i) =>
+                <For each={submissions()}>{(submission, i) =>
                   <TableRow>
-                    <TableCell>{studentList.userId}</TableCell>
-                    <TableCell>{studentList.score}</TableCell>
+                    <TableCell>{submission.userId}</TableCell>
+                    <TableCell>{submission.score}</TableCell>
                     <TableCell>
-                      <TeacherLookModel student={studentList} open={teacherLookModelOpen} setOpen={setTeacherLookModelOpen} />
-                      <Button onClick={() => { setTeacherLookModelOpen(true); }}>
-                        查看详情
-                      </Button>
+                      {checkDetail(submission)}
                     </TableCell>
                   </TableRow>
                 }</For>
@@ -355,7 +386,7 @@ export default function HomeworkDetail() {
                 {homework().name}
               </Typography>
               <Switch>
-                <Match when={!(course().teacherID == user().id)}>
+                <Match when={course() && !(course().teacherID == user().id)}>
                   <Button
                     disabled={isEnded(homework()) || notStartYet(homework())}
                     variant={homework().submitted ? 'outlined' : 'contained'} onClick={() => { setSubmitModalOpen(true); }}>
