@@ -1,4 +1,4 @@
-import { Paper, TextField } from "@suid/material";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@suid/material";
 import { Accessor, onMount } from "solid-js";
 import { For, Show } from "solid-js/web";
 
@@ -34,17 +34,39 @@ export default function SubmissionDetailCard(props: { submission: Accessor<any> 
           }}
         />
         <span class='text-sm'>评论</span>
-        <For each={submission().Comments}>{(comments, i) =>
-          <TextField
-            size='small'
-            minRows={2}
-            value={comments.comment}
-            multiline
-            sx={{
-              overflowY: 'auto'
-            }}
-          />}
-        </For>
+        <TableContainer component={Paper} sx={{ width: '100%' }}>
+          <Table sx={{ minWidth: 650 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>分数</TableCell>
+                <TableCell>评论</TableCell>
+                {/* TODO: 修改分数 */}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <For each={submission().Comments}>{(comment, i) =>
+                <TableRow>
+                  <TableCell>{comment.userId}</TableCell>
+                  <TableCell>{comment.score}</TableCell>
+                  <TableCell>
+                    <TextField
+                      size='small'
+                      minRows={2}
+                      value={comment.comment}
+                      multiline
+                      sx={{
+                        width: '100%',
+                        overflowY: 'auto',
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
+              }
+              </For>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Show>
     </Paper>
   )

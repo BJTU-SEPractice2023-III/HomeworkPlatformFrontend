@@ -15,12 +15,10 @@ export default function Create() {
 
   const [courseName, setCourseName] = createSignal('')
   const [description, setDescription] = createSignal('')
-  const [username, setUsername] = createSignal('')
   const [pictureBase64, setPictureBase64] = createSignal('');
   const { user } = LoginInfoStore()
 
   onMount(() => {
-    setUsername(localStorage.getItem('homework-platform-username'));
     getUserAvatarById(user().id).then((res) => {
       // console.log("base64:" + res)
       setPictureBase64(res)
@@ -68,9 +66,9 @@ export default function Create() {
                   width: 30, 
                   height: 30 
                 }}>
-                  {username()?.at(0)}</Avatar>
+                  {user().username?.at(0)}</Avatar>
                 <span>
-                  {username()}
+                  {user().username}
                 </span>
               </div>
             </div>
