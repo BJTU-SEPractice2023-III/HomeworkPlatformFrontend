@@ -167,7 +167,7 @@ export default function HomeworkDetail() {
                   </p>
                 </TableCell>
                 <TableCell>
-                  {commentTask.score}
+                  {commentTask.score != -1 ? commentTask.score : '等待批阅...'}
                 </TableCell>
                 <TableCell>
                   <Show when={commentTask.score == -1}>
@@ -179,7 +179,7 @@ export default function HomeworkDetail() {
                         // addTodo(commentTask.commentId);
                       }}
                     >
-                      {"批改"}
+                      {"批阅"}
                     </Button>
                   </Show>
 
@@ -192,7 +192,7 @@ export default function HomeworkDetail() {
                         // addTodo(commentTask.commentId);
                       }}
                     >
-                      {"已批改,可重新批改"}
+                      {"已批阅,可重新批阅"}
                     </Button>
                   </Show>
                 </TableCell>
@@ -210,7 +210,7 @@ export default function HomeworkDetail() {
 
     onMount(() => {
       getHomeworkSubmissions(parseInt(params.homeworkId)).then((res) => {
-        // console.log(`[studentsScores]: homeworkSubmissions: `, res)
+        console.log(`[studentsScores]: homeworkSubmissions: `, res)
         setSubmissions(res)
       })
     })
@@ -324,9 +324,7 @@ export default function HomeworkDetail() {
               <TableBody>
                 <For each={myComments()}>{(myComment, i) => <TableRow>
                   <TableCell>
-                    <p class="text-ellipsis overflow-hidden">
-                      {myComment.score}
-                    </p>
+                      {myComment.score == -1 ? "互评中..." : myComment.score}
                   </TableCell>
                   <TableCell>
                     <p class="text-ellipsis overflow-hidden">
@@ -349,16 +347,9 @@ export default function HomeworkDetail() {
 
             </Table>
           </TableContainer>
-          <Show when={myGrade() != -1}>
-            <div>
-              最终分数：{myGrade()}
-            </div>
-          </Show>
-          <Show when={myGrade() == -1}>
-            <div>
-              最终分数：***
-            </div>
-          </Show>
+          <div class='mt-2'>
+            最终分数: {myGrade() != -1 ? myGrade() : "***"}
+          </div>
         </div>
       </Paper >
     </div >;

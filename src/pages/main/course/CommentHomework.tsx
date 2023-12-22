@@ -8,7 +8,7 @@ import { AlertsStore } from '../../../lib/store';
 export default function CommentHomework() {
   const params = useParams();
   const [score, setScore] = createSignal(0);
-  const [comments, setComments] = createSignal('');
+  const [content, setContent] = createSignal('');
   const [submit, setSubmit] = createSignal<commentHomework>();
   const { newSuccessAlert, newWarningAlert, newErrorAlert } = AlertsStore()
   const navigate = useNavigate()
@@ -32,10 +32,14 @@ export default function CommentHomework() {
     });
   })
 
-  function submission() {
-    postComment(parseInt(params.submissionId), score(), comments()).then((res) => {
+  function submitComment() {
+    if (content().length <= 0) {
+      newWarningAlert('批改内容不能为空')
+      return
+    }
+    postComment(parseInt(params.submissionId), score(), content()).then((res) => {
       console.log(score())
-      console.log(comments())
+      console.log(content())
       newSuccessAlert('批改成功')
       navigate('../../../')
     }).catch(()=>{
@@ -118,9 +122,9 @@ export default function CommentHomework() {
           size='small'
           minRows={6}
           multiline
-          value={comments()}
+          value={content()}
           onChange={(_event, value) => {
-            setComments(value)
+            setContent(value)
           }}
           sx={{
             height: '180px',
@@ -131,7 +135,7 @@ export default function CommentHomework() {
         <Button
           variant='contained'
           onClick={() => {
-            submission()
+            submitComment()
           }}>
           提交批改
         </Button>
