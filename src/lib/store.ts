@@ -75,6 +75,10 @@ export const UserCoursesStore = () => {
     const c = userCourses.teachingCourses.find((c) => c.id == course.id)
     return c != undefined
   }
+  const isTeachingId = (courseId: number) => {
+    const c = userCourses.teachingCourses.find((c) => c.id == courseId)
+    return c != undefined
+  }
 
   const updateUserCourses = async () => {
     const { user } = LoginInfoStore()
@@ -86,7 +90,7 @@ export const UserCoursesStore = () => {
     setUserCourses(res)
   }
 
-  return { userCourses, setUserCourses, updateUserCourses, learningCourses, teachingCourses, isLearning, isTeaching }
+  return { userCourses, setUserCourses, updateUserCourses, learningCourses, teachingCourses, isLearning, isTeaching, isTeachingId }
 }
 
 export type Alert = {
