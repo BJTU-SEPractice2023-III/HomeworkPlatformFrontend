@@ -16,8 +16,6 @@ import { getMyComment } from '../../../lib/homework';
 import LookComment from '../../../components/LookComments';
 import { getMyGrade } from '../../../lib/homework';
 import { AlertsStore, LoginInfoStore } from '../../../lib/store';
-import { HomeWork } from '@suid/icons-material';
-import TeacherLookModel from '../../../components/TeacherLookModel';
 import SubmissionDetailCard from '../../../components/SubmissionDetailCard';
 
 
@@ -37,7 +35,6 @@ export default function HomeworkDetail() {
 
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false);
   const [lookCommentsModelOpen, setLookCommentsModelOpen] = createSignal(false);
-  const [teacherLookModelOpen, setTeacherLookModelOpen] = createSignal(false);
   let theFirstFraction = 0;
   let theSecondFraction = 0;
   let theThirdFraction = 0;

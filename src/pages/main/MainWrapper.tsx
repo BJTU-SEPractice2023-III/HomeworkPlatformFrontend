@@ -1,7 +1,7 @@
-import { Outlet, useNavigate } from '@solidjs/router';
+import { Outlet, useMatch, useNavigate, useParams } from '@solidjs/router';
 import { AppBar, Button, IconButton, Toolbar, Typography } from '@suid/material';
 import HomeIcon from "@suid/icons-material/Home";
-import { LoginInfoStore } from '../../lib/store';
+import { LoginInfoStore, UserCoursesStore } from '../../lib/store';
 import { Transition } from 'solid-transition-group';
 import { createSignal } from 'solid-js';
 import AskSpark from '../../components/AskSpark';
@@ -9,9 +9,12 @@ import AskSpark from '../../components/AskSpark';
 
 export default function MainWrapper() {
   const navigate = useNavigate();
-  const { loginInfo } = LoginInfoStore()
   const [submitModalOpen, setSubmitModalOpen] = createSignal(false);
-  const { user } = LoginInfoStore()
+  const { loginInfo, user } = LoginInfoStore()
+
+  const params = useParams()
+  const isCourse = useMatch(() => "/course/:id/*")
+  const { isTeachingId } = UserCoursesStore()
 
   return (
     <Transition appear={true} onEnter={(el, done) => {
@@ -20,9 +23,9 @@ export default function MainWrapper() {
       });
       a.finished.then(done);
     }}>
-      <AskSpark  open={submitModalOpen} setOpen={setSubmitModalOpen}/>
+      <AskSpark open={submitModalOpen} setOpen={setSubmitModalOpen} />
       <div class='h-full w-full flex flex-col items-center'>
-        <AppBar position='sticky' sx={{ zIndex: 0 }}>
+        <AppBar position='sticky' sx={{ zIndex: 0 }} color={isCourse() && isTeachingId(parseInt(params.courseId)) ? 'secondary' : 'primary'}>
           <Toolbar>
             <IconButton
               size="large"
@@ -39,7 +42,7 @@ export default function MainWrapper() {
               HomeworkPlatform
             </Typography>
 
-            <Button color='inherit'  onClick={() => { setSubmitModalOpen(true); }}>
+            <Button color='inherit' onClick={() => { setSubmitModalOpen(true); }}>
               询问
             </Button>
 
