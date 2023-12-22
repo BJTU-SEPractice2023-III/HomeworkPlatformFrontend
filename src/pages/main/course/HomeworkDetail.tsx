@@ -1,7 +1,7 @@
 import { useParams, useRouteData } from '@solidjs/router';
 import { Show, createEffect, createSignal, onMount } from 'solid-js';
 import { Homework, isEnded, notStartYet, getHomeworkComments, StudentHomework, getSubmissionById as getHomeworkUserSubmission, getHomework, isCommentEnded, getHomeworkSubmissions } from '../../../lib/homework';
-import { Button, Typography, Divider, Paper, Badge, Modal } from '@suid/material';
+import { Button, Typography, Divider, Paper, Badge, Modal, TextField } from '@suid/material';
 import { For } from 'solid-js';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { formatDateTime } from '../../../lib/utils';
@@ -17,6 +17,7 @@ import LookComment from '../../../components/LookComments';
 import { getMyGrade } from '../../../lib/homework';
 import { AlertsStore, LoginInfoStore } from '../../../lib/store';
 import SubmissionDetailCard from '../../../components/SubmissionDetailCard';
+import { put } from '../../../lib/axios';
 
 
 export default function HomeworkDetail() {
@@ -205,11 +206,15 @@ export default function HomeworkDetail() {
   function studentsScores() {
     const [submissions, setSubmissions] = createSignal([])
 
-    onMount(() => {
+    const updateHomeworkSubmissions = () => {
       getHomeworkSubmissions(parseInt(params.homeworkId)).then((res) => {
         console.log(`[studentsScores]: homeworkSubmissions: `, res)
         setSubmissions(res)
       })
+    }
+
+    onMount(() => {
+      updateHomeworkSubmissions()
     })
 
     function checkDetail(submission: any) {
@@ -234,6 +239,69 @@ export default function HomeworkDetail() {
       )
     }
 
+    function modifyDetail(submission: any) {
+      const [open, setOpen] = createSignal(false)
+
+      const [score, setScore] = createSignal(submission.score)
+
+      const handleScoreChange = (event, value) => {
+        const newValue = parseInt(event.target.value, 10); // 解析输入的新值为整数
+        console.log(value)
+
+        if (0 <= newValue && newValue <= 100) {
+          setScore(newValue); // 更新状态值
+        } else {
+          setScore(0)
+        }
+      };
+
+      return (
+        <>
+          <Modal
+            open={open()}
+            onClose={() => { setOpen(false) }}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Paper
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "60%",
+                boxShadow: "24px",
+                p: 4,
+                display: "flex",
+                flexDirection: "column",
+                gap: 1
+              }}
+            >
+              <TextField
+                label="Controlled number"
+                type="number"
+                value={score()}
+                onChange={handleScoreChange}
+              />
+              <Button onClick={() => {
+                put(`/v1/grade/${submission.ID}`, { score: score() }).then((res) => {
+                  updateHomeworkSubmissions()
+                  // console.log(res)
+                }).catch((err) => {
+                  // console.error(err)
+                })
+              }}>提交</Button>
+            </Paper>
+          </Modal>
+          <Button onClick={() => {
+            setOpen(true)
+          }}>
+            修改分数
+          </Button>
+        </>
+      )
+    }
+
     return <Paper sx={{
       padding: 4,
     }}>
@@ -252,6 +320,7 @@ export default function HomeworkDetail() {
                   <TableCell>ID</TableCell>
                   <TableCell>分数</TableCell>
                   <TableCell>查看</TableCell>
+                  <TableCell>修改分数</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -261,6 +330,9 @@ export default function HomeworkDetail() {
                     <TableCell>{submission.score}</TableCell>
                     <TableCell>
                       {checkDetail(submission)}
+                    </TableCell>
+                    <TableCell>
+                      {modifyDetail(submission)}
                     </TableCell>
                   </TableRow>
                 }</For>
@@ -321,7 +393,7 @@ export default function HomeworkDetail() {
               <TableBody>
                 <For each={myComments()}>{(myComment, i) => <TableRow>
                   <TableCell>
-                      {myComment.score == -1 ? "互评中..." : myComment.score}
+                    {myComment.score == -1 ? "互评中..." : myComment.score}
                   </TableCell>
                   <TableCell>
                     <p class="text-ellipsis overflow-hidden">

@@ -4,9 +4,7 @@ import { For, Show } from "solid-js/web";
 
 export default function SubmissionDetailCard(props: { submission: Accessor<any> }) {
   const { submission } = props;
-  // onMount(() => {
-  //   console.log(`[SubmissionDetailCard]: submission: `, submission())
-  // })
+
   return (
     <Paper
       sx={{
